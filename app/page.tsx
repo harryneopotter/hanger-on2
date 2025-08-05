@@ -2,12 +2,12 @@
 'use client';
 
 import { useState } from 'react';
-import Layout from '@/components/Layout';
-import Header from '@/components/Header';
-import CategoryTabs from '@/components/CategoryTabs';
+import Layout from '@/components/ui/Layout';
+import Header from '@/components/ui/Header';
+import CategoryTabs from '@/components/ui/CategoryTabs';
 import SearchBar from '@/components/ui/SearchBar';
 import FilterPanel from '@/components/features/FilterPanel';
-import GarmentCard from '@/components/GarmentCard';
+import GarmentCard from '@/components/features/GarmentCard';
 
 export default function Home() {
   const [darkMode, setDarkMode] = useState(false);
@@ -80,7 +80,7 @@ export default function Home() {
     const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(garment.status);
 
     // TODO: Implement tag filtering logic here
-    return matchesCategory && matchesSearch;
+    return matchesCategory && matchesSearch && matchesStatus;
   });
 
   const handleThemeToggle = () => {
@@ -109,10 +109,16 @@ export default function Home() {
              <FilterPanel
                availableTags={[]} // Use an empty array for now
                selectedTags={selectedTags}
-               onTagSelect={(tagName) => { /* TODO: Implement tag selection */ }}
+               onTagSelect={(tagName) => { 
+                 // TODO: Implement tag selection
+                 console.log('Tag selected:', tagName);
+               }}
                availableStatuses={['Clean', 'Dirty', 'Worn 2x', 'Needs Washing']}
                selectedStatuses={selectedStatuses}
-               onStatusSelect={(status) => { /* TODO: Implement status selection */ }}
+               onStatusSelect={(status) => { 
+                 // TODO: Implement status selection
+                 console.log('Status selected:', status);
+               }}
              />
             </div>
             <CategoryTabs onCategoryChange={setActiveCategory} />

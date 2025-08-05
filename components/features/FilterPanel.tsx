@@ -1,19 +1,22 @@
 import React from 'react';
 
 interface FilterPanelProps {
-  // Define props for filter state and handlers here later
-  // selectedCategory?: string;
-  // onCategoryChange?: (category: string) => void;
-  // selectedStatus?: string[];
-  // onStatusChange?: (status: string[]) => void;
-  // selectedTags?: string[];
-  // onTagChange?: (tags: string[]) => void;
+  availableTags: string[];
+  selectedTags: string[];
+  onTagSelect: (tagName: string) => void;
+  availableStatuses: string[];
+  selectedStatuses: string[];
+  onStatusSelect: (status: string) => void;
 }
 
-const FilterPanel: React.FC<FilterPanelProps> = (
-  // Destructure props here later
-  // { selectedCategory, onCategoryChange, selectedStatus, onStatusChange, selectedTags, onTagChange }
-) => {
+const FilterPanel: React.FC<FilterPanelProps> = ({
+  availableTags,
+  selectedTags,
+  onTagSelect,
+  availableStatuses,
+  selectedStatuses,
+  onStatusSelect
+}) => {
   return (
     <div className="bg-gray-50/80 dark:bg-gray-800/80 rounded-2xl p-6 shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30">
       <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 drop-shadow-sm">Filter By</h3>

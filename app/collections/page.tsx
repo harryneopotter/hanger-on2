@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import Layout from '@/components/Layout';
+import Layout from '@/components/ui/Layout';
 import TagFilter from '@/components/features/TagFilter';
 import TagList from '@/components/features/TagList';
-import Header from '@/components/Header';
+import Header from '@/components/ui/Header';
 
 interface Collection {
   id: string;
@@ -108,7 +108,11 @@ export default function Collections() {
             </div>
 
             <div className="px-6 py-4">
-              <TagFilter availableTags={[{ name: 'Casual' }, { name: 'Formal' }]} selectedTags={[]} />
+              <TagFilter 
+                availableTags={[{ name: 'Casual' }, { name: 'Formal' }]} 
+                selectedTags={[]} 
+                onTagToggle={(tagName) => console.log('Tag toggled:', tagName)}
+              />
               <TagList tags={[{ name: 'Work' }, { name: 'Weekend' }]} />
             </div>
 

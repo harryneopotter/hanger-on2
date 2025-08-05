@@ -1,8 +1,6 @@
 
 'use client';
 
-import { useState } from 'react';
-
 interface HeaderProps {
   title: string;
   showThemeToggle?: boolean;

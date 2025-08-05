@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import BottomNavigation from './BottomNavigation';
 
 interface LayoutProps {
@@ -8,7 +7,8 @@ interface LayoutProps {
 }
 
 export default function Layout({ children }: LayoutProps) {
-  const [darkMode, setDarkMode] = useState(false);
+  // TODO: Implement dark mode toggle functionality
+  const darkMode = false;
 
   return (
     <div className={`min-h-screen ${darkMode ? 'dark' : ''}`}>

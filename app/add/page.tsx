@@ -2,10 +2,10 @@
 'use client';
 
 import { useState } from 'react';
-import Layout from '@/components/Layout';
+import Layout from '@/components/ui/Layout';
 import ImageUpload from '@/components/features/ImageUpload';
 import ImageCropper from '@/components/features/ImageCropper';
-import Header from '@/components/Header';
+import Header from '@/components/ui/Header';
 
 export default function AddItem() {
   const [darkMode, setDarkMode] = useState(false);
@@ -52,8 +52,8 @@ export default function AddItem() {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImage(e.target?.result as string);
+      reader.onload = (event) => {
+        setSelectedImage(event.target?.result as string);
         setShowImageCrop(true);
       };
       reader.readAsDataURL(file);
@@ -93,7 +93,11 @@ export default function AddItem() {
                 <div className="relative">
                   {showImageCrop ? (
                     // Pass selectedImage to ImageCropper and handle crop/cancel
-                    <ImageCropper onImageCropped={() => {}} onCancel={() => setShowImageCrop(false)} />
+                    <ImageCropper 
+                      imageToShow={selectedImage || undefined}
+                      onCrop={() => {}}
+                      onCancel={() => setShowImageCrop(false)} 
+                    />
                   ) : (
                     // Pass the handler that updates state and shows cropper
                     <ImageUpload onImageSelect={handleImageUpload} />

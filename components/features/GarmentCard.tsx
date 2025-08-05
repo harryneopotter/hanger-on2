@@ -2,6 +2,7 @@
 'use client';
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface GarmentCardProps {
   id: string;
@@ -14,8 +15,8 @@ interface GarmentCardProps {
 }
 
 export default function GarmentCard({ id, name, category, material, status, image, onEdit }: GarmentCardProps) {
-  const getStatusColor = (status: string) => {
-    switch (status) {
+  const getStatusColor = (statusValue: string) => {
+    switch (statusValue) {
       case 'Clean':
         return 'bg-emerald-50/80 text-emerald-700 shadow-[inset_2px_2px_5px_rgba(5,150,105,0.1),inset_-2px_-2px_5px_rgba(255,255,255,0.8)] dark:bg-emerald-900/30 dark:text-emerald-300 dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(5,150,105,0.1)]';
       case 'Worn 2x':
@@ -28,8 +29,8 @@ export default function GarmentCard({ id, name, category, material, status, imag
     }
   };
 
-  const getStatusDot = (status: string) => {
-    switch (status) {
+  const getStatusDot = (statusValue: string) => {
+    switch (statusValue) {
       case 'Clean':
         return 'bg-emerald-500 shadow-[2px_2px_5px_rgba(5,150,105,0.3),inset_1px_1px_2px_rgba(255,255,255,0.3)]';
       case 'Worn 2x':
@@ -47,9 +48,11 @@ export default function GarmentCard({ id, name, category, material, status, imag
       <div className="bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] hover:shadow-[12px_12px_24px_rgba(0,0,0,0.15),-6px_-6px_18px_rgba(255,255,255,0.8)] dark:hover:shadow-[12px_12px_24px_rgba(0,0,0,0.4),-6px_-6px_18px_rgba(255,255,255,0.03)] transition-all duration-300 overflow-hidden backdrop-blur-sm border border-white/20 dark:border-gray-700/30">
         <div className="relative aspect-square bg-gray-100/30 dark:bg-gray-700/30 overflow-hidden shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-2px_-2px_6px_rgba(255,255,255,0.6)] dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.3),inset_-2px_-2px_6px_rgba(255,255,255,0.01)]">
           <div className={`absolute top-3 left-3 w-3 h-3 rounded-full ${getStatusDot(status)}`}></div>
-          <img
+          <Image
             src={image}
             alt={name}
+            width={400}
+            height={400}
             className="w-full h-full object-cover object-top"
           />
           <button
@@ -64,14 +67,14 @@ export default function GarmentCard({ id, name, category, material, status, imag
         </div>
 
         {/* Quick action buttons */}
- <div className=\"flex justify-around p-2\">
- <button className=\"px-3 py-1 bg-blue-500 text-white text-sm rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200\">
+        <div className="flex justify-around p-2">
+          <button className="px-3 py-1 bg-blue-500 text-white text-sm rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200">
             {/* TODO: Implement Mark as Worn action */}Mark as Worn
- </button>
- <button className=\"px-3 py-1 bg-yellow-500 text-white text-sm rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200\">
+          </button>
+          <button className="px-3 py-1 bg-yellow-500 text-white text-sm rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200">
             Move to Laundry
- </button>
- </div>\n
+          </button>
+        </div>
 
         <div className="p-4">
           <h3 className="font-semibold text-gray-900 dark:text-white mb-1 font-['Inter'] drop-shadow-sm">{name}</h3>

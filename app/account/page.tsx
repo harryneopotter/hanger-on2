@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import Layout from '../../components/Layout';
-import Header from '../../components/Header';
+import Image from 'next/image';
+import Layout from '../../components/ui/Layout';
+import Header from '../../components/ui/Header';
 
 export default function AccountPage() {
   const [darkMode, setDarkMode] = useState(false);
@@ -75,9 +76,11 @@ export default function AccountPage() {
           <div className="bg-gray-50/80 dark:bg-gray-800/80 rounded-2xl shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30 p-6 mb-6">
             <div className="flex items-center space-x-4">
               <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200/50 dark:bg-gray-700/50 shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.02)]">
-                <img 
+                <Image 
                   src={user.avatar}
                   alt="Profile"
+                  width={64}
+                  height={64}
                   className="w-full h-full object-cover"
                 />
               </div>

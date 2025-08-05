@@ -2,8 +2,8 @@
 'use client';
 
 import { useState } from 'react';
-import Layout from '@/components/Layout';
-import Header from '@/components/Header';
+import Layout from '@/components/ui/Layout';
+import Header from '@/components/ui/Header';
 
 export default function Settings() {
   const [darkMode, setDarkMode] = useState(false);
@@ -41,13 +41,14 @@ export default function Settings() {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
+      reader.onload = (event) => {
         try {
-          const data = JSON.parse(e.target?.result as string);
+          const data = JSON.parse(event.target?.result as string);
           console.log('Imported data:', data);
           setShowImportModal(false);
           alert('Data imported successfully!');
         } catch (error) {
+          console.error('Error importing data:', error);
           alert('Error importing data. Please check the file format.');
         }
       };
