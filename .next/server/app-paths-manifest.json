@@ -1,3 +1,15 @@
 {
-  "/page": "app/page.js"
+  "/api/garments/[id]/route": "app/api/garments/[id]/route.js",
+  "/api/garments/route": "app/api/garments/route.js",
+  "/api/images/route": "app/api/images/route.js",
+  "/api/tags/route": "app/api/tags/route.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/account/page": "app/account/page.js",
+  "/add/page": "app/add/page.js",
+  "/collections/page": "app/collections/page.js",
+  "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
+  "/settings/page": "app/settings/page.js",
+  "/stats/page": "app/stats/page.js",
+  "/item/[id]/page": "app/item/[id]/page.js"
 }
