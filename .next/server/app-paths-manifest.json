@@ -8,8 +8,8 @@
   "/add/page": "app/add/page.js",
   "/collections/page": "app/collections/page.js",
   "/login/page": "app/login/page.js",
+  "/page": "app/page.js",
   "/settings/page": "app/settings/page.js",
   "/stats/page": "app/stats/page.js",
-  "/page": "app/page.js",
   "/item/[id]/page": "app/item/[id]/page.js"
 }

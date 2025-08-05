@@ -108,7 +108,11 @@ export default function Collections() {
             </div>
 
             <div className="px-6 py-4">
-              <TagFilter availableTags={[{ name: 'Casual' }, { name: 'Formal' }]} selectedTags={[]} />
+              <TagFilter 
+                availableTags={[{ name: 'Casual' }, { name: 'Formal' }]} 
+                selectedTags={[]} 
+                onTagToggle={(tagName) => console.log('Tag toggled:', tagName)}
+              />
               <TagList tags={[{ name: 'Work' }, { name: 'Weekend' }]} />
             </div>
 

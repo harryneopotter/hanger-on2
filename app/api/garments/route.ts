@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-static';
+
 export async function GET() {
   // TODO: Call GarmentService.getAllGarments to fetch all garments
   // For now, return a placeholder response

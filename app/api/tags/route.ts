@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import { Tag } from '@/lib/validation/schemas';
 
+export const dynamic = 'force-static';
+
 export async function GET() {
   // TODO: Call TagService.getAllTags() here
   const tags: Tag[] = []; // Placeholder for the result from TagService

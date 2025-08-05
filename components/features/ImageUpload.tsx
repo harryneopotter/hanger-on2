@@ -1,11 +1,16 @@
 import React from 'react';
 
-const ImageUpload: React.FC = () => {
+interface ImageUploadProps {
+  onImageSelect?: (event: React.ChangeEvent<HTMLInputElement>) => void;
+}
+
+const ImageUpload: React.FC<ImageUploadProps> = ({ onImageSelect }) => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       // Handle the selected file (e.g., read it, display a preview)
       console.log('Selected file:', file);
+      onImageSelect?.(event);
     }
   };
 

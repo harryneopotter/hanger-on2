@@ -93,7 +93,11 @@ export default function AddItem() {
                 <div className="relative">
                   {showImageCrop ? (
                     // Pass selectedImage to ImageCropper and handle crop/cancel
-                    <ImageCropper onImageCropped={() => {}} onCancel={() => setShowImageCrop(false)} />
+                    <ImageCropper 
+                      imageToShow={selectedImage || undefined}
+                      onCrop={() => {}}
+                      onCancel={() => setShowImageCrop(false)} 
+                    />
                   ) : (
                     // Pass the handler that updates state and shows cropper
                     <ImageUpload onImageSelect={handleImageUpload} />

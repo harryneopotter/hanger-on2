@@ -19,7 +19,7 @@ const GarmentForm: React.FC<GarmentFormProps> = ({ initialData, onSubmit }) => {
     name: '',
     category: '',
     material: '',
-    status: 'Clean',
+    status: 'Clean' as const,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {

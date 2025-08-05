@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 
+export const dynamic = 'force-static';
+
 export async function POST() {
   try {
     // Call ImageService.uploadImage(await request.blob()) here

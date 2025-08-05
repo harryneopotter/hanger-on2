@@ -11,6 +11,11 @@ export async function generateStaticParams() {
   ];
 }
 
-export default function ItemPage({ params }: { params: { id: string } }) {
-  return <ItemDetail itemId={params.id} />;
+interface PageProps {
+  params: Promise<{ id: string }>;
+}
+
+export default async function ItemPage({ params }: PageProps) {
+  const { id } = await params;
+  return <ItemDetail itemId={id} />;
 }
