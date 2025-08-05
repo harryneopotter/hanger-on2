@@ -3,6 +3,8 @@
 
 import { useState } from 'react';
 import Layout from '@/components/Layout';
+import ImageUpload from '@/components/features/ImageUpload';
+import ImageCropper from '@/components/features/ImageCropper';
 import Header from '@/components/Header';
 
 export default function AddItem() {
@@ -89,32 +91,12 @@ export default function AddItem() {
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 drop-shadow-sm">Item Photo</h2>
 
                 <div className="relative">
-                  {selectedImage ? (
-                    <div className="aspect-square bg-gray-100/50 dark:bg-gray-700/50 rounded-xl overflow-hidden mb-4 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-2px_-2px_6px_rgba(255,255,255,0.6)] dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.3),inset_-2px_-2px_6px_rgba(255,255,255,0.01)]">
-                      <img
-                        src={selectedImage}
-                        alt="Selected item"
-                        className="w-full h-full object-cover object-top"
-                      />
-                      <button
-                        type="button"
-                        onClick={() => setSelectedImage(null)}
-                        className="absolute top-3 right-3 w-8 h-8 bg-red-500/90 rounded-full flex items-center justify-center text-white shadow-[4px_4px_8px_rgba(239,68,68,0.3),-2px_-2px_6px_rgba(255,255,255,0.8)] hover:shadow-[6px_6px_12px_rgba(239,68,68,0.4),-3px_-3px_9px_rgba(255,255,255,0.9)] transition-all duration-200 backdrop-blur-sm"
-                      >
-                        <i className="ri-close-line text-sm drop-shadow-sm"></i>
-                      </button>
-                    </div>
+                  {showImageCrop ? (
+                    // Pass selectedImage to ImageCropper and handle crop/cancel
+                    <ImageCropper onImageCropped={() => {}} onCancel={() => setShowImageCrop(false)} />
                   ) : (
-                    <label className="flex flex-col items-center justify-center aspect-square bg-gray-100/50 dark:bg-gray-700/50 rounded-xl border-2 border-dashed border-gray-300/50 dark:border-gray-600/50 cursor-pointer shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-2px_-2px_6px_rgba(255,255,255,0.6)] dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.3),inset_-2px_-2px_6px_rgba(255,255,255,0.01)] hover:shadow-[inset_6px_6px_12px_rgba(0,0,0,0.1),inset_-3px_-3px_9px_rgba(255,255,255,0.8)] dark:hover:shadow-[inset_6px_6px_12px_rgba(0,0,0,0.4),inset_-3px_-3px_9px_rgba(255,255,255,0.02)] transition-all duration-200 backdrop-blur-sm">
-                      <i className="ri-camera-line text-3xl text-gray-400 dark:text-gray-500 mb-2 drop-shadow-sm"></i>
-                      <span className="text-sm text-gray-500 dark:text-gray-400 font-medium drop-shadow-sm">Tap to add photo</span>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleImageUpload}
-                        className="hidden"
-                      />
-                    </label>
+                    // Pass the handler that updates state and shows cropper
+                    <ImageUpload onImageSelect={handleImageUpload} />
                   )}
                 </div>
               </div>

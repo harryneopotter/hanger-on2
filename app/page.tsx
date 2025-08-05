@@ -5,6 +5,8 @@ import { useState } from 'react';
 import Layout from '@/components/Layout';
 import Header from '@/components/Header';
 import CategoryTabs from '@/components/CategoryTabs';
+import SearchBar from '@/components/ui/SearchBar';
+import FilterPanel from '@/components/features/FilterPanel';
 import GarmentCard from '@/components/GarmentCard';
 
 export default function Home() {
@@ -12,6 +14,8 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const garments = [
     {
       id: '1',
@@ -64,10 +68,18 @@ export default function Home() {
   ];
 
   const filteredGarments = garments.filter(garment => {
+    // Category filtering (using existing activeCategory state)
     const matchesCategory = activeCategory === 'All' || garment.category === activeCategory;
+
+    // Search filtering
     const matchesSearch = garment.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          garment.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          garment.material.toLowerCase().includes(searchQuery.toLowerCase());
+
+    // Status filtering
+    const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(garment.status);
+
+    // TODO: Implement tag filtering logic here
     return matchesCategory && matchesSearch;
   });
 
@@ -88,24 +100,21 @@ export default function Home() {
           />
           
           <div className="pt-20">
+
             <div className="px-6 py-4">
-              <div className="relative">
-                <div className="absolute inset-y-0 left-4 flex items-center pointer-events-none">
-                  <i className="ri-search-line text-gray-400 dark:text-gray-500 drop-shadow-sm"></i>
-                </div>
-                <div className="absolute inset-y-0 right-4 flex items-center pointer-events-none">
-                  <i className="ri-handbag-line text-gray-300 dark:text-gray-600 drop-shadow-sm"></i>
-                </div>
-                <input
-                  type="text"
-                  placeholder="Search your wardrobe..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-12 py-3 bg-gray-50/80 dark:bg-gray-800/80 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-transparent transition-all duration-300 text-sm shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.3),inset_-2px_-2px_6px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30 focus:shadow-[inset_6px_6px_12px_rgba(0,0,0,0.1),inset_-3px_-3px_9px_rgba(255,255,255,0.8)] dark:focus:shadow-[inset_6px_6px_12px_rgba(0,0,0,0.4),inset_-3px_-3px_9px_rgba(255,255,255,0.03)]"
-                />
-              </div>
+              <SearchBar value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
             </div>
 
+            <div className="px-6 py-4">
+             <FilterPanel
+               availableTags={[]} // Use an empty array for now
+               selectedTags={selectedTags}
+               onTagSelect={(tagName) => { /* TODO: Implement tag selection */ }}
+               availableStatuses={['Clean', 'Dirty', 'Worn 2x', 'Needs Washing']}
+               selectedStatuses={selectedStatuses}
+               onStatusSelect={(status) => { /* TODO: Implement status selection */ }}
+             />
+            </div>
             <CategoryTabs onCategoryChange={setActiveCategory} />
 
             <div className="px-6">
