@@ -1,8 +1,8 @@
 'use client';
 
 import { useState } from 'react';
-import Layout from '../../components/Layout';
-import Header from '../../components/Header';
+import Layout from '../../components/ui/Layout';
+import Header from '../../components/ui/Header';
 
 export default function AccountPage() {
   const [darkMode, setDarkMode] = useState(false);

@@ -1,10 +1,10 @@
 'use client';
 
 import { useState } from 'react';
-import Layout from '@/components/Layout';
+import Layout from '@/components/ui/Layout';
 import TagFilter from '@/components/features/TagFilter';
 import TagList from '@/components/features/TagList';
-import Header from '@/components/Header';
+import Header from '@/components/ui/Header';
 
 interface Collection {
   id: string;

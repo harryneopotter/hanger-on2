@@ -64,14 +64,14 @@ export default function GarmentCard({ id, name, category, material, status, imag
         </div>
 
         {/* Quick action buttons */}
- <div className=\"flex justify-around p-2\">
- <button className=\"px-3 py-1 bg-blue-500 text-white text-sm rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200\">
+        <div className="flex justify-around p-2">
+          <button className="px-3 py-1 bg-blue-500 text-white text-sm rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200">
             {/* TODO: Implement Mark as Worn action */}Mark as Worn
- </button>
- <button className=\"px-3 py-1 bg-yellow-500 text-white text-sm rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200\">
+          </button>
+          <button className="px-3 py-1 bg-yellow-500 text-white text-sm rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200">
             Move to Laundry
- </button>
- </div>\n
+          </button>
+        </div>
 
         <div className="p-4">
           <h3 className="font-semibold text-gray-900 dark:text-white mb-1 font-['Inter'] drop-shadow-sm">{name}</h3>

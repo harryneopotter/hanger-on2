@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Layout from '@/components/Layout';
-import Header from '@/components/Header';
+import Layout from '@/components/ui/Layout';
+import Header from '@/components/ui/Header';
 
 interface ItemDetailProps {
   itemId: string;

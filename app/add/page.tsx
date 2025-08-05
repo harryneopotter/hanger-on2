@@ -2,10 +2,10 @@
 'use client';
 
 import { useState } from 'react';
-import Layout from '@/components/Layout';
+import Layout from '@/components/ui/Layout';
 import ImageUpload from '@/components/features/ImageUpload';
 import ImageCropper from '@/components/features/ImageCropper';
-import Header from '@/components/Header';
+import Header from '@/components/ui/Header';
 
 export default function AddItem() {
   const [darkMode, setDarkMode] = useState(false);
