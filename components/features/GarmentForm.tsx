@@ -2,6 +2,8 @@
 
 import React, { useState } from 'react';
 
+import { Garment } from '@/lib/validation/schemas';
+
 interface GarmentFormProps {
   initialData?: {
     name: string;
@@ -9,7 +11,7 @@ interface GarmentFormProps {
     material: string;
     status: 'Clean' | 'Dirty' | 'Worn 2x' | 'Needs Washing';
   };
-  onSubmit: (data: any) => void; // Replace 'any' with a more specific type later
+  onSubmit: (data: Garment) => void;
 }
 
 const GarmentForm: React.FC<GarmentFormProps> = ({ initialData, onSubmit }) => {

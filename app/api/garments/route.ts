@@ -1,13 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { GarmentService } from '@/lib/services/GarmentService';
+import { NextResponse } from 'next/server';
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   // TODO: Call GarmentService.getAllGarments to fetch all garments
   // For now, return a placeholder response
   return NextResponse.json({ garments: [] });
 }
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   // TODO: Parse request body and call GarmentService method to create a garment
   // For now, return a placeholder response
   return NextResponse.json({ message: 'Garment created' });

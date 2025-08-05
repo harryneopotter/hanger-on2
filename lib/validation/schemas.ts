@@ -15,7 +15,11 @@ export const TagSchema = z.object({
 });
 
 export const ImageUploadSchema = z.object({
-  // Placeholder for image data. Actual implementation might use z.instanceof(File)
-  // or a specific format depending on how images are sent.
-  imageData: z.any(), 
+  // Using unknown instead of any for better type safety
+  imageData: z.unknown(), 
 });
+
+// Infer TypeScript types from Zod schemas
+export type Garment = z.infer<typeof GarmentSchema>;
+export type Tag = z.infer<typeof TagSchema>;
+export type ImageUpload = z.infer<typeof ImageUploadSchema>;

@@ -14,8 +14,8 @@ interface GarmentCardProps {
 }
 
 export default function GarmentCard({ id, name, category, material, status, image, onEdit }: GarmentCardProps) {
-  const getStatusColor = (status: string) => {
-    switch (status) {
+  const getStatusColor = (statusValue: string) => {
+    switch (statusValue) {
       case 'Clean':
         return 'bg-emerald-50/80 text-emerald-700 shadow-[inset_2px_2px_5px_rgba(5,150,105,0.1),inset_-2px_-2px_5px_rgba(255,255,255,0.8)] dark:bg-emerald-900/30 dark:text-emerald-300 dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(5,150,105,0.1)]';
       case 'Worn 2x':
@@ -28,8 +28,8 @@ export default function GarmentCard({ id, name, category, material, status, imag
     }
   };
 
-  const getStatusDot = (status: string) => {
-    switch (status) {
+  const getStatusDot = (statusValue: string) => {
+    switch (statusValue) {
       case 'Clean':
         return 'bg-emerald-500 shadow-[2px_2px_5px_rgba(5,150,105,0.3),inset_1px_1px_2px_rgba(255,255,255,0.3)]';
       case 'Worn 2x':

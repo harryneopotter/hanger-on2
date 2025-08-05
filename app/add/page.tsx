@@ -52,8 +52,8 @@ export default function AddItem() {
     const file = e.target.files?.[0];
     if (file) {
       const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImage(e.target?.result as string);
+      reader.onload = (event) => {
+        setSelectedImage(event.target?.result as string);
         setShowImageCrop(true);
       };
       reader.readAsDataURL(file);

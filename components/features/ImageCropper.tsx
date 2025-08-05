@@ -1,10 +1,12 @@
 import React from 'react';
 
 interface ImageCropperProps {
-  // Props will be added later, e.g., imageToShow: string, onCrop: (croppedImage: string) => void, onCancel: () => void
+  imageToShow?: string;
+  onCrop?: (croppedImage: string) => void;
+  onCancel?: () => void;
 }
 
-const ImageCropper: React.FC<ImageCropperProps> = () => {
+const ImageCropper: React.FC<ImageCropperProps> = ({ imageToShow, onCrop, onCancel }) => {
   return (
     <div className="bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] p-4 flex flex-col items-center">
       <div className="w-full aspect-square bg-gray-100/30 dark:bg-gray-700/30 rounded-lg mb-4 flex items-center justify-center text-gray-600 dark:text-gray-400 shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-2px_-2px_6px_rgba(255,255,255,0.6)] dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.3),inset_-2px_-2px_6px_rgba(255,255,255,0.01)]">

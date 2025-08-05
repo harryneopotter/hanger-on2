@@ -180,7 +180,7 @@ export default function Stats() {
                         <span className="font-medium text-gray-900 dark:text-white">$487</span>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-gray-700 dark:text-gray-300">Levi's</span>
+                        <span className="text-gray-700 dark:text-gray-300">Levi&apos;s</span>
                         <span className="font-medium text-gray-900 dark:text-white">$324</span>
                       </div>
                       <div className="flex items-center justify-between">
