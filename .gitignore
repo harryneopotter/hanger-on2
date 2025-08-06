@@ -1,3 +1,32 @@
-node_modules
+# Dependency directories
+node_modules/
+.pnpm-store/
+.yarn/
 
+# Build & output
+.next/
+dist/
+build/
+coverage/
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Environment files
+.env*
+
+# IDE / Editor folders
+.vscode/
+.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Archives
+*.zip
+
+# Generated prisma client
 /lib/generated/prisma
