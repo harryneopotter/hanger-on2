@@ -2,15 +2,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'next/navigation';
+import { useSearchParams, useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Layout from '@/components/ui/Layout';
 import ImageUpload from '@/components/features/ImageUpload';
 import ImageCropper from '@/components/features/ImageCropper';
 import Header from '@/components/ui/Header';
+import TagSelector from '@/components/features/TagSelector';
 
 export default function AddItem() {
   const [darkMode, setDarkMode] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const searchParams = useSearchParams();
+  const router = useRouter();
+  const { data: session, status } = useSession();
   const editId = searchParams.get('edit');
   const [formData, setFormData] = useState({
     name: '',
@@ -24,8 +29,8 @@ export default function AddItem() {
     washingInstructions: '',
     notes: '',
   });
-  const [selectedImage, setSelectedImage] = useState<string | null>(null);
-  const [showImageCrop, setShowImageCrop] = useState(false);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  const [uploadedImageUrl, setUploadedImageUrl] = useState<string | null>(null);
   const [showCustomCategory, setShowCustomCategory] = useState(false);
 
   const categories = ['Shirts', 'Pants', 'Shoes', 'Accessories', 'Outerwear', 'Dresses', 'Suits', 'Add Custom Category'];
@@ -54,71 +59,103 @@ export default function AddItem() {
   // Load existing item data when in edit mode
   useEffect(() => {
     if (editId) {
-      // Mock data - in a real app, this would fetch from an API
-      const mockGarments = {
-        '1': {
-          name: 'Classic White Shirt',
-          category: 'Shirts',
-          brand: 'Brooks Brothers',
-          material: 'Cotton',
-          color: 'White',
-          purchaseDate: '2023-01-15',
-          price: '89.99',
-          washingInstructions: 'Machine Wash Cold',
-          notes: 'Perfect for business meetings'
-        },
-        '2': {
-          name: 'Dark Wash Jeans',
-          category: 'Pants',
-          brand: 'Levi\'s',
-          material: 'Denim',
-          color: 'Dark Blue',
-          purchaseDate: '2023-02-20',
-          price: '79.99',
-          washingInstructions: 'Machine Wash Cold',
-          notes: 'Comfortable fit, goes with everything'
+      const fetchGarment = async () => {
+        try {
+          const response = await fetch(`/api/garments/${editId}`);
+          if (response.ok) {
+            const garment = await response.json();
+            setFormData({
+              name: garment.name || '',
+              category: garment.category || '',
+              customCategory: '',
+              brand: garment.brand || '',
+              material: garment.material || '',
+              color: garment.color || '',
+              purchaseDate: garment.purchaseDate ? garment.purchaseDate.split('T')[0] : '',
+              price: garment.price ? garment.price.toString() : '',
+              washingInstructions: garment.washingInstructions || '',
+              notes: garment.notes || '',
+            });
+            
+            // Set selected tags if they exist
+            if (garment.tags && Array.isArray(garment.tags)) {
+              const tagIds = garment.tags.map((tagRelation: any) => tagRelation.tag.id);
+              setSelectedTags(tagIds);
+            }
+          }
+        } catch (error) {
+          console.error('Error fetching garment:', error);
         }
       };
       
-      const itemData = mockGarments[editId as keyof typeof mockGarments];
-      if (itemData) {
-        setFormData({
-          name: itemData.name,
-          category: itemData.category,
-          customCategory: '',
-          brand: itemData.brand,
-          material: itemData.material,
-          color: itemData.color,
-          purchaseDate: itemData.purchaseDate,
-          price: itemData.price,
-          washingInstructions: itemData.washingInstructions,
-          notes: itemData.notes,
-        });
-      }
+      fetchGarment();
     }
   }, [editId]);
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setSelectedImage(e.target?.result as string);
-        setShowImageCrop(true);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleImageUploaded = (imageUrl: string) => {
+    setUploadedImageUrl(imageUrl);
+    console.log('Image uploaded:', imageUrl);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const finalCategory = showCustomCategory ? formData.customCategory : formData.category;
-    console.log('Form data:', { ...formData, finalCategory });
-    console.log('Image:', selectedImage);
-    if (editId) {
-      alert('Item updated successfully!');
-    } else {
-      alert('Item added successfully!');
+    
+    if (status === 'loading') return;
+    
+    if (!session) {
+      router.push('/login');
+      return;
+    }
+    
+    setIsSubmitting(true);
+    
+    try {
+      const finalCategory = showCustomCategory ? formData.customCategory : formData.category;
+      
+      const garmentData = {
+        name: formData.name,
+        category: finalCategory,
+        brand: formData.brand || null,
+        material: formData.material || null,
+        color: formData.color || null,
+        purchaseDate: formData.purchaseDate ? new Date(formData.purchaseDate) : null,
+        price: formData.price ? parseFloat(formData.price) : null,
+        washingInstructions: formData.washingInstructions || null,
+        notes: formData.notes || null,
+        imageUrl: uploadedImageUrl,
+        tagIds: selectedTags
+      };
+      
+      const url = editId ? `/api/garments/${editId}` : '/api/garments';
+      const method = editId ? 'PUT' : 'POST';
+      
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(garmentData),
+      });
+      
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save garment');
+      }
+      
+      const savedGarment = await response.json();
+      
+      // Success - redirect to home or garment detail
+      if (editId) {
+        router.push(`/item/${editId}`);
+      } else {
+        router.push('/');
+      }
+      
+    } catch (error) {
+      console.error('Error saving garment:', error);
+      alert(error instanceof Error ? error.message : 'Failed to save garment. Please try again.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -145,12 +182,25 @@ export default function AddItem() {
                 <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 drop-shadow-sm">Item Photo</h2>
 
                 <div className="relative">
-                  {showImageCrop ? (
-                    // Pass selectedImage to ImageCropper and handle crop/cancel
-                    <ImageCropper onImageCropped={() => {}} onCancel={() => setShowImageCrop(false)} />
+                  {uploadedImageUrl ? (
+                    <div className="space-y-4">
+                      <div className="w-full aspect-square bg-gray-100/30 dark:bg-gray-700/30 rounded-lg overflow-hidden">
+                        <img 
+                          src={uploadedImageUrl} 
+                          alt="Uploaded garment" 
+                          className="w-full h-full object-cover"
+                        />
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => setUploadedImageUrl(null)}
+                        className="w-full px-4 py-2 bg-red-500/80 text-white text-sm font-semibold rounded-xl hover:bg-red-600/80 transition-all duration-200"
+                      >
+                        Remove Image
+                      </button>
+                    </div>
                   ) : (
-                    // Pass the handler that updates state and shows cropper
-                    <ImageUpload onImageSelect={handleImageUpload} />
+                    <ImageUpload onImageUploaded={handleImageUploaded} />
                   )}
                 </div>
               </div>
@@ -285,6 +335,14 @@ export default function AddItem() {
                 </div>
 
                 <div>
+                  <TagSelector
+                    selectedTags={selectedTags}
+                    onTagsChange={setSelectedTags}
+                    disabled={isSubmitting}
+                  />
+                </div>
+
+                <div>
                   <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Notes
                   </label>
@@ -319,9 +377,10 @@ export default function AddItem() {
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 bg-theme-primary/90 hover:bg-theme-primary-dark/90 text-white font-semibold py-4 rounded-2xl transition-all duration-300 shadow-[6px_6px_12px_rgba(0,0,0,0.3),-3px_-3px_9px_rgba(255,255,255,0.8)] dark:shadow-[6px_6px_12px_rgba(0,0,0,0.4),-3px_-3px_9px_rgba(255,255,255,0.03)] hover:shadow-[8px_8px_16px_rgba(0,0,0,0.4),-4px_-4px_12px_rgba(255,255,255,0.9)] dark:hover:shadow-[8px_8px_16px_rgba(0,0,0,0.5),-4px_-4px_12px_rgba(255,255,255,0.05)] backdrop-blur-sm !rounded-button"
+                  disabled={isSubmitting}
+                  className="flex-1 bg-theme-primary/90 hover:bg-theme-primary-dark/90 disabled:bg-gray-400/90 disabled:cursor-not-allowed text-white font-semibold py-4 rounded-2xl transition-all duration-300 shadow-[6px_6px_12px_rgba(0,0,0,0.3),-3px_-3px_9px_rgba(255,255,255,0.8)] dark:shadow-[6px_6px_12px_rgba(0,0,0,0.4),-3px_-3px_9px_rgba(255,255,255,0.03)] hover:shadow-[8px_8px_16px_rgba(0,0,0,0.4),-4px_-4px_12px_rgba(255,255,255,0.9)] dark:hover:shadow-[8px_8px_16px_rgba(0,0,0,0.5),-4px_-4px_12px_rgba(255,255,255,0.05)] backdrop-blur-sm !rounded-button"
                 >
-                  {editId ? "Update Item" : "Add to Wardrobe"}
+                  {isSubmitting ? 'Saving...' : (editId ? "Update Item" : "Add to Wardrobe")}
                 </button>
               </div>
             </form>

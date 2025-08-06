@@ -6,7 +6,6 @@
 
 generator client {
   provider = "prisma-client-js"
-  output   = "../lib/generated/prisma"
 }
 
 datasource db {
@@ -56,6 +55,7 @@ model User {
   sessions      Session[]
   garments      Garment[]
   tags          Tag[]
+  collections   Collection[]
 
   @@map("users")
 }
@@ -85,6 +85,7 @@ model Garment {
   notes          String?
   images         GarmentImage[]
   tags           GarmentTag[]
+  collections    CollectionGarment[]
   userId         String   @map("user_id")
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   createdAt      DateTime @default(now()) @map("created_at")
@@ -134,4 +135,56 @@ enum GarmentStatus {
   DIRTY
   WORN_2X
   NEEDS_WASHING
+}
+
+// Collection Models
+model Collection {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  color       String?  // Hex color for collection display
+  image       String?  // Collection cover image URL
+  isSmartCollection Boolean @default(false) @map("is_smart_collection")
+  userId      String   @map("user_id")
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  garments    CollectionGarment[]
+  rules       CollectionRule[]
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  @@unique([name, userId]) // User can't have duplicate collection names
+  @@map("collections")
+}
+
+model CollectionGarment {
+  collectionId String     @map("collection_id")
+  garmentId    String     @map("garment_id")
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  garment      Garment    @relation(fields: [garmentId], references: [id], onDelete: Cascade)
+  addedAt      DateTime   @default(now()) @map("added_at")
+
+  @@id([collectionId, garmentId])
+  @@map("collection_garments")
+}
+
+model CollectionRule {
+  id           String     @id @default(cuid())
+  collectionId String     @map("collection_id")
+  collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+  field        String     // e.g., "category", "color", "brand", "tags"
+  operator     RuleOperator
+  value        String     // The value to match against
+  createdAt    DateTime   @default(now()) @map("created_at")
+
+  @@map("collection_rules")
+}
+
+enum RuleOperator {
+  EQUALS
+  CONTAINS
+  STARTS_WITH
+  ENDS_WITH
+  IN
+  NOT_EQUALS
+  NOT_CONTAINS
 }

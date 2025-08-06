@@ -1,228 +1,269 @@
 'use client';
 
-import { useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import Layout from '@/components/ui/Layout';
-import Header from '@/components/ui/Header';
-import GarmentCard from '@/components/features/GarmentCard';
-
-interface CollectionItem {
-  id: string;
-  name: string;
-  brand: string;
-  category: string;
-  color: string;
-  size: string;
-  image: string;
-  lastWorn: string;
-  tags: string[];
-}
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter, useParams } from 'next/navigation';
+import { ArrowLeft } from 'lucide-react';
+import Link from 'next/link';
+import CollectionDetail from '@/src/components/features/CollectionDetail';
+import { UpdateCollection } from '@/lib/validation/schemas';
 
 interface Collection {
   id: string;
   name: string;
   description: string;
-  itemCount: number;
-  image: string;
   color: string;
-  items: CollectionItem[];
+  image?: string;
+  isSmartCollection: boolean;
+  rules?: Array<{
+    field: string;
+    operator: string;
+    value: string;
+  }>;
+  createdAt: string;
+  updatedAt: string;
+  garments: Array<{
+    id: string;
+    name: string;
+    category: string;
+    color: string;
+    brand?: string;
+    material?: string;
+    status: string;
+    images: Array<{
+      id: string;
+      url: string;
+      altText?: string;
+    }>;
+    tags: Array<{
+      id: string;
+      name: string;
+      color: string;
+    }>;
+  }>;
+  _count: {
+    garments: number;
+  };
 }
 
-export default function CollectionDetail() {
-  const [darkMode, setDarkMode] = useState(false);
-  const params = useParams();
+export default function CollectionPage() {
+  const [collection, setCollection] = useState<Collection | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  
+  const { data: session, status } = useSession();
   const router = useRouter();
+  const params = useParams();
   const collectionId = params.id as string;
 
-  // Mock collection data - in a real app, this would come from an API
-  const collections: Collection[] = [
-    {
-      id: '1',
-      name: 'Winter Essentials',
-      description: 'Cozy layers and warm pieces for cold weather',
-      itemCount: 24,
-      image: 'https://readdy.ai/api/search-image?query=Elegant%20winter%20fashion%20collection%20for%20women%2C%20cozy%20wool%20coats%2C%20cashmere%20scarves%2C%20warm%20knitwear%2C%20sophisticated%20layering%20pieces%2C%20neutral%20winter%20tones%2C%20luxury%20fabric%20textures%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20premium%20fashion%20styling%2C%20cold%20weather%20elegance&width=400&height=300&seq=winter1&orientation=landscape',
-      color: 'from-blue-400 to-indigo-600',
-      items: [
-        {
-          id: '1',
-          name: 'Wool Coat',
-          brand: 'Zara',
-          category: 'Outerwear',
-          color: 'Navy',
-          size: 'M',
-          image: 'https://readdy.ai/api/search-image?query=Navy%20wool%20coat%20women%20elegant%20winter%20fashion&width=300&height=400&seq=coat1',
-          lastWorn: '2024-01-10',
-          tags: ['formal', 'winter']
-        },
-        {
-          id: '2',
-          name: 'Cashmere Scarf',
-          brand: 'H&M',
-          category: 'Accessories',
-          color: 'Beige',
-          size: 'One Size',
-          image: 'https://readdy.ai/api/search-image?query=Beige%20cashmere%20scarf%20luxury%20winter%20accessory&width=300&height=400&seq=scarf1',
-          lastWorn: '2024-01-08',
-          tags: ['casual', 'winter']
-        }
-      ]
-    },
-    {
-      id: '2',
-      name: 'Summer Breeze',
-      description: 'Light, airy pieces for warm sunny days',
-      itemCount: 18,
-      image: 'https://readdy.ai/api/search-image?query=Fresh%20summer%20fashion%20collection%20for%20women%2C%20flowing%20lightweight%20fabrics%2C%20bright%20airy%20dresses%2C%20linen%20pieces%2C%20pastel%20colors%2C%20beach-ready%20styles%2C%20feminine%20summer%20elegance%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20breezy%20fashion%20styling%2C%20warm%20weather%20essentials&width=400&height=300&seq=summer1&orientation=landscape',
-      color: 'from-amber-400 to-orange-500',
-      items: [
-        {
-          id: '3',
-          name: 'Linen Dress',
-          brand: 'Mango',
-          category: 'Dresses',
-          color: 'White',
-          size: 'S',
-          image: 'https://readdy.ai/api/search-image?query=White%20linen%20dress%20summer%20casual%20fashion&width=300&height=400&seq=dress1',
-          lastWorn: '2024-01-05',
-          tags: ['casual', 'summer']
-        }
-      ]
-    },
-    {
-      id: '3',
-      name: 'Work Wardrobe',
-      description: 'Professional pieces for the office',
-      itemCount: 32,
-      image: 'https://readdy.ai/api/search-image?query=Professional%20work%20wardrobe%20collection%20for%20women%2C%20tailored%20blazers%2C%20elegant%20blouses%2C%20sophisticated%20trousers%2C%20office-appropriate%20dresses%2C%20neutral%20professional%20colors%2C%20business%20formal%20styling%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20corporate%20fashion%20elegance&width=400&height=300&seq=work1&orientation=landscape',
-      color: 'from-gray-400 to-slate-600',
-      items: [
-        {
-          id: '4',
-          name: 'Blazer',
-          brand: 'Zara',
-          category: 'Outerwear',
-          color: 'Black',
-          size: 'M',
-          image: 'https://readdy.ai/api/search-image?query=Black%20blazer%20women%20professional%20work%20fashion&width=300&height=400&seq=blazer1',
-          lastWorn: '2024-01-12',
-          tags: ['formal', 'work']
-        }
-      ]
+  useEffect(() => {
+    if (status === 'loading') return;
+    
+    if (!session) {
+      router.push('/login');
+      return;
     }
-  ];
 
-  const collection = collections.find(c => c.id === collectionId);
+    fetchCollection();
+  }, [session, status, collectionId]);
 
-  const handleThemeToggle = () => {
-    setDarkMode(!darkMode);
-    document.documentElement.classList.toggle('dark');
+  const fetchCollection = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch(`/api/collections/${collectionId}`);
+      
+      if (!response.ok) {
+        if (response.status === 404) {
+          setError('Collection not found');
+        } else {
+          const errorData = await response.json();
+          setError(errorData.error || 'Failed to fetch collection');
+        }
+        return;
+      }
+
+      const data = await response.json();
+      setCollection(data);
+    } catch (error) {
+      console.error('Error fetching collection:', error);
+      setError('Failed to load collection');
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleItemEdit = (itemId: string) => {
-    router.push(`/add?edit=${itemId}`);
+  const handleUpdate = async (data: UpdateCollection) => {
+    try {
+      const response = await fetch(`/api/collections/${collectionId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to update collection');
+      }
+
+      const updatedCollection = await response.json();
+      setCollection(updatedCollection);
+    } catch (error) {
+      console.error('Error updating collection:', error);
+      throw error;
+    }
   };
 
-  const handleItemMarkAsWorn = (itemId: string) => {
-    console.log('Mark as worn:', itemId);
-    alert('Item marked as worn!');
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/collections/${collectionId}`, {
+        method: 'DELETE',
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to delete collection');
+      }
+
+      router.push('/collections');
+    } catch (error) {
+      console.error('Error deleting collection:', error);
+      throw error;
+    }
   };
 
-  const handleItemMoveToLaundry = (itemId: string) => {
-    console.log('Move to laundry:', itemId);
-    alert('Item moved to laundry!');
+  const handleAddGarments = async (garmentIds: string[]) => {
+    try {
+      const response = await fetch(`/api/collections/${collectionId}/garments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ garmentIds }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to add garments');
+      }
+
+      // Refresh collection data
+      await fetchCollection();
+    } catch (error) {
+      console.error('Error adding garments:', error);
+      throw error;
+    }
   };
+
+  const handleRemoveGarment = async (garmentId: string) => {
+    try {
+      const response = await fetch(`/api/collections/${collectionId}/garments`, {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ garmentIds: [garmentId] }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to remove garment');
+      }
+
+      // Update local state
+      if (collection) {
+        setCollection({
+          ...collection,
+          garments: collection.garments.filter(g => g.id !== garmentId),
+          _count: {
+            garments: collection._count.garments - 1
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error removing garment:', error);
+      throw error;
+    }
+  };
+
+  if (status === 'loading' || loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-4 border-theme-primary border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-gray-600 dark:text-gray-400">Loading collection...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center mx-auto mb-4">
+            <span className="text-red-500 text-2xl">!</span>
+          </div>
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            {error}
+          </h2>
+          <p className="text-gray-600 dark:text-gray-400 mb-6">
+            The collection you're looking for might have been deleted or you don't have permission to view it.
+          </p>
+          <Link 
+            href="/collections"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-theme-primary text-white rounded-lg hover:bg-theme-primary/90 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Collections
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
   if (!collection) {
     return (
-      <Layout>
-        <div className={darkMode ? 'dark' : ''}>
-          <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
-            <Header 
-              title="Collection Not Found" 
-              showThemeToggle 
-              onThemeToggle={handleThemeToggle} 
-              darkMode={darkMode}
-            />
-            <div className="pt-20 pb-20 px-6">
-              <div className="text-center py-12">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Collection not found</h2>
-                <p className="text-gray-500 dark:text-gray-400">The collection you're looking for doesn't exist.</p>
-                <button 
-                  onClick={() => router.push('/collections')}
-                  className="mt-4 px-6 py-2 bg-theme-primary text-white rounded-lg hover:bg-theme-primary-dark transition-colors"
-                >
-                  Back to Collections
-                </button>
-              </div>
-            </div>
-          </div>
+      <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+            Collection not found
+          </h2>
+          <Link 
+            href="/collections"
+            className="inline-flex items-center gap-2 px-4 py-2 bg-theme-primary text-white rounded-lg hover:bg-theme-primary/90 transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Collections
+          </Link>
         </div>
-      </Layout>
+      </div>
     );
   }
 
   return (
-    <Layout>
-      <div className={darkMode ? 'dark' : ''}>
-        <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
-          <Header 
-            title={collection.name} 
-            showThemeToggle 
-            onThemeToggle={handleThemeToggle} 
-            darkMode={darkMode}
-          />
-          
-          <div className="pt-20 pb-20">
-            {/* Collection Header */}
-            <div className="px-6 py-6">
-              <div className="bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] overflow-hidden backdrop-blur-sm border border-white/20 dark:border-gray-700/30">
-                <div className="relative h-48 overflow-hidden">
-                  <img
-                    src={collection.image}
-                    alt={collection.name}
-                    className="w-full h-full object-cover object-center"
-                  />
-                  <div className={`absolute inset-0 bg-gradient-to-t ${collection.color} opacity-20`}></div>
-                  <div className="absolute bottom-4 left-4">
-                    <h1 className="text-2xl font-bold text-white drop-shadow-lg">{collection.name}</h1>
-                    <p className="text-white/90 drop-shadow-sm">{collection.itemCount} items</p>
-                  </div>
-                </div>
-                <div className="p-6">
-                  <p className="text-gray-600 dark:text-gray-400 leading-relaxed">{collection.description}</p>
-                </div>
-              </div>
-            </div>
-
-            {/* Collection Items */}
-            <div className="px-6">
-              <h2 className="text-lg font-semibold text-gray-900 dark:text-white mb-4 drop-shadow-sm">Items in this collection</h2>
-              <div className="grid gap-4">
-                {collection.items.map((item) => (
-                  <GarmentCard
-                    key={item.id}
-                    garment={item}
-                    onEdit={handleItemEdit}
-                    onMarkAsWorn={handleItemMarkAsWorn}
-                    onMoveToLaundry={handleItemMoveToLaundry}
-                  />
-                ))}
-              </div>
-              
-              {collection.items.length === 0 && (
-                <div className="text-center py-12">
-                  <div className="w-20 h-20 mx-auto mb-4 bg-gray-100/80 dark:bg-gray-700/80 rounded-full flex items-center justify-center shadow-[6px_6px_12px_rgba(0,0,0,0.1),-3px_-3px_9px_rgba(255,255,255,0.8)] dark:shadow-[6px_6px_12px_rgba(0,0,0,0.3),-3px_-3px_9px_rgba(255,255,255,0.02)] backdrop-blur-sm">
-                    <i className="ri-shirt-line text-2xl text-gray-400 dark:text-gray-500 drop-shadow-sm"></i>
-                  </div>
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 drop-shadow-sm">No items in this collection</h3>
-                  <p className="text-gray-500 dark:text-gray-400 drop-shadow-sm">Add some items to get started</p>
-                </div>
-              )}
-            </div>
-          </div>
+    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Breadcrumb */}
+        <div className="mb-6">
+          <Link 
+            href="/collections"
+            className="inline-flex items-center gap-2 text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to Collections
+          </Link>
         </div>
+
+        <CollectionDetail
+          collection={collection}
+          onUpdate={handleUpdate}
+          onDelete={handleDelete}
+          onAddGarments={handleAddGarments}
+          onRemoveGarment={handleRemoveGarment}
+        />
       </div>
-    </Layout>
+    </div>
   );
 }

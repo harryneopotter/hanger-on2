@@ -49,9 +49,53 @@ export const SearchGarmentsSchema = z.object({
   limit: z.number().int().positive().max(100).default(20),
 });
 
+// Collection Schemas
+export const RuleOperatorEnum = z.enum([
+  'EQUALS',
+  'CONTAINS', 
+  'STARTS_WITH',
+  'ENDS_WITH',
+  'IN',
+  'NOT_EQUALS',
+  'NOT_CONTAINS'
+]);
+
+export const CollectionRuleSchema = z.object({
+  field: z.string().min(1, 'Field is required'),
+  operator: RuleOperatorEnum,
+  value: z.string().min(1, 'Value is required'),
+});
+
+export const CreateCollectionSchema = z.object({
+  name: z.string().min(1, 'Collection name is required').max(100),
+  description: z.string().max(500).optional(),
+  color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).optional(),
+  image: z.string().url().optional(),
+  isSmartCollection: z.boolean().default(false),
+  rules: z.array(CollectionRuleSchema).optional(),
+  garmentIds: z.array(z.string().cuid()).optional(),
+});
+
+export const UpdateCollectionSchema = z.object({
+  name: z.string().min(1, 'Collection name is required').max(100).optional(),
+  description: z.string().max(500).optional(),
+  color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).optional(),
+  image: z.string().url().optional(),
+});
+
+export const CollectionGarmentSchema = z.object({
+  collectionId: z.string().cuid(),
+  garmentIds: z.array(z.string().cuid()).min(1, 'At least one garment is required'),
+});
+
 export type CreateGarment = z.infer<typeof CreateGarmentSchema>;
 export type UpdateGarment = z.infer<typeof UpdateGarmentSchema>;
 export type CreateTag = z.infer<typeof CreateTagSchema>;
 export type ImageUpload = z.infer<typeof ImageUploadSchema>;
 export type SearchGarments = z.infer<typeof SearchGarmentsSchema>;
 export type GarmentStatus = z.infer<typeof GarmentStatusEnum>;
+export type CreateCollection = z.infer<typeof CreateCollectionSchema>;
+export type UpdateCollection = z.infer<typeof UpdateCollectionSchema>;
+export type CollectionRule = z.infer<typeof CollectionRuleSchema>;
+export type CollectionGarment = z.infer<typeof CollectionGarmentSchema>;
+export type RuleOperator = z.infer<typeof RuleOperatorEnum>;

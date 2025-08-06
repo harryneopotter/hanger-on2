@@ -26,12 +26,12 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   const [theme] = useTheme(); // Ensure component re-renders when theme changes
   
   return (
-    <div className="flex items-center space-x-6 overflow-x-auto py-2 scrollbar-hide">
+    <div className="space-y-3 py-2">
       {/* Status Filter */}
       {availableStatuses.length > 0 && (
-        <div className="flex items-center space-x-2 flex-shrink-0">
+        <div className="flex flex-col space-y-2">
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Status:</span>
-          <div className="flex space-x-1">
+          <div className="flex flex-wrap gap-2">
             {availableStatuses.map((status) => (
               <button
                 key={status}
@@ -51,9 +51,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
       {/* Tags Filter */}
       {availableTags.length > 0 && (
-        <div className="flex items-center space-x-2 flex-shrink-0">
+        <div className="flex flex-col space-y-2">
           <span className="text-sm font-medium text-gray-700 dark:text-gray-300">Tags:</span>
-          <div className="flex space-x-1">
+          <div className="flex flex-wrap gap-2">
             {availableTags.map((tag) => (
               <button
                 key={tag}

@@ -15,12 +15,15 @@
     "@prisma/client": "^6.13.0",
     "@react-google-maps/api": "^2.19.3",
     "@supabase/supabase-js": "^2.53.0",
+    "bcryptjs": "^3.0.2",
     "next": "15.3.2",
     "next-auth": "^4.24.11",
     "prisma": "^6.13.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-image-crop": "^11.0.10",
     "recharts": "^3.0.2",
+    "swr": "^2.3.4",
     "zod": "^4.0.14"
   },
   "devDependencies": {

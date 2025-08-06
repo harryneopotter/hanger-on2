@@ -15,18 +15,24 @@ yarn-debug.log*
 yarn-error.log*
 
 # Environment files
-.env*
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
 
-# IDE / Editor folders
+# IDE / Editor folders & workspace files
 .vscode/
 .idea/
+.trae/
+*.code-workspace
+*.workspace
+**/.*/
 
-# OS files
-.DS_Store
-Thumbs.db
-
-# Archives
-*.zip
-
-# Generated prisma client
-/lib/generated/prisma
+# Development environment files
+*.project
+*.sublime-*
+*.atom-*
+*.vimrc
+*.eslintrc.local
+*.prettierrc.local

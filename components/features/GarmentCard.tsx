@@ -2,13 +2,21 @@
 'use client';
 
 import Link from 'next/link';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+
+interface Collection {
+  id: string;
+  name: string;
+  color: string;
+}
 
 interface GarmentCardProps {
   id: string;
   name: string;
   category: string;
   material: string;
-  status: 'Clean' | 'Dirty' | 'Worn 2x' | 'Needs Washing';
+  status: 'CLEAN' | 'DIRTY' | 'WORN_2X' | 'NEEDS_WASHING';
   image: string;
   onEdit?: () => void;
   onMarkAsWorn?: () => void;
@@ -16,14 +24,68 @@ interface GarmentCardProps {
 }
 
 export default function GarmentCard({ id, name, category, material, status, image, onEdit, onMarkAsWorn, onMoveToLaundry }: GarmentCardProps) {
+  const { data: session } = useSession();
+  const [showCollectionModal, setShowCollectionModal] = useState(false);
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    if (showCollectionModal && session) {
+      fetchCollections();
+    }
+  }, [showCollectionModal, session]);
+
+  const fetchCollections = async () => {
+    try {
+      const response = await fetch('/api/collections');
+      if (response.ok) {
+        const data = await response.json();
+        setCollections(data);
+      }
+    } catch (error) {
+      console.error('Error fetching collections:', error);
+    }
+  };
+
+  const addToCollection = async (collectionId: string) => {
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/collections/${collectionId}/garments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ garmentIds: [id] }),
+      });
+      
+      if (response.ok) {
+        setShowCollectionModal(false);
+        // You could add a toast notification here
+      }
+    } catch (error) {
+      console.error('Error adding to collection:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'CLEAN': return 'Clean';
+      case 'WORN_2X': return 'Worn 2x';
+      case 'DIRTY': return 'Dirty';
+      case 'NEEDS_WASHING': return 'Needs Washing';
+      default: return status;
+    }
+  };
+
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'Clean':
+      case 'CLEAN':
         return 'bg-emerald-50/80 text-emerald-700 shadow-[inset_2px_2px_5px_rgba(5,150,105,0.1),inset_-2px_-2px_5px_rgba(255,255,255,0.8)] dark:bg-emerald-900/30 dark:text-emerald-300 dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(5,150,105,0.1)]';
-      case 'Worn 2x':
+      case 'WORN_2X':
         return 'bg-amber-50/80 text-amber-700 shadow-[inset_2px_2px_5px_rgba(245,158,11,0.1),inset_-2px_-2px_5px_rgba(255,255,255,0.8)] dark:bg-amber-900/30 dark:text-amber-300 dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(245,158,11,0.1)]';
-      case 'Dirty':
-      case 'Needs Washing':
+      case 'DIRTY':
+      case 'NEEDS_WASHING':
         return 'bg-red-50/80 text-red-700 shadow-[inset_2px_2px_5px_rgba(239,68,68,0.1),inset_-2px_-2px_5px_rgba(255,255,255,0.8)] dark:bg-red-900/30 dark:text-red-300 dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(239,68,68,0.1)]';
       default:
         return 'bg-gray-50/80 text-gray-700 shadow-[inset_2px_2px_5px_rgba(107,114,128,0.1),inset_-2px_-2px_5px_rgba(255,255,255,0.8)] dark:bg-gray-700/50 dark:text-gray-300 dark:shadow-[inset_2px_2px_5px_rgba(0,0,0,0.3),inset_-2px_-2px_5px_rgba(107,114,128,0.1)]';
@@ -32,12 +94,12 @@ export default function GarmentCard({ id, name, category, material, status, imag
 
   const getStatusDot = (status: string) => {
     switch (status) {
-      case 'Clean':
+      case 'CLEAN':
         return 'bg-emerald-500 shadow-[2px_2px_5px_rgba(5,150,105,0.3),inset_1px_1px_2px_rgba(255,255,255,0.3)]';
-      case 'Worn 2x':
+      case 'WORN_2X':
         return 'bg-amber-500 shadow-[2px_2px_5px_rgba(245,158,11,0.3),inset_1px_1px_2px_rgba(255,255,255,0.3)]';
-      case 'Dirty':
-      case 'Needs Washing':
+      case 'DIRTY':
+      case 'NEEDS_WASHING':
         return 'bg-red-500 shadow-[2px_2px_5px_rgba(239,68,68,0.3),inset_1px_1px_2px_rgba(255,255,255,0.3)]';
       default:
         return 'bg-gray-400 shadow-[2px_2px_5px_rgba(107,114,128,0.3),inset_1px_1px_2px_rgba(255,255,255,0.3)]';
@@ -68,16 +130,16 @@ export default function GarmentCard({ id, name, category, material, status, imag
       </Link>
 
       {/* Quick action buttons */}
-      <div className="flex justify-around p-2">
+      <div className="flex justify-around p-2 gap-1">
         <button 
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
             onMarkAsWorn?.();
           }}
-          className="px-3 py-1 bg-blue-500 text-white text-sm rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200"
+          className="px-2 py-1 bg-blue-500 text-white text-xs rounded-full min-w-[40px] min-h-[32px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200"
         >
-          Mark as Worn
+          Worn
         </button>
         <button 
           onClick={(e) => {
@@ -85,9 +147,19 @@ export default function GarmentCard({ id, name, category, material, status, imag
             e.stopPropagation();
             onMoveToLaundry?.();
           }}
-          className="px-3 py-1 bg-yellow-500 text-white text-sm rounded-full min-w-[44px] min-h-[44px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200"
+          className="px-2 py-1 bg-yellow-500 text-white text-xs rounded-full min-w-[40px] min-h-[32px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200"
         >
-          Move to Laundry
+          Laundry
+        </button>
+        <button 
+          onClick={(e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            setShowCollectionModal(true);
+          }}
+          className="px-2 py-1 bg-purple-500 text-white text-xs rounded-full min-w-[40px] min-h-[32px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200"
+        >
+          +
         </button>
       </div>
 
@@ -96,10 +168,53 @@ export default function GarmentCard({ id, name, category, material, status, imag
           <h3 className="font-semibold text-gray-900 dark:text-white mb-1 font-['Inter'] drop-shadow-sm">{name}</h3>
           <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 drop-shadow-sm">{material} • {category}</p>
           <div className={`inline-flex px-3 py-1.5 rounded-full text-xs font-medium ${getStatusColor(status)} backdrop-blur-sm`}>
-            {status}
+            {getStatusLabel(status)}
           </div>
         </div>
       </Link>
+
+      {/* Collection Modal */}
+      {showCollectionModal && (
+        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowCollectionModal(false)}>
+          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Add to Collection</h3>
+            
+            {collections.length === 0 ? (
+              <p className="text-gray-600 dark:text-gray-400 text-center py-4">
+                No collections found. Create a collection first.
+              </p>
+            ) : (
+              <div className="space-y-2 max-h-60 overflow-y-auto">
+                {collections.map((collection) => (
+                  <button
+                    key={collection.id}
+                    onClick={() => addToCollection(collection.id)}
+                    disabled={loading}
+                    className="w-full text-left p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div 
+                        className="w-4 h-4 rounded-full" 
+                        style={{ backgroundColor: collection.color }}
+                      ></div>
+                      <span className="text-gray-900 dark:text-white">{collection.name}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            )}
+            
+            <div className="flex gap-2 mt-4">
+              <button
+                onClick={() => setShowCollectionModal(false)}
+                className="flex-1 px-4 py-2 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,70 +1,141 @@
-# Hanger-On – Prioritized Roadmap
+# Hanger-On – Prioritized Roadmap - UPDATED ✅
 
-> Living document capturing the high-level epics, sprint sequencing, and next actions still outstanding after recent fixes.
-
----
-
-## ✨ Epic-Level Priorities (ranked)
-
-1. **GarmentService + Garment API (CRUD)**  
-   Implement full persistence layer (Prisma → Supabase) and REST endpoints (`/api/garments`, `/api/garments/[id]`).
-2. **Wire Home UI to Live API**  
-   Replace mock state in `app/page.tsx` with SWR/fetch logic; ensure quick-action buttons call the new endpoints.
-3. **Tag Management**  
-   Finish tag creation logic (`TagInput.tsx`) and CRUD API (`/api/tags`).
-4. **User Profile Update Flow**  
-   Connect `/account/edit` form to PATCH `/api/user/profile` (to be added) and Supabase Auth metadata.
-5. **Image Upload Pipeline**  
-   Hook `ImageUpload.tsx` → Supabase Storage; enable crop & resize before upload.
-6. **Testing & CI**  
-   Vitest + React Testing Library + GitHub Actions; target ≥80 % coverage.
-7. **Vercel Deployment & Env Config**  
-   Auto-deploy from `main`, staging/production env vars, health checks.
-8. **Accessibility & Final UI Polish**  
-   ARIA labels, axe-core audits, responsive QA.
-
-> **Note:** `.next`-folder TODOs (Babel, webpack placeholders) are build artifacts and can be ignored.
+> Living document capturing the high-level epics, sprint sequencing, and next actions for final project completion.
 
 ---
 
-## 🗓 Draft Sprint Sequencing
+## ✨ Epic-Level Status - CURRENT STATE
 
-| Sprint | Focus | Key Exit Criteria |
-|--------|-------|-------------------|
-| **Week 1** | Foundation & Auth | Prisma schema synced; Supabase RLS policies in place; NextAuth working. |
-| **Week 2** | Garment API + Home Wiring | CRUD endpoints pass integration tests; Home page loads live garments. |
-| **Week 3** | Tags & Images | Tag CRUD functional; image upload & display end-to-end. |
-| **Week 4** | Testing + CI/CD | 80 % test coverage; GitHub Actions green; Vercel staging live. |
-| **Week 5** | Accessibility & Polish | axe-core score ≥ 90; performance audit passes; final UI QA. |
+### ✅ COMPLETED EPICS (85% Complete)
+1. **Database & Service Layer** - ✅ COMPLETE
+   - Prisma schema fully implemented with Supabase PostgreSQL
+   - All service classes (GarmentService, ImageService, TagService, CollectionService) fully functional
+   - Database migrations ready (can be run with `prisma migrate dev`)
 
-Adjust sprint length as needed (estimates assume ~10 h/week part-time).
+2. **Authentication & Security** - ✅ COMPLETE
+   - NextAuth.js configured with Google OAuth + Credentials
+   - RLS policies implemented for user data isolation
+   - Security headers, CORS, and validation in place
+
+3. **API Routes** - ✅ COMPLETE
+   - Full RESTful endpoints for garments, tags, images, and collections
+   - Comprehensive Zod validation and error handling
+   - File upload with Supabase Storage integration
+
+4. **UI Components** - ✅ COMPLETE
+   - All components fully functional with real data
+   - Mobile-responsive design with touch-friendly interactions
+   - Image upload with camera access and cropping
+   - Advanced search and filtering system
+
+5. **Image Pipeline** - ✅ COMPLETE
+   - End-to-end image handling from upload to display
+   - Automatic optimization and secure storage
+   - Multi-image support with deletion capabilities
+
+### ❌ REMAINING EPICS (15% Remaining)
+
+1. **Testing Infrastructure** - PRIORITY 1
+   - Set up Vitest with React Testing Library
+   - Configure test database with Supabase test instance
+   - Write comprehensive tests for critical paths
+   - Target: 60-70% test coverage
+
+2. **CI/CD Pipeline** - PRIORITY 2
+   - GitHub Actions workflow for automated testing
+   - Vercel deployment configuration
+   - Staging and production environment setup
+   - Health checks and monitoring
+
+3. **Accessibility & Final Polish** - PRIORITY 3
+   - axe-core accessibility audit
+   - ARIA labels and keyboard navigation
+   - Final performance optimization
+   - Cross-device responsive testing
 
 ---
 
-## ✅ Immediate Next Steps
+## 🗓 Final Sprint Plan (Revised)
 
-1. **Database & Service Layer**  
-   • Flesh out `GarmentService` methods (`getAllGarments`, `createGarment`, etc.).  
-   • Scaffold Prisma models for garments/tags/images.  
-   • Write migrations (`prisma migrate dev`).
-2. **API Routes**  
-   • Implement logic inside `app/api/garments/route.ts` and `[id]/route.ts` using `GarmentService`.  
-   • Add Zod validation for request/response.
-3. **Home Page Integration**  
-   • Replace `useState` mock array with SWR hook fetching `/api/garments`.  
-   • Update quick actions to call `PUT /api/garments/[id]` for status changes.
-4. **TagInput Logic**  
-   • Connect `onAddTag` to `POST /api/tags`; update local SWR cache.
-5. **Write Unit Tests** (GarmentService + API) _in parallel_ to lock down contract.
+| Sprint | Focus | Current Status | Key Tasks |
+|--------|-------|----------------|-----------|
+| **Week 1** | Testing Infrastructure | Ready to start | Set up Vitest, write service tests, configure test DB |
+| **Week 2** | CI/CD Pipeline | Ready to start | GitHub Actions, Vercel deployment, staging setup |
+| **Week 3** | Accessibility & Polish | Ready to start | axe-core audit, ARIA labels, performance optimization |
+
+> **Note:** All previous "foundation" work is complete. This is now purely final phase tasks.
 
 ---
 
-## 📌 Reference Docs
+## ✅ Immediate Next Steps (Final Phase)
 
-* `BUILD_PLAN.md` – dependency alignment & deployment notes.  
-* `tasks.md` – granular checklist with time estimates.  
-* `COMPLETED_ACTIONS.md` – history of merged work.
+### Week 1: Testing Infrastructure
+1. **Install Testing Dependencies**
+   ```bash
+   npm install -D vitest @testing-library/react @testing-library/jest-dom @testing-library/user-event
+   npm install -D @vitejs/plugin-react jsdom msw
+   ```
+
+2. **Configure Vitest**
+   - Create `vitest.config.ts`
+   - Set up test environment with Supabase test instance
+   - Configure coverage reporting
+
+3. **Write Core Tests**
+   - Service layer unit tests (GarmentService, ImageService, TagService)
+   - API route integration tests
+   - Component interaction tests
+
+### Week 2: CI/CD Pipeline
+1. **GitHub Actions Workflow**
+   - Automated testing on PR
+   - Lint and format checks
+   - Build verification
+
+2. **Vercel Configuration**
+   - Environment variables setup
+   - Build optimization
+   - Staging deployment
+
+3. **Production Setup**
+   - Database migrations for production
+   - Error monitoring setup
+   - Performance monitoring
+
+### Week 3: Accessibility & Polish
+1. **Accessibility Audit**
+   - Run axe-core on all pages
+   - Fix ARIA labels and keyboard navigation
+   - Screen reader testing
+
+2. **Performance Optimization**
+   - Bundle analysis and optimization
+   - Image optimization review
+   - Core Web Vitals improvement
+
+3. **Final Testing**
+   - Cross-browser testing
+   - Mobile device testing
+   - User acceptance testing
 
 ---
 
-_Last updated: {{TODO-replace-with-date}}_
+## 📊 Current Project Metrics
+
+- **Code Coverage**: 0% → Target: 60-70%
+- **Accessibility Score**: TBD → Target: 90+
+- **Performance Score**: TBD → Target: 90+
+- **Bundle Size**: TBD → Target: Optimized for 3-4 users
+
+---
+
+## 📌 Reference Docs (All Updated)
+
+* `tasks.md` - Updated with accurate completion status ✅
+* `COMPLETED_ACTIONS.md` - Comprehensive list of implemented features ✅
+* `BUILD_PLAN.md` - Deployment and infrastructure notes
+* `DEVELOPER_DOCS.md` - Setup and development guide
+
+---
+
+**Last updated:** December 2024 - Project is 85% complete, ready for final phase

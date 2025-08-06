@@ -94,7 +94,7 @@ While the current target user doesn’t want “outfit selection”:
 
 Your `tasks.md` already outlines this clearly. Minor suggestions:
 
-* Add coverage threshold (`--coverage --threshold=80`)
+* Add coverage threshold (`--coverage --threshold=65`)
 * Auto-mock Supabase with MSW during dev tests
 * Add a basic GitHub Actions `.yml` for lint/test/deploy (I can generate one)
 

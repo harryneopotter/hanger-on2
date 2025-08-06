@@ -1,19 +1,120 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
+import ImageCropper from './ImageCropper';
+import { supabase } from '../../lib/supabase';
 
-const ImageUpload: React.FC = () => {
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+interface ImageUploadProps {
+  onImageUploaded?: (imageUrl: string) => void;
+}
+
+const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded }) => {
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [showCropper, setShowCropper] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleFileChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      // Handle the selected file (e.g., read it, display a preview)
-      console.log('Selected file:', file);
-    }
-  };
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        alert('Please select an image file');
+        return;
+      }
+      
+      // Validate file size (max 10MB)
+      if (file.size > 10 * 1024 * 1024) {
+        alert('File size must be less than 10MB');
+        return;
+      }
 
-  const handleCameraClick = () => {
-    // Placeholder for accessing the mobile camera
-    console.log('Use Camera button clicked');
-    // This will require platform-specific implementation (e.g., using the MediaDevices API)
-  };
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const imageDataUrl = e.target?.result as string;
+        setSelectedImage(imageDataUrl);
+        setShowCropper(true);
+      };
+      reader.readAsDataURL(file);
+    }
+  }, []);
+
+  const handleCameraClick = useCallback(async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ 
+        video: { facingMode: 'environment' } // Use back camera on mobile
+      });
+      
+      // Create a video element to capture the stream
+      const video = document.createElement('video');
+      video.srcObject = stream;
+      video.play();
+      
+      // For now, just log - full camera implementation would require more complex UI
+      console.log('Camera access granted');
+      alert('Camera feature coming soon! Please use file upload for now.');
+      
+      // Stop the stream
+      stream.getTracks().forEach(track => track.stop());
+    } catch (error) {
+      console.error('Camera access denied:', error);
+      alert('Camera access denied. Please use file upload instead.');
+    }
+  }, []);
+
+  const handleCropComplete = useCallback(async (croppedImageBlob: Blob) => {
+    setIsUploading(true);
+    try {
+      // Generate unique filename
+      const timestamp = Date.now();
+      const randomId = Math.random().toString(36).substring(2, 15);
+      const fileName = `garment_${timestamp}_${randomId}.jpg`;
+      
+      // Upload to Supabase Storage
+      const { data, error } = await supabase.storage
+        .from('garment-images')
+        .upload(fileName, croppedImageBlob, {
+          contentType: 'image/jpeg',
+          upsert: false
+        });
+      
+      if (error) {
+        console.error('Upload error:', error);
+        alert('Failed to upload image. Please try again.');
+        return;
+      }
+      
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('garment-images')
+        .getPublicUrl(fileName);
+      
+      // Call the parent callback
+      onImageUploaded?.(publicUrl);
+      
+      // Reset state
+      setSelectedImage(null);
+      setShowCropper(false);
+    } catch (error) {
+      console.error('Upload failed:', error);
+      alert('Upload failed. Please try again.');
+    } finally {
+      setIsUploading(false);
+    }
+  }, [onImageUploaded]);
+
+  const handleCropCancel = useCallback(() => {
+    setSelectedImage(null);
+    setShowCropper(false);
+  }, []);
+
+  if (showCropper && selectedImage) {
+    return (
+      <ImageCropper
+        imageSrc={selectedImage}
+        onCropComplete={handleCropComplete}
+        onCancel={handleCropCancel}
+        isUploading={isUploading}
+      />
+    );
+  }
 
   return (
     <div className="flex flex-col items-center justify-center p-6 bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30">

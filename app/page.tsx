@@ -1,7 +1,10 @@
 
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import Layout from '@/components/ui/Layout';
 import Header from '@/components/ui/Header';
@@ -10,10 +13,38 @@ import SearchBar from '@/components/ui/SearchBar';
 import FilterPanel from '@/components/features/FilterPanel';
 import GarmentCard from '@/components/features/GarmentCard';
 
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
+
 export default function Home() {
-  const [darkMode, setDarkMode] = useDarkMode();
+  const { data: session, status } = useSession();
+  const router = useRouter();
+  const [darkMode, setDarkMode, isHydrated] = useDarkMode();
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+
+  useEffect(() => {
+    if (status === 'loading') return; // Still loading
+    if (!session) {
+      router.push('/login');
+      return;
+    }
+  }, [session, status, router]);
+
+  // Show loading while checking authentication
+  if (status === 'loading') {
+    return (
+      <Layout>
+        <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300 flex items-center justify-center">
+          <div className="text-gray-600 dark:text-gray-400">Loading...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Don't render if not authenticated (will redirect)
+  if (!session) {
+    return null;
+  }
 
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
@@ -30,71 +61,39 @@ export default function Home() {
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
-  const initialGarments = [
-    {
-      id: '1',
-      name: 'Silk Blouse',
-      category: 'Shirts',
-      material: 'Silk',
-      status: 'Clean' as const,
-      image: 'https://readdy.ai/api/search-image?query=Elegant%20silk%20blouse%20for%20women%2C%20flowing%20fabric%2C%20professional%20feminine%20style%2C%20soft%20pastel%20colors%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20high-quality%20fashion%20photography%2C%20delicate%20texture%20details&width=400&height=400&seq=blouse1&orientation=squarish'
-    },
-    {
-      id: '2',
-      name: 'High-Waist Jeans',
-      category: 'Pants',
-      material: 'Denim',
-      status: 'Worn 2x' as const,
-      image: 'https://readdy.ai/api/search-image?query=High-waisted%20denim%20jeans%20for%20women%2C%20modern%20fit%2C%20dark%20blue%20wash%2C%20feminine%20silhouette%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20fashion%20styling%2C%20premium%20denim%20texture&width=400&height=400&seq=jeans2&orientation=squarish'
-    },
-    {
-      id: '3',
-      name: 'Ballet Flats',
-      category: 'Shoes',
-      material: 'Leather',
-      status: 'Clean' as const,
-      image: 'https://readdy.ai/api/search-image?query=Classic%20ballet%20flats%20for%20women%2C%20soft%20leather%2C%20elegant%20feminine%20design%2C%20neutral%20beige%20color%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20luxury%20footwear%20styling%2C%20sophisticated%20details&width=400&height=400&seq=flats1&orientation=squarish'
-    },
-    {
-      id: '4',
-      name: 'Cashmere Cardigan',
-      category: 'Outerwear',
-      material: 'Cashmere',
-      status: 'Dirty' as const,
-      image: 'https://readdy.ai/api/search-image?query=Luxurious%20cashmere%20cardigan%20for%20women%2C%20soft%20knit%20texture%2C%20elegant%20draping%2C%20warm%20neutral%20tones%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20premium%20knitwear%20styling%2C%20cozy%20feminine%20fashion&width=400&height=400&seq=cardigan1&orientation=squarish'
-    },
-    {
-      id: '5',
-      name: 'Midi Dress',
-      category: 'Dresses',
-      material: 'Cotton',
-      status: 'Clean' as const,
-      image: 'https://readdy.ai/api/search-image?query=Elegant%20midi%20dress%20for%20women%2C%20flowing%20cotton%20fabric%2C%20feminine%20silhouette%2C%20sophisticated%20design%2C%20soft%20colors%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20modern%20fashion%20styling%2C%20versatile%20wardrobe%20piece&width=400&height=400&seq=dress1&orientation=squarish'
-    },
-    {
-      id: '6',
-      name: 'Ankle Boots',
-      category: 'Shoes',
-      material: 'Leather',
-      status: 'Clean' as const,
-      image: 'https://readdy.ai/api/search-image?query=Stylish%20ankle%20boots%20for%20women%2C%20premium%20leather%20construction%2C%20modern%20heel%20design%2C%20versatile%20black%20color%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20luxury%20footwear%20styling%2C%20contemporary%20fashion&width=400&height=400&seq=boots2&orientation=squarish'
-    }
-  ];
-  const [garments, setGarments] = useState(initialGarments);
+  const { data: garments = [], mutate } = useSWR('/api/garments', fetcher);
+  const { data: tags = [] } = useSWR('/api/tags', fetcher);
 
-  const filteredGarments = garments.filter(garment => {
+  const updateGarmentStatus = async (garmentId: string, newStatus: string) => {
+    try {
+      await fetch(`/api/garments/${garmentId}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ status: newStatus })
+      });
+      mutate(); // Refresh data
+    } catch (error) {
+      console.error('Failed to update garment:', error);
+    }
+  };
+
+  const filteredGarments = (garments || []).filter(garment => {
     // Category filtering (using existing activeCategory state)
     const matchesCategory = activeCategory === 'All' || garment.category === activeCategory;
 
     // Search filtering
     const matchesSearch = garment.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          garment.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         garment.material.toLowerCase().includes(searchQuery.toLowerCase());
+                         (garment.material && garment.material.toLowerCase().includes(searchQuery.toLowerCase()));
 
     // Status filtering
     const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(garment.status);
 
-    return matchesCategory && matchesSearch && matchesStatus;
+    // Tag filtering
+    const matchesTags = selectedTags.length === 0 || 
+                       (garment.tags && garment.tags.some((tag: any) => selectedTags.includes(tag.tag.name)));
+
+    return matchesCategory && matchesSearch && matchesStatus && matchesTags;
   });
 
   const handleThemeToggle = () => {
@@ -106,7 +105,7 @@ export default function Home() {
       <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
           <Header 
             title="HangarOn" 
-            showThemeToggle 
+            showThemeToggle={isHydrated} 
             onThemeToggle={handleThemeToggle} 
             darkMode={darkMode}
           />
@@ -119,7 +118,7 @@ export default function Home() {
 
             <div className="px-6 py-4">
              <FilterPanel
-               availableTags={[]}
+               availableTags={tags.map((tag: any) => tag.name)}
                 selectedTags={selectedTags}
                 onTagSelect={handleTagSelect}
                availableStatuses={["Clean", "Worn", "Dirty", "Worn 2x", "Needs Washing"]}
@@ -139,18 +138,13 @@ export default function Home() {
                       window.location.href = `/add?edit=${garment.id}`;
                     }}
                     onMarkAsWorn={() => {
-                      setGarments(prev =>
-                        prev.map(g => {
-                          if (g.id !== garment.id) return g;
-                          let nextStatus = g.status;
-                          if (g.status === "Clean") nextStatus = "Worn";
-                          else if (g.status === "Worn") nextStatus = "Worn 2x";
-                          return { ...g, status: nextStatus };
-                        })
-                      );
+                      let nextStatus = garment.status;
+                      if (garment.status === "CLEAN") nextStatus = "WORN_2X";
+                      else if (garment.status === "WORN_2X") nextStatus = "NEEDS_WASHING";
+                      updateGarmentStatus(garment.id, nextStatus);
                     }}
                     onMoveToLaundry={() => {
-                      setGarments(prev => prev.map(g => g.id === garment.id ? { ...g, status: 'Dirty' } : g));
+                      updateGarmentStatus(garment.id, 'DIRTY');
                     }}
                   />
                 ))}

@@ -21,10 +21,10 @@ export default function BottomNavigation() {
       label: 'Add' 
     },
     { 
-      href: '/collections', 
-      icon: 'ri-folder-3-line', 
-      activeIcon: 'ri-folder-3-fill',
-      label: 'Collections' 
+      href: '/tags', 
+      icon: 'ri-price-tag-3-line', 
+      activeIcon: 'ri-price-tag-3-fill',
+      label: 'Tags' 
     },
     { 
       href: '/stats', 

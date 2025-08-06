@@ -1,81 +1,126 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useSession } from 'next-auth/react';
 import Layout from '@/components/ui/Layout';
 import TagFilter from '@/components/features/TagFilter';
 import TagList from '@/components/features/TagList';
 import Header from '@/components/ui/Header';
+import CollectionForm from '@/components/features/CollectionForm';
+import { CreateCollection } from '@/lib/validation/schemas';
 
 interface Collection {
   id: string;
   name: string;
-  description: string;
-  itemCount: number;
-  image: string;
-  color: string;
+  description?: string;
+  color?: string;
+  image?: string;
+  isSmartCollection: boolean;
+  _count: {
+    garments: number;
+  };
+  garments: any[];
+  rules: any[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export default function Collections() {
   const [darkMode, setDarkMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [collections, setCollections] = useState<Collection[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [showCreateForm, setShowCreateForm] = useState(false);
   const router = useRouter();
+  const { data: session, status } = useSession();
 
-  const collections: Collection[] = [
+  useEffect(() => {
+    if (status === 'loading') return;
+    if (!session) {
+      router.push('/login');
+      return;
+    }
+    fetchCollections();
+  }, [session, status, router]);
+
+  const fetchCollections = async () => {
+    try {
+      setLoading(true);
+      const response = await fetch('/api/collections');
+      if (!response.ok) {
+        throw new Error('Failed to fetch collections');
+      }
+      const data = await response.json();
+      setCollections(data);
+    } catch (error) {
+      console.error('Error fetching collections:', error);
+      setError('Failed to load collections');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Mock collections for fallback (can be removed once real data is available)
+  const mockCollections: Collection[] = [
     {
       id: '1',
       name: 'Winter Essentials',
       description: 'Cozy layers and warm pieces for cold weather',
-      itemCount: 24,
-      image: 'https://readdy.ai/api/search-image?query=Elegant%20winter%20fashion%20collection%20for%20women%2C%20cozy%20wool%20coats%2C%20cashmere%20scarves%2C%20warm%20knitwear%2C%20sophisticated%20layering%20pieces%2C%20neutral%20winter%20tones%2C%20luxury%20fabric%20textures%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20premium%20fashion%20styling%2C%20cold%20weather%20elegance&width=400&height=300&seq=winter1&orientation=landscape',
-      color: 'from-blue-400 to-indigo-600'
+      _count: { garments: 24 },
+      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Elegant%20winter%20fashion%20collection%20for%20women%2C%20cozy%20wool%20coats%2C%20cashmere%20scarves%2C%20warm%20knitwear%2C%20sophisticated%20layering%20pieces%2C%20neutral%20winter%20tones%2C%20luxury%20fabric%20textures%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20premium%20fashion%20styling%2C%20cold%20weather%20elegance&image_size=landscape_4_3',
+      color: '#3B82F6',
+      isSmartCollection: false,
+      garments: [],
+      rules: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     },
     {
       id: '2',
       name: 'Summer Breeze',
       description: 'Light, airy pieces for warm sunny days',
-      itemCount: 18,
-      image: 'https://readdy.ai/api/search-image?query=Fresh%20summer%20fashion%20collection%20for%20women%2C%20flowing%20lightweight%20fabrics%2C%20bright%20airy%20dresses%2C%20linen%20pieces%2C%20pastel%20colors%2C%20beach-ready%20styles%2C%20feminine%20summer%20elegance%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20breezy%20fashion%20styling%2C%20warm%20weather%20essentials&width=400&height=300&seq=summer1&orientation=landscape',
-      color: 'from-amber-400 to-orange-500'
-    },
-    {
-      id: '3',
-      name: 'Casual Comfort',
-      description: 'Relaxed everyday pieces for comfort and style',
-      itemCount: 32,
-      image: 'https://readdy.ai/api/search-image?query=Comfortable%20casual%20fashion%20collection%20for%20women%2C%20soft%20loungewear%2C%20cozy%20sweaters%2C%20relaxed%20jeans%2C%20everyday%20essentials%2C%20neutral%20comfortable%20tones%2C%20premium%20casual%20fabrics%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20lifestyle%20fashion%20styling%2C%20effortless%20elegance&width=400&height=300&seq=casual1&orientation=landscape',
-      color: 'from-green-400 to-teal-500'
-    },
-    {
-      id: '4',
-      name: 'Formal Affairs',
-      description: 'Professional and sophisticated pieces',
-      itemCount: 15,
-      image: 'https://readdy.ai/api/search-image?query=Professional%20formal%20fashion%20collection%20for%20women%2C%20elegant%20blazers%2C%20sophisticated%20dresses%2C%20business%20attire%2C%20office%20wear%2C%20classic%20tailoring%2C%20premium%20formal%20fabrics%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20corporate%20fashion%20styling%2C%20executive%20elegance&width=400&height=300&seq=formal1&orientation=landscape',
-      color: 'from-gray-500 to-slate-600'
-    },
-    {
-      id: '5',
-      name: 'Wedding Ready',
-      description: 'Special occasion and celebration outfits',
-      itemCount: 8,
-      image: 'https://readdy.ai/api/search-image?query=Elegant%20wedding%20guest%20fashion%20collection%20for%20women%2C%20sophisticated%20special%20occasion%20dresses%2C%20formal%20evening%20wear%2C%20celebration%20outfits%2C%20luxurious%20fabrics%2C%20romantic%20feminine%20styling%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20special%20event%20fashion%2C%20glamorous%20elegance&width=400&height=300&seq=wedding1&orientation=landscape',
-      color: 'from-pink-400 to-rose-500'
-    },
-    {
-      id: '6',
-      name: 'Date Night',
-      description: 'Romantic and charming pieces for special evenings',
-      itemCount: 12,
-      image: 'https://readdy.ai/api/search-image?query=Romantic%20date%20night%20fashion%20collection%20for%20women%2C%20elegant%20evening%20dresses%2C%20sophisticated%20feminine%20pieces%2C%20charming%20dinner%20outfits%2C%20luxurious%20romantic%20styling%2C%20soft%20evening%20colors%2C%20premium%20evening%20fabrics%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20romantic%20fashion%20styling&width=400&height=300&seq=date1&orientation=landscape',
-      color: 'from-purple-400 to-violet-500'
+      _count: { garments: 18 },
+      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Fresh%20summer%20fashion%20collection%20for%20women%2C%20flowing%20lightweight%20fabrics%2C%20bright%20airy%20dresses%2C%20linen%20pieces%2C%20pastel%20colors%2C%20beach-ready%20styles%2C%20feminine%20summer%20elegance%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20breezy%20fashion%20styling%2C%20warm%20weather%20essentials&image_size=landscape_4_3',
+      color: '#F59E0B',
+      isSmartCollection: false,
+      garments: [],
+      rules: [],
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
     }
   ];
 
-  const filteredCollections = collections.filter(collection =>
+  const displayCollections = collections.length > 0 ? collections : mockCollections;
+  const filteredCollections = displayCollections.filter(collection =>
     collection.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     collection.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
+
+  const handleCreateCollection = async (data: CreateCollection) => {
+    try {
+      const response = await fetch('/api/collections', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to create collection');
+      }
+
+      const newCollection = await response.json();
+      setCollections(prev => [newCollection, ...prev]);
+      setShowCreateForm(false);
+    } catch (error) {
+      console.error('Error creating collection:', error);
+      throw error;
+    }
+  };
 
   const handleThemeToggle = () => {
     setDarkMode(!darkMode);
@@ -95,6 +140,7 @@ export default function Collections() {
             showThemeToggle 
             onThemeToggle={handleThemeToggle} 
             darkMode={darkMode}
+
           />
           
           <div className="pt-20 pb-20">
@@ -112,12 +158,36 @@ export default function Collections() {
                 />
               </div>
             </div>
+            )}
 
             <div className="px-6 py-4">
               <TagFilter availableTags={[{ name: 'Casual' }, { name: 'Formal' }]} selectedTags={[]} />
               <TagList tags={[{ name: 'Work' }, { name: 'Weekend' }]} />
             </div>
 
+            {loading && (
+              <div className="px-6 py-12 text-center">
+                <div className="w-12 h-12 mx-auto mb-4 border-4 border-theme-primary border-t-transparent rounded-full animate-spin"></div>
+                <p className="text-gray-600 dark:text-gray-400">Loading collections...</p>
+              </div>
+            )}
+
+            {error && (
+              <div className="px-6 py-12 text-center">
+                <div className="w-20 h-20 mx-auto mb-4 bg-red-100 dark:bg-red-900/20 rounded-full flex items-center justify-center">
+                  <i className="ri-error-warning-line text-2xl text-red-500"></i>
+                </div>
+                <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2">{error}</h3>
+                <button 
+                  onClick={fetchCollections}
+                  className="px-4 py-2 bg-theme-primary text-white rounded-lg hover:bg-theme-primary/90 transition-colors"
+                >
+                  Try Again
+                </button>
+              </div>
+            )}
+
+            {!loading && !error && (
             <div className="px-6">
               <div className="grid gap-6">
                 {filteredCollections.map((collection) => (
@@ -132,13 +202,26 @@ export default function Collections() {
                         alt={collection.name}
                         className="w-full h-full object-cover object-center"
                       />
-                      <div className={`absolute inset-0 bg-gradient-to-t ${collection.color} opacity-20`}></div>
+                      {collection.color && (
+                        <div 
+                          className="absolute inset-0 bg-gradient-to-t opacity-20" 
+                          style={{ backgroundColor: collection.color }}
+                        ></div>
+                      )}
                       <div className="absolute top-4 right-4">
                         <div className="bg-white/90 dark:bg-gray-800/90 px-3 py-1.5 rounded-full shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.03)] backdrop-blur-sm">
                           <span className="text-sm font-medium text-gray-700 dark:text-gray-300 drop-shadow-sm">
-                            {collection.itemCount} items
+                            {collection._count.garments} items
                           </span>
                         </div>
+                      </div>
+                      {collection.isSmartCollection && (
+                        <div className="absolute top-4 left-4">
+                          <div className="bg-purple-500/90 px-2 py-1 rounded-full">
+                            <span className="text-xs font-medium text-white">Smart</span>
+                          </div>
+                        </div>
+                      )}
                       </div>
                     </div>
                     
@@ -152,7 +235,7 @@ export default function Collections() {
                         </button>
                       </div>
                       <p className="text-gray-600 dark:text-gray-400 text-sm leading-relaxed drop-shadow-sm">
-                        {collection.description}
+                        {collection.description || 'No description available'}
                       </p>
                     </div>
                   </div>
@@ -172,6 +255,13 @@ export default function Collections() {
           </div>
         </div>
       </div>
+
+      <CollectionForm
+        isOpen={showCreateForm}
+        onClose={() => setShowCreateForm(false)}
+        onSubmit={handleCreateCollection}
+        title="Create New Collection"
+      />
     </Layout>
   );
 }

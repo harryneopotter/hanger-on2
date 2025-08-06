@@ -10,6 +10,10 @@ import Link from 'next/link';
 export default function LoginPage() {
   const [darkMode] = useDarkMode();
   const [loading, setLoading] = useState(false);
+  const [showSignup, setShowSignup] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState('');
   const router = useRouter();
 
   useEffect(() => {
@@ -29,6 +33,39 @@ export default function LoginPage() {
       console.error('Sign in error:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const handleCredentialsSignIn = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    const res = await signIn('credentials', {
+      redirect: false,
+      email,
+      password
+    });
+    setLoading(false);
+    if (res?.error) setError('Invalid email or password');
+    else router.push('/');
+  };
+  const handleSignup = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setError('');
+    // Call custom signup API (to be implemented) to create user
+    const resp = await fetch('/api/auth/signup', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    setLoading(false);
+    if (resp.ok) {
+      setShowSignup(false);
+      setError('Signup successful! You can now log in.');
+    } else {
+      const data = await resp.json();
+      setError(data.error || 'Signup failed');
     }
   };
 
@@ -65,15 +102,18 @@ export default function LoginPage() {
               Welcome to HangarOn
             </h2>
             <p className="text-gray-600 dark:text-gray-400 text-sm">
-              Sign in with your Google account to get started
+              {showSignup ? 'Sign up with email or Google' : 'Sign in with email or Google'}
             </p>
           </div>
-
-          <button
-            onClick={handleGoogleSignIn}
-            disabled={loading}
-            className="w-full bg-white hover:bg-gray-50 text-gray-900 font-semibold py-3 px-4 rounded-xl border border-gray-200 transition-colors duration-200 flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
+          <form onSubmit={showSignup ? handleSignup : handleCredentialsSignIn} className="space-y-4 mb-4">
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" className="w-full px-3 py-2 rounded border border-gray-300 dark:bg-gray-700 dark:text-white" required />
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" className="w-full px-3 py-2 rounded border border-gray-300 dark:bg-gray-700 dark:text-white" required />
+            {error && <div className="text-red-500 text-xs">{error}</div>}
+            <button type="submit" disabled={loading} className="w-full bg-theme-primary text-white font-semibold py-2 px-4 rounded-xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
+              {loading ? (showSignup ? 'Signing up...' : 'Signing in...') : (showSignup ? 'Sign Up' : 'Sign In')}
+            </button>
+          </form>
+          <button onClick={handleGoogleSignIn} disabled={loading} className="w-full bg-white hover:bg-gray-50 text-gray-900 font-semibold py-3 px-4 rounded-xl border border-gray-200 transition-colors duration-200 flex items-center justify-center space-x-3 disabled:opacity-50 disabled:cursor-not-allowed mb-2">
             {loading ? (
               <div className="w-5 h-5 border-2 border-gray-300 border-t-gray-600 rounded-full animate-spin"></div>
             ) : (
@@ -88,11 +128,23 @@ export default function LoginPage() {
               </>
             )}
           </button>
-
-          <div className="mt-6 text-center text-xs text-gray-500 dark:text-gray-400">
+          <div className="mt-2 text-center text-xs text-gray-500 dark:text-gray-400">
+            {showSignup ? (
+              <>
+                Already have an account?{' '}
+                <button className="text-theme-primary-dark hover:text-theme-primary" onClick={() => { setShowSignup(false); setError(''); }}>Sign In</button>
+              </>
+            ) : (
+              <>
+                Don\'t have an account?{' '}
+                <button className="text-theme-primary-dark hover:text-theme-primary" onClick={() => { setShowSignup(true); setError(''); }}>Sign Up</button>
+              </>
+            )}
+          </div>
+          <div className="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">
             By continuing, you agree to our{' '}
             <button className="text-theme-primary-dark hover:text-theme-primary">Terms</button> and{' '}
-                <button className="text-theme-primary-dark hover:text-theme-primary">Privacy Policy</button>
+            <button className="text-theme-primary-dark hover:text-theme-primary">Privacy Policy</button>
           </div>
         </div>
 

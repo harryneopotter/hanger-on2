@@ -1,14 +1,23 @@
 import { useState, useEffect } from 'react';
 
-export function useDarkMode(): readonly [boolean, (value: boolean) => void] {
-  const [darkMode, setDarkMode] = useState<boolean>(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem('darkMode');
-      if (stored !== null) return stored === 'true';
-      return window.matchMedia('(prefers-color-scheme: dark)').matches;
+export function useDarkMode(): readonly [boolean, (value: boolean) => void, boolean] {
+  const [darkMode, setDarkMode] = useState<boolean>(false);
+  const [isHydrated, setIsHydrated] = useState<boolean>(false);
+
+  useEffect(() => {
+    // Only run on client side after hydration
+    const stored = localStorage.getItem('darkMode');
+    let initialDarkMode = false;
+    
+    if (stored !== null) {
+      initialDarkMode = stored === 'true';
+    } else {
+      initialDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
-    return false;
-  });
+    
+    setDarkMode(initialDarkMode);
+    setIsHydrated(true);
+  }, []);
 
   useEffect(() => {
     document.documentElement.classList.toggle('dark', darkMode);
@@ -19,6 +28,6 @@ export function useDarkMode(): readonly [boolean, (value: boolean) => void] {
     }
   }, [darkMode]);
 
-  return [darkMode, setDarkMode] as const;
+  return [darkMode, setDarkMode, isHydrated] as const;
 }
 
