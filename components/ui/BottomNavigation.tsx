@@ -59,7 +59,7 @@ export default function BottomNavigation() {
                 <i 
                   className={`${isActive ? item.activeIcon : item.icon} text-lg ${
                     isActive 
-                      ? 'text-indigo-600 dark:text-indigo-400' 
+                      ? 'text-theme-primary-dark dark:text-theme-primary' 
                       : 'text-gray-500 dark:text-gray-400'
                   } drop-shadow-sm`}
                 />
@@ -67,7 +67,7 @@ export default function BottomNavigation() {
               <span 
                 className={`text-xs font-medium ${
                   isActive 
-                    ? 'text-indigo-600 dark:text-indigo-400' 
+                    ? 'text-theme-primary-dark dark:text-theme-primary' 
                     : 'text-gray-500 dark:text-gray-400'
                 } drop-shadow-sm`}
               >

@@ -3,18 +3,25 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "cross-env NODE_ENV=development next dev -H 0.0.0.0 -p 3000",
-    "build": "next build",
+    "dev": "next dev",
+    "build": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" CHOKIDAR_USEPOLLING=false WATCHPACK_POLLING=false next build",
+    "build:safe": "cross-env NODE_ENV=production NODE_OPTIONS=\"--max-old-space-size=4096\" CHOKIDAR_USEPOLLING=false WATCHPACK_POLLING=false TAILWIND_DISABLE_TOUCH=true next build",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
     "check-format": "prettier --check \"**/*.{ts,tsx,js,jsx,json}\""
   },
   "dependencies": {
+    "@auth/prisma-adapter": "^2.10.0",
+    "@prisma/client": "^6.13.0",
     "@react-google-maps/api": "^2.19.3",
+    "@supabase/supabase-js": "^2.53.0",
     "next": "15.3.2",
+    "next-auth": "^4.24.11",
+    "prisma": "^6.13.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "recharts": "^3.0.2"
+    "recharts": "^3.0.2",
+    "zod": "^4.0.14"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

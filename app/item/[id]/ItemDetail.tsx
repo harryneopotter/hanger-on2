@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Layout from '@/components/Layout';
-import Header from '@/components/Header';
+import Layout from '@/components/ui/Layout';
+import Header from '@/components/ui/Header';
 
 interface ItemDetailProps {
   itemId: string;
@@ -125,7 +125,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
         <div className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Item not found</h2>
-            <Link href="/" className="text-indigo-600 dark:text-indigo-400">Return to closet</Link>
+            <Link href="/" className="text-theme-primary-dark dark:text-theme-primary">Return to closet</Link>
           </div>
         </div>
       </Layout>
@@ -248,10 +248,12 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
               </div>
 
               <div className="grid grid-cols-2 gap-4">
-                <button className="flex items-center justify-center gap-2 px-4 py-3 bg-indigo-600 text-white rounded-xl font-medium shadow-[4px_4px_8px_rgba(79,70,229,0.3),-2px_-2px_6px_rgba(255,255,255,0.8)] hover:shadow-[6px_6px_12px_rgba(79,70,229,0.4),-3px_-3px_9px_rgba(255,255,255,0.9)] transition-all duration-200 !rounded-button">
-                  <i className="ri-edit-line"></i>
-                  Edit Item
-                </button>
+                <Link href={`/add?edit=${itemId}`}>
+                  <button className="flex items-center justify-center gap-2 px-4 py-3 bg-theme-primary text-white rounded-xl font-medium shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.8)] hover:shadow-[6px_6px_12px_rgba(0,0,0,0.4),-3px_-3px_9px_rgba(255,255,255,0.9)] transition-all duration-200 !rounded-button w-full">
+                    <i className="ri-edit-line"></i>
+                    Edit Item
+                  </button>
+                </Link>
                 <button className="flex items-center justify-center gap-2 px-4 py-3 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-xl font-medium shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.02)] hover:shadow-[6px_6px_12px_rgba(0,0,0,0.15),-3px_-3px_9px_rgba(255,255,255,0.9)] dark:hover:shadow-[6px_6px_12px_rgba(0,0,0,0.4),-3px_-3px_9px_rgba(255,255,255,0.03)] transition-all duration-200 !rounded-button">
                   <i className="ri-delete-bin-line"></i>
                   Remove

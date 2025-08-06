@@ -2,21 +2,35 @@
 'use client';
 
 import { useState } from 'react';
-import Layout from '@/components/Layout';
-import Header from '@/components/Header';
-import CategoryTabs from '@/components/CategoryTabs';
+import { useDarkMode } from '@/hooks/useDarkMode';
+import Layout from '@/components/ui/Layout';
+import Header from '@/components/ui/Header';
+import CategoryTabs from '@/components/ui/CategoryTabs';
 import SearchBar from '@/components/ui/SearchBar';
 import FilterPanel from '@/components/features/FilterPanel';
-import GarmentCard from '@/components/GarmentCard';
+import GarmentCard from '@/components/features/GarmentCard';
 
 export default function Home() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useDarkMode();
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
 
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const garments = [
+
+  // Helpers to toggle selection
+  const handleStatusSelect = (status: string) => {
+    setSelectedStatuses((prev) =>
+      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
+    );
+  };
+
+  const handleTagSelect = (tag: string) => {
+    setSelectedTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
+  const initialGarments = [
     {
       id: '1',
       name: 'Silk Blouse',
@@ -66,6 +80,7 @@ export default function Home() {
       image: 'https://readdy.ai/api/search-image?query=Stylish%20ankle%20boots%20for%20women%2C%20premium%20leather%20construction%2C%20modern%20heel%20design%2C%20versatile%20black%20color%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20luxury%20footwear%20styling%2C%20contemporary%20fashion&width=400&height=400&seq=boots2&orientation=squarish'
     }
   ];
+  const [garments, setGarments] = useState(initialGarments);
 
   const filteredGarments = garments.filter(garment => {
     // Category filtering (using existing activeCategory state)
@@ -79,19 +94,16 @@ export default function Home() {
     // Status filtering
     const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(garment.status);
 
-    // TODO: Implement tag filtering logic here
-    return matchesCategory && matchesSearch;
+    return matchesCategory && matchesSearch && matchesStatus;
   });
 
   const handleThemeToggle = () => {
     setDarkMode(!darkMode);
-    document.documentElement.classList.toggle('dark');
   };
 
   return (
     <Layout>
-      <div className={darkMode ? 'dark' : ''}>
-        <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+      <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
           <Header 
             title="HangarOn" 
             showThemeToggle 
@@ -107,23 +119,39 @@ export default function Home() {
 
             <div className="px-6 py-4">
              <FilterPanel
-               availableTags={[]} // Use an empty array for now
-               selectedTags={selectedTags}
-               onTagSelect={(tagName) => { /* TODO: Implement tag selection */ }}
-               availableStatuses={['Clean', 'Dirty', 'Worn 2x', 'Needs Washing']}
+               availableTags={[]}
+                selectedTags={selectedTags}
+                onTagSelect={handleTagSelect}
+               availableStatuses={["Clean", "Worn", "Dirty", "Worn 2x", "Needs Washing"]}
                selectedStatuses={selectedStatuses}
-               onStatusSelect={(status) => { /* TODO: Implement status selection */ }}
+               onStatusSelect={handleStatusSelect}
              />
             </div>
             <CategoryTabs onCategoryChange={setActiveCategory} />
 
-            <div className="px-6">
-              <div className="grid grid-cols-2 gap-4">
+            <div className="w-full px-4 md:px-8 xl:px-16">
+              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
                 {filteredGarments.map((garment) => (
                   <GarmentCard
                     key={garment.id}
                     {...garment}
-                    onEdit={() => console.log('Edit garment:', garment.id)}
+                    onEdit={() => {
+                      window.location.href = `/add?edit=${garment.id}`;
+                    }}
+                    onMarkAsWorn={() => {
+                      setGarments(prev =>
+                        prev.map(g => {
+                          if (g.id !== garment.id) return g;
+                          let nextStatus = g.status;
+                          if (g.status === "Clean") nextStatus = "Worn";
+                          else if (g.status === "Worn") nextStatus = "Worn 2x";
+                          return { ...g, status: nextStatus };
+                        })
+                      );
+                    }}
+                    onMoveToLaundry={() => {
+                      setGarments(prev => prev.map(g => g.id === garment.id ? { ...g, status: 'Dirty' } : g));
+                    }}
                   />
                 ))}
               </div>
@@ -133,13 +161,35 @@ export default function Home() {
                   <div className="w-20 h-20 mx-auto mb-4 bg-gray-100/80 dark:bg-gray-700/80 rounded-full flex items-center justify-center shadow-[6px_6px_12px_rgba(0,0,0,0.1),-3px_-3px_9px_rgba(255,255,255,0.8)] dark:shadow-[6px_6px_12px_rgba(0,0,0,0.3),-3px_-3px_9px_rgba(255,255,255,0.02)] backdrop-blur-sm">
                     <i className="ri-handbag-line text-2xl text-gray-400 dark:text-gray-500 drop-shadow-sm"></i>
                   </div>
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 drop-shadow-sm">Your closet is empty</h3>
-                  <p className="text-gray-500 dark:text-gray-400 drop-shadow-sm">Start adding items to your wardrobe</p>
+                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 drop-shadow-sm">
+                    {(() => {
+                      if (searchQuery) {
+                        return `No items found for "${searchQuery}"`;
+                      }
+                      if (activeCategory !== 'All' && selectedStatuses.length > 0) {
+                        return `No ${selectedStatuses.join(' or ')} items in ${activeCategory}`;
+                      }
+                      if (activeCategory !== 'All') {
+                        return `No items in ${activeCategory}`;
+                      }
+                      if (selectedStatuses.length > 0) {
+                        return `No ${selectedStatuses.join(' or ')} items found`;
+                      }
+                      return 'Your closet is empty';
+                    })()}
+                  </h3>
+                  <p className="text-gray-500 dark:text-gray-400 drop-shadow-sm">
+                    {(() => {
+                      if (searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0) {
+                        return 'Try adjusting your filters or search terms';
+                      }
+                      return 'Start adding items to your wardrobe';
+                    })()}
+                  </p>
                 </div>
               )}
             </div>
           </div>
-        </div>
       </div>
     </Layout>
   );

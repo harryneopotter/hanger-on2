@@ -1,0 +1,11 @@
+{
+    "accessibility.signals.chatRequestSent": {
+        "sound": "on"
+    },
+    "accessibility.signals.chatResponseReceived": {
+        "sound": "on"
+    },
+    "accessibility.signals.clear": {
+        "sound": "on"
+    }
+}

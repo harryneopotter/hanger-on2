@@ -2,8 +2,8 @@
 'use client';
 
 import { useState } from 'react';
-import Layout from '@/components/Layout';
-import Header from '@/components/Header';
+import Layout from '@/components/ui/Layout';
+import Header from '@/components/ui/Header';
 
 export default function Stats() {
   const [darkMode, setDarkMode] = useState(false);
@@ -34,7 +34,7 @@ export default function Stats() {
                     onClick={() => setActiveTab(tab)}
                     className={`px-4 py-2 rounded-full font-medium transition-all duration-200 capitalize ${
                       activeTab === tab
-                        ? 'bg-indigo-600 text-white shadow-md'
+                        ? 'bg-theme-primary-dark text-white shadow-md'
                         : 'bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-300 border border-gray-200 dark:border-gray-600'
                     } !rounded-button`}
                   >
@@ -48,7 +48,7 @@ export default function Stats() {
                   <div className="grid grid-cols-2 gap-4">
                     <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
                       <div className="text-center">
-                        <div className="text-3xl font-bold text-indigo-600 dark:text-indigo-400 mb-1">156</div>
+                        <div className="text-3xl font-bold text-theme-primary-dark dark:text-theme-primary mb-1">156</div>
                         <div className="text-sm text-gray-600 dark:text-gray-400">Total Items</div>
                       </div>
                     </div>
@@ -73,7 +73,7 @@ export default function Stats() {
                     <div className="space-y-3">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <div className="w-4 h-4 bg-indigo-500 rounded-full"></div>
+                          <div className="w-4 h-4 bg-theme-primary rounded-full"></div>
                           <span className="text-sm text-gray-700 dark:text-gray-300">Shirts</span>
                         </div>
                         <span className="text-sm font-medium text-gray-900 dark:text-white">42</span>
@@ -128,8 +128,8 @@ export default function Stats() {
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Most Worn Items</h3>
                     <div className="space-y-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-indigo-100 dark:bg-indigo-900 rounded-xl flex items-center justify-center">
-                          <i className="ri-shirt-line text-indigo-600 dark:text-indigo-400"></i>
+                        <div className="w-12 h-12 bg-theme-primary-light dark:bg-theme-primary-dark rounded-xl flex items-center justify-center">
+              <i className="ri-shirt-line text-theme-primary-dark dark:text-theme-primary"></i>
                         </div>
                         <div className="flex-1">
                           <div className="font-medium text-gray-900 dark:text-white">White Oxford Shirt</div>

@@ -1,11 +1,16 @@
 'use client';
 
 import { useState } from 'react';
-import Layout from '../../components/Layout';
-import Header from '../../components/Header';
+import { useDarkMode } from '@/hooks/useDarkMode';
+import Layout from '../../components/ui/Layout';
+import { signOut } from 'next-auth/react';
+import Header from '../../components/ui/Header';
+import { useRouter } from 'next/navigation';
 
 export default function AccountPage() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useDarkMode();
+  const router = useRouter();
+
   const [user] = useState({
     name: 'Sarah Johnson',
     email: 'sarah.johnson@email.com',
@@ -15,18 +20,14 @@ export default function AccountPage() {
     favoriteCategory: 'Dresses'
   });
 
+
+
   const menuItems = [
     {
       icon: 'ri-user-line',
       title: 'Edit Profile',
       description: 'Update your personal information',
-      onClick: () => console.log('Edit profile')
-    },
-    {
-      icon: 'ri-notification-line',
-      title: 'Notifications',
-      description: 'Manage your notification preferences',
-      onClick: () => console.log('Notifications')
+      onClick: () => router.push('/account/edit')
     },
     {
       icon: 'ri-shield-check-line',
@@ -92,23 +93,23 @@ export default function AccountPage() {
                   Member since {user.joinedDate}
                 </p>
               </div>
-              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/80 dark:bg-gray-700/80 shadow-[3px_3px_6px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.8)] dark:shadow-[3px_3px_6px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.02)] hover:shadow-[4px_4px_8px_rgba(0,0,0,0.15),-2px_-2px_6px_rgba(255,255,255,0.9)] dark:hover:shadow-[4px_4px_8px_rgba(0,0,0,0.4),-2px_-2px_6px_rgba(255,255,255,0.03)] transition-all duration-200 backdrop-blur-sm">
+              <button className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/80 dark:bg-gray-700/80 shadow-[3px_3px_6px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.8)] dark:shadow-[3px_3px_6px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.02)] hover:shadow-[4px_4px_8px_rgba(0,0,0,0.15),-2px_-2px_6px_rgba(255,255,255,0.9)] dark:hover:shadow-[4px_4px_8px_rgba(0,0,0,0.4),-2px_-2px_6px_rgba(255,255,255,0.03)] transition-all duration-200 backdrop-blur-sm" onClick={() => router.push('/account/edit')}>
                 <i className="ri-pencil-line text-gray-600 dark:text-gray-300 text-sm drop-shadow-sm"></i>
               </button>
             </div>
             
             {/* Stats */}
             <div className="grid grid-cols-2 gap-4 mt-6 pt-6 border-t border-gray-200/30 dark:border-gray-700/30">
-              <div className="text-center p-3 rounded-xl bg-indigo-50/80 dark:bg-indigo-900/30 shadow-[inset_2px_2px_4px_rgba(79,70,229,0.1),inset_-1px_-1px_3px_rgba(255,255,255,0.8)] dark:shadow-[inset_2px_2px_4px_rgba(79,70,229,0.3),inset_-1px_-1px_3px_rgba(255,255,255,0.05)] backdrop-blur-sm">
-                <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 drop-shadow-sm">
+              <div className="text-center p-3 rounded-xl bg-gray-50/80 dark:bg-gray-800/30 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-1px_-1px_3px_rgba(255,255,255,0.8)] dark:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-1px_-1px_3px_rgba(255,255,255,0.05)] backdrop-blur-sm">
+                <div className="text-2xl font-bold text-theme-primary-dark drop-shadow-sm">
                   {user.totalItems}
                 </div>
                 <div className="text-gray-600 dark:text-gray-400 text-sm drop-shadow-sm">
                   Total Items
                 </div>
               </div>
-              <div className="text-center p-3 rounded-xl bg-indigo-50/80 dark:bg-indigo-900/30 shadow-[inset_2px_2px_4px_rgba(79,70,229,0.1),inset_-1px_-1px_3px_rgba(255,255,255,0.8)] dark:shadow-[inset_2px_2px_4px_rgba(79,70,229,0.3),inset_-1px_-1px_3px_rgba(255,255,255,0.05)] backdrop-blur-sm">
-                <div className="text-2xl font-bold text-indigo-600 dark:text-indigo-400 drop-shadow-sm">
+              <div className="text-center p-3 rounded-xl bg-gray-50/80 dark:bg-gray-800/30 shadow-[inset_2px_2px_4px_rgba(0,0,0,0.1),inset_-1px_-1px_3px_rgba(255,255,255,0.8)] dark:shadow-[inset_2px_2px_4px_rgba(0,0,0,0.3),inset_-1px_-1px_3px_rgba(255,255,255,0.05)] backdrop-blur-sm">
+                <div className="text-2xl font-bold text-theme-primary-dark drop-shadow-sm">
                   {user.favoriteCategory}
                 </div>
                 <div className="text-gray-600 dark:text-gray-400 text-sm drop-shadow-sm">
@@ -118,33 +119,40 @@ export default function AccountPage() {
             </div>
           </div>
 
+
+
           {/* Menu Items */}
           <div className="space-y-3">
-            {menuItems.map((item, index) => (
-              <button
-                key={index}
-                onClick={item.onClick}
-                className="w-full bg-gray-50/80 dark:bg-gray-800/80 rounded-xl shadow-[6px_6px_12px_rgba(0,0,0,0.1),-3px_-3px_9px_rgba(255,255,255,0.8)] dark:shadow-[6px_6px_12px_rgba(0,0,0,0.3),-3px_-3px_9px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30 p-4 flex items-center space-x-4 hover:shadow-[8px_8px_16px_rgba(0,0,0,0.15),-4px_-4px_12px_rgba(255,255,255,0.9)] dark:hover:shadow-[8px_8px_16px_rgba(0,0,0,0.4),-4px_-4px_12px_rgba(255,255,255,0.03)] transition-all duration-300 !rounded-button"
-              >
-                <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100/80 dark:bg-gray-700/80 shadow-[3px_3px_6px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.8)] dark:shadow-[3px_3px_6px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.02)] backdrop-blur-sm">
-                  <i className={`${item.icon} text-gray-600 dark:text-gray-300 drop-shadow-sm`}></i>
-                </div>
-                <div className="flex-1 text-left">
-                  <h3 className="font-medium text-gray-900 dark:text-white drop-shadow-sm">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-500 dark:text-gray-400 text-sm drop-shadow-sm">
-                    {item.description}
-                  </p>
-                </div>
-                <i className="ri-arrow-right-s-line text-gray-400 dark:text-gray-500 drop-shadow-sm"></i>
-              </button>
+            {menuItems
+              .filter(item => !['Privacy & Security', 'Help & Support', 'About HangarOn'].includes(item.title))
+              .map((item, index) => (
+                <button
+                  key={index}
+                  onClick={item.onClick}
+                  className="w-full bg-gray-50/80 dark:bg-gray-800/80 rounded-xl shadow-[6px_6px_12px_rgba(0,0,0,0.1),-3px_-3px_9px_rgba(255,255,255,0.8)] dark:shadow-[6px_6px_12px_rgba(0,0,0,0.3),-3px_-3px_9px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30 p-4 flex items-center space-x-4 hover:shadow-[8px_8px_16px_rgba(0,0,0,0.15),-4px_-4px_12px_rgba(255,255,255,0.9)] dark:hover:shadow-[8px_8px_16px_rgba(0,0,0,0.4),-4px_-4px_12px_rgba(255,255,255,0.03)] transition-all duration-300 !rounded-button"
+                >
+                  <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-100/80 dark:bg-gray-700/80 shadow-[3px_3px_6px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.8)] dark:shadow-[3px_3px_6px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.02)] backdrop-blur-sm">
+                    <i className={`${item.icon} text-gray-600 dark:text-gray-300 drop-shadow-sm`}></i>
+                  </div>
+                  <div className="flex-1 text-left">
+                    <h3 className="font-medium text-gray-900 dark:text-white drop-shadow-sm">
+                      {item.title}
+                    </h3>
+                    <p className="text-gray-500 dark:text-gray-400 text-sm drop-shadow-sm">
+                      {item.description}
+                    </p>
+                  </div>
+                  <i className="ri-arrow-right-s-line text-gray-400 dark:text-gray-500 drop-shadow-sm"></i>
+                </button>
             ))}
           </div>
 
           {/* Logout Button */}
           <div className="mt-8 pb-6">
-            <button className="w-full bg-red-50/80 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-medium py-3 px-4 rounded-xl shadow-[6px_6px_12px_rgba(239,68,68,0.2),-3px_-3px_9px_rgba(255,255,255,0.8)] dark:shadow-[6px_6px_12px_rgba(239,68,68,0.3),-3px_-3px_9px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-red-200/50 dark:border-red-800/50 hover:shadow-[8px_8px_16px_rgba(239,68,68,0.3),-4px_-4px_12px_rgba(255,255,255,0.9)] dark:hover:shadow-[8px_8px_16px_rgba(239,68,68,0.4),-4px_-4px_12px_rgba(255,255,255,0.03)] transition-all duration-300 !rounded-button">
+            <button 
+              onClick={() => signOut({ callbackUrl: '/' })} 
+              className="w-full bg-red-50/80 dark:bg-red-900/30 text-red-600 dark:text-red-400 font-medium py-3 px-4 rounded-xl shadow-[6px_6px_12px_rgba(239,68,68,0.2),-3px_-3px_9px_rgba(255,255,255,0.8)] dark:shadow-[6px_6px_12px_rgba(239,68,68,0.3),-3px_-3px_9px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-red-200/50 dark:border-red-800/50 hover:shadow-[8px_8px_16px_rgba(239,68,68,0.3),-4px_-4px_12px_rgba(255,255,255,0.9)] dark:hover:shadow-[8px_8px_16px_rgba(239,68,68,0.4),-4px_-4px_12px_rgba(255,255,255,0.03)] transition-all duration-300 !rounded-button"
+            >
               <i className="ri-logout-box-line mr-2 drop-shadow-sm"></i>
               Sign Out
             </button>

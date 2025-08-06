@@ -1,10 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import Layout from '@/components/Layout';
+import { useRouter } from 'next/navigation';
+import Layout from '@/components/ui/Layout';
 import TagFilter from '@/components/features/TagFilter';
 import TagList from '@/components/features/TagList';
-import Header from '@/components/Header';
+import Header from '@/components/ui/Header';
 
 interface Collection {
   id: string;
@@ -18,6 +19,7 @@ interface Collection {
 export default function Collections() {
   const [darkMode, setDarkMode] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
 
   const collections: Collection[] = [
     {
@@ -80,6 +82,10 @@ export default function Collections() {
     document.documentElement.classList.toggle('dark');
   };
 
+  const handleCollectionClick = (collectionId: string) => {
+    router.push(`/collections/${collectionId}`);
+  };
+
   return (
     <Layout>
       <div className={darkMode ? 'dark' : ''}>
@@ -102,7 +108,7 @@ export default function Collections() {
                   placeholder="Search collections..."
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-12 pr-4 py-3 bg-gray-50/80 dark:bg-gray-800/80 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500/50 focus:border-transparent transition-all duration-300 text-sm shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.3),inset_-2px_-2px_6px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30 focus:shadow-[inset_6px_6px_12px_rgba(0,0,0,0.1),inset_-3px_-3px_9px_rgba(255,255,255,0.8)] dark:focus:shadow-[inset_6px_6px_12px_rgba(0,0,0,0.4),inset_-3px_-3px_9px_rgba(255,255,255,0.03)]"
+                  className="w-full pl-12 pr-4 py-3 bg-gray-50/80 dark:bg-gray-800/80 rounded-2xl text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-theme-primary/50 focus:border-transparent transition-all duration-300 text-sm shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.3),inset_-2px_-2px_6px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30 focus:shadow-[inset_6px_6px_12px_rgba(0,0,0,0.1),inset_-3px_-3px_9px_rgba(255,255,255,0.8)] dark:focus:shadow-[inset_6px_6px_12px_rgba(0,0,0,0.4),inset_-3px_-3px_9px_rgba(255,255,255,0.03)]"
                 />
               </div>
             </div>
@@ -117,6 +123,7 @@ export default function Collections() {
                 {filteredCollections.map((collection) => (
                   <div
                     key={collection.id}
+                    onClick={() => handleCollectionClick(collection.id)}
                     className="bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] hover:shadow-[12px_12px_24px_rgba(0,0,0,0.15),-6px_-6px_18px_rgba(255,255,255,0.8)] dark:hover:shadow-[12px_12px_24px_rgba(0,0,0,0.4),-6px_-6px_18px_rgba(255,255,255,0.03)] transition-all duration-300 overflow-hidden backdrop-blur-sm border border-white/20 dark:border-gray-700/30 cursor-pointer"
                   >
                     <div className="relative h-48 overflow-hidden shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-2px_-2px_6px_rgba(255,255,255,0.6)] dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.3),inset_-2px_-2px_6px_rgba(255,255,255,0.01)]">

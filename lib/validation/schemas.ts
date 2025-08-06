@@ -1,21 +1,57 @@
 import { z } from 'zod';
 
-export const GarmentSchema = z.object({
-  id: z.string().uuid().optional(), // Assuming UUIDs for IDs
-  name: z.string().min(1, 'Garment name is required'),
-  category: z.string().min(1, 'Category is required'),
-  material: z.string().optional(),
-  status: z.enum(['Clean', 'Dirty', 'Worn 2x', 'Needs Washing']).optional(),
-  image: z.string().url().optional(), // Assuming image is stored as a URL
+export const GarmentStatusEnum = z.enum(['CLEAN', 'DIRTY', 'WORN_2X', 'NEEDS_WASHING']);
+
+export const CreateGarmentSchema = z.object({
+  name: z.string().min(1, 'Name is required').max(100),
+  category: z.string().min(1, 'Category is required').max(50),
+  material: z.string().max(50).optional(),
+  color: z.string().max(30).optional(),
+  size: z.string().max(20).optional(),
+  brand: z.string().max(50).optional(),
+  purchaseDate: z.string().datetime().optional(),
+  cost: z.number().positive().optional(),
+  careInstructions: z.string().max(500).optional(),
+  status: GarmentStatusEnum.default('CLEAN'),
+  notes: z.string().max(1000).optional(),
+  tagIds: z.array(z.string()).optional(),
 });
 
-export const TagSchema = z.object({
-  id: z.string().uuid().optional(), // Assuming tags might have IDs too
-  name: z.string().min(1, 'Tag name is required'),
+export const UpdateGarmentSchema = CreateGarmentSchema.partial().extend({
+  id: z.string().cuid(),
+});
+
+export const CreateTagSchema = z.object({
+  name: z.string().min(1, 'Tag name is required').max(30),
+  color: z.string().regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/).optional(),
 });
 
 export const ImageUploadSchema = z.object({
-  // Placeholder for image data. Actual implementation might use z.instanceof(File)
-  // or a specific format depending on how images are sent.
-  imageData: z.any(), 
+  file: z.instanceof(File),
+  garmentId: z.string().cuid(),
+}).refine((data) => {
+  const allowedTypes = ['image/jpeg', 'image/png', 'image/webp'];
+  return allowedTypes.includes(data.file.type);
+}, {
+  message: 'Invalid file type. Only JPEG, PNG, and WebP are allowed.',
+}).refine((data) => {
+  return data.file.size <= 5 * 1024 * 1024; // 5MB
+}, {
+  message: 'File size must be less than 5MB.',
 });
+
+export const SearchGarmentsSchema = z.object({
+  query: z.string().optional(),
+  category: z.string().optional(),
+  status: GarmentStatusEnum.optional(),
+  tagIds: z.array(z.string()).optional(),
+  page: z.number().int().positive().default(1),
+  limit: z.number().int().positive().max(100).default(20),
+});
+
+export type CreateGarment = z.infer<typeof CreateGarmentSchema>;
+export type UpdateGarment = z.infer<typeof UpdateGarmentSchema>;
+export type CreateTag = z.infer<typeof CreateTagSchema>;
+export type ImageUpload = z.infer<typeof ImageUploadSchema>;
+export type SearchGarments = z.infer<typeof SearchGarmentsSchema>;
+export type GarmentStatus = z.infer<typeof GarmentStatusEnum>;

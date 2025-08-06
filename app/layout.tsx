@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pacifico, Inter } from "next/font/google";
+import NextAuthProvider from '@/components/providers/NextAuthProvider';
 import "./globals.css";
 
 const pacifico = Pacifico({
@@ -39,7 +40,9 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} ${inter.variable} antialiased font-['Inter']`}
       >
-        {children}
+        <NextAuthProvider>
+          {children}
+        </NextAuthProvider>
       </body>
     </html>
   );
