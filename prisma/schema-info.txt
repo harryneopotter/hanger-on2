@@ -1,0 +1,14 @@
+Key points about these tables:
+
+    They're designed to work with NextAuth.js authentication
+    Use UUIDs as primary keys
+    Reference auth.users for user management
+    Implement Row Level Security (RLS) where appropriate
+    Include indexes for performance
+    The Verification Tokens table doesn't use RLS as it's a system-level table
+
+The tables support:
+
+    Multiple authentication providers (OAuth, email, etc.)
+    Session tracking
+    Email verification tokens
