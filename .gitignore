@@ -37,3 +37,7 @@ yarn-error.log*
 *.vimrc
 *.eslintrc.local
 *.prettierrc.local
+
+# Documentation files
+*.md
+*.txt

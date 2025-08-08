@@ -1,24 +1,67 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import Layout from '../../components/ui/Layout';
-import { signOut } from 'next-auth/react';
+import { signOut, useSession } from 'next-auth/react';
 import Header from '../../components/ui/Header';
 import { useRouter } from 'next/navigation';
+import useSWR from 'swr';
+
+const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export default function AccountPage() {
   const [darkMode, setDarkMode] = useDarkMode();
   const router = useRouter();
+  const { data: session, status } = useSession();
+  const { data: user, error, isLoading } = useSWR(
+    session ? '/api/user' : null,
+    fetcher
+  );
 
-  const [user] = useState({
-    name: 'Sarah Johnson',
-    email: 'sarah.johnson@email.com',
-    avatar: 'https://readdy.ai/api/search-image?query=Professional%20woman%20portrait%2C%20clean%20minimal%20style%2C%20friendly%20smile%2C%20business%20casual%20outfit%2C%20soft%20lighting%2C%20neutral%20background%2C%20high%20quality%20headshot%20photography&width=128&height=128&seq=account-avatar&orientation=squarish',
-    joinedDate: 'March 2024',
-    totalItems: 127,
-    favoriteCategory: 'Dresses'
-  });
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (status === 'loading') return; // Still loading
+    if (!session) {
+      router.push('/login');
+    }
+  }, [session, status, router]);
+
+  // Show loading state
+  if (status === 'loading' || isLoading) {
+    return (
+      <Layout>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+          <div className="text-gray-600 dark:text-gray-400">Loading...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Show error state
+  if (error) {
+    return (
+      <Layout>
+        <div className="min-h-screen bg-gray-50 dark:bg-gray-900 flex items-center justify-center">
+          <div className="text-red-600 dark:text-red-400">Error loading profile</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Don't render if no session or user data
+  if (!session || !user) {
+    return null;
+  }
+
+  // Format join date
+  const formatJoinDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
+  };
+
+  // Default avatar if user doesn't have one
+  const userAvatar = user.image || 'https://readdy.ai/api/search-image?query=Professional%20person%20portrait%2C%20clean%20minimal%20style%2C%20friendly%20smile%2C%20business%20casual%20outfit%2C%20soft%20lighting%2C%20neutral%20background%2C%20high%20quality%20headshot%20photography&width=128&height=128&seq=account-avatar&orientation=squarish';
 
 
 
@@ -55,7 +98,7 @@ export default function AccountPage() {
     },
     {
       icon: 'ri-information-line',
-      title: 'About HangarOn',
+      title: 'About Hanger On',
       description: 'App version and information',
       onClick: () => console.log('About')
     }
@@ -77,20 +120,20 @@ export default function AccountPage() {
             <div className="flex items-center space-x-4">
               <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200/50 dark:bg-gray-700/50 shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.02)]">
                 <img 
-                  src={user.avatar}
+                  src={userAvatar}
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white drop-shadow-sm">
-                  {user.name}
+                  {user.name || 'User'}
                 </h2>
                 <p className="text-gray-600 dark:text-gray-400 text-sm drop-shadow-sm">
                   {user.email}
                 </p>
                 <p className="text-gray-500 dark:text-gray-500 text-xs mt-1 drop-shadow-sm">
-                  Member since {user.joinedDate}
+                  Member since {formatJoinDate(user.joinedDate)}
                 </p>
               </div>
               <button className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100/80 dark:bg-gray-700/80 shadow-[3px_3px_6px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.8)] dark:shadow-[3px_3px_6px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.02)] hover:shadow-[4px_4px_8px_rgba(0,0,0,0.15),-2px_-2px_6px_rgba(255,255,255,0.9)] dark:hover:shadow-[4px_4px_8px_rgba(0,0,0,0.4),-2px_-2px_6px_rgba(255,255,255,0.03)] transition-all duration-200 backdrop-blur-sm" onClick={() => router.push('/account/edit')}>
@@ -124,7 +167,7 @@ export default function AccountPage() {
           {/* Menu Items */}
           <div className="space-y-3">
             {menuItems
-              .filter(item => !['Privacy & Security', 'Help & Support', 'About HangarOn'].includes(item.title))
+              .filter(item => !['Privacy & Security', 'Help & Support', 'About Hanger On'].includes(item.title))
               .map((item, index) => (
                 <button
                   key={index}

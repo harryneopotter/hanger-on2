@@ -43,7 +43,7 @@ export default function Settings() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `hangaron-wardrobe-${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `hanger-on-wardrobe-${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -194,7 +194,7 @@ export default function Settings() {
                     <div className="w-16 h-16 mx-auto mb-4 bg-theme-primary-light dark:bg-theme-primary-dark rounded-2xl flex items-center justify-center">
             <i className="ri-shirt-line text-2xl text-theme-primary-dark dark:text-theme-primary"></i>
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 dark:text-white font-[\'Pacifico\']">HangarOn</h3>
+                    <h3 className="text-xl font-bold text-gray-900 dark:text-white font-['Pacifico']">Hanger On</h3>
                     <p className="text-gray-500 dark:text-gray-400 mt-2 mb-4">Your privacy-focused digital wardrobe manager</p>
                     <p className="text-sm text-gray-400 dark:text-gray-500">Version 1.0.0</p>
                   </div>
@@ -233,7 +233,7 @@ export default function Settings() {
               <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-sm">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Import Wardrobe Data</h3>
                 <p className="text-gray-600 dark:text-gray-400 mb-6">
-                  Select a JSON file exported from HangarOn to restore your wardrobe data.
+                  Select a JSON file exported from Hanger On to restore your wardrobe data.
                 </p>
                 <div className="mb-6">
                   <input

@@ -8,7 +8,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
 export default function LoginPage() {
-  const [darkMode] = useDarkMode();
+  const [darkMode, , isHydrated] = useDarkMode();
   const [loading, setLoading] = useState(false);
   const [showSignup, setShowSignup] = useState(false);
   const [email, setEmail] = useState('');
@@ -70,7 +70,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-slate-50 dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 flex items-center justify-center px-6 relative overflow-hidden">
+    <div className={`min-h-screen bg-gradient-to-br from-indigo-50 via-white to-slate-50 ${isHydrated && darkMode ? 'dark:from-gray-900 dark:via-gray-800 dark:to-gray-900' : ''} flex items-center justify-center px-6 relative overflow-hidden`}>
       {/* Subtle wardrobe background elements */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-20 left-10 w-8 h-16 border-2 border-theme-primary rounded-t-lg"></div>
@@ -85,29 +85,33 @@ export default function LoginPage() {
         {/* Logo */}
         <div className="text-center mb-8">
           <div className="w-16 h-16 mx-auto mb-4 flex items-center justify-center rounded-full bg-gradient-to-br from-indigo-600 to-indigo-700 shadow-lg">
-            <i className="ri-handbag-2-line text-2xl text-white drop-shadow-sm"></i>
+            <svg className="w-8 h-8 text-white drop-shadow-sm" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 7v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7"/>
+              <path d="M3 7l2-4h14l2 4"/>
+              <path d="M8 7v4a4 4 0 0 0 8 0V7"/>
+            </svg>
           </div>
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white font-['Pacifico']">
-            HangarOn
+          <h1 className={`text-2xl font-bold text-gray-900 ${isHydrated && darkMode ? 'dark:text-white' : ''} font-['Pacifico']`}>
+            Hanger On
           </h1>
-          <p className="text-gray-600 dark:text-gray-400 text-sm mt-2">
+          <p className={`text-gray-600 ${isHydrated && darkMode ? 'dark:text-gray-400' : ''} text-sm mt-2`}>
             Your digital closet organizer
           </p>
         </div>
 
         {/* Google Sign In Form */}
-        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-6 border border-gray-100 dark:border-gray-700">
+        <div className={`bg-white ${isHydrated && darkMode ? 'dark:bg-gray-800' : ''} rounded-2xl shadow-lg p-6 border border-gray-100 ${isHydrated && darkMode ? 'dark:border-gray-700' : ''}`}>
           <div className="text-center mb-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
-              Welcome to HangarOn
+            <h2 className={`text-xl font-semibold text-gray-900 ${isHydrated && darkMode ? 'dark:text-white' : ''} mb-2`}>
+              Welcome to Hanger On
             </h2>
-            <p className="text-gray-600 dark:text-gray-400 text-sm">
+            <p className={`text-gray-600 ${isHydrated && darkMode ? 'dark:text-gray-400' : ''} text-sm`}>
               {showSignup ? 'Sign up with email or Google' : 'Sign in with email or Google'}
             </p>
           </div>
           <form onSubmit={showSignup ? handleSignup : handleCredentialsSignIn} className="space-y-4 mb-4">
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" className="w-full px-3 py-2 rounded border border-gray-300 dark:bg-gray-700 dark:text-white" required />
-            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" className="w-full px-3 py-2 rounded border border-gray-300 dark:bg-gray-700 dark:text-white" required />
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="Email" className={`w-full px-3 py-2 rounded border border-gray-300 ${isHydrated && darkMode ? 'dark:bg-gray-700 dark:text-white' : ''}`} required />
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Password" className={`w-full px-3 py-2 rounded border border-gray-300 ${isHydrated && darkMode ? 'dark:bg-gray-700 dark:text-white' : ''}`} required />
             {error && <div className="text-red-500 text-xs">{error}</div>}
             <button type="submit" disabled={loading} className="w-full bg-theme-primary text-white font-semibold py-2 px-4 rounded-xl transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed">
               {loading ? (showSignup ? 'Signing up...' : 'Signing in...') : (showSignup ? 'Sign Up' : 'Sign In')}
@@ -128,7 +132,7 @@ export default function LoginPage() {
               </>
             )}
           </button>
-          <div className="mt-2 text-center text-xs text-gray-500 dark:text-gray-400">
+          <div className={`mt-2 text-center text-xs text-gray-500 ${isHydrated && darkMode ? 'dark:text-gray-400' : ''}`}>
             {showSignup ? (
               <>
                 Already have an account?{' '}
@@ -141,7 +145,7 @@ export default function LoginPage() {
               </>
             )}
           </div>
-          <div className="mt-4 text-center text-xs text-gray-500 dark:text-gray-400">
+          <div className={`mt-4 text-center text-xs text-gray-500 ${isHydrated && darkMode ? 'dark:text-gray-400' : ''}`}>
             By continuing, you agree to our{' '}
             <button className="text-theme-primary-dark hover:text-theme-primary">Terms</button> and{' '}
             <button className="text-theme-primary-dark hover:text-theme-primary">Privacy Policy</button>
@@ -151,10 +155,14 @@ export default function LoginPage() {
         {/* Demo Access */}
         <div className="mt-6 text-center">
           <Link
-            href="/"
+            href="/?guest=true"
             className="text-theme-primary-dark hover:text-theme-primary text-sm font-medium flex items-center justify-center space-x-2"
           >
-            <i className="ri-handbag-line text-sm"></i>
+            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M3 7v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7"/>
+              <path d="M3 7l2-4h14l2 4"/>
+              <path d="M8 7v4a4 4 0 0 0 8 0V7"/>
+            </svg>
             <span>Continue as Guest</span>
           </Link>
         </div>

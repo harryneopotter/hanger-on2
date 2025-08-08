@@ -29,7 +29,8 @@ async function pushSchema() {
         "scope" TEXT,
         "id_token" TEXT,
         "session_state" TEXT,
-        CONSTRAINT "accounts_pkey" PRIMARY KEY ("id")
+        CONSTRAINT "accounts_pkey" PRIMARY KEY ("id"),
+        CONSTRAINT "accounts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE
       );
     `;
     
@@ -42,15 +43,16 @@ async function pushSchema() {
         "session_token" TEXT NOT NULL,
         "user_id" TEXT NOT NULL,
         "expires" TIMESTAMP(3) NOT NULL,
-        CONSTRAINT "sessions_pkey" PRIMARY KEY ("id")
+        CONSTRAINT "sessions_pkey" PRIMARY KEY ("id"),
+        CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE
       );
     `;
     
     console.log('✅ Created sessions table');
     
-    // Create users table
+    // Create profiles table
     await prisma.$executeRaw`
-      CREATE TABLE IF NOT EXISTS "users" (
+      CREATE TABLE IF NOT EXISTS "profiles" (
         "id" TEXT NOT NULL,
         "name" TEXT,
         "email" TEXT NOT NULL,
@@ -58,11 +60,11 @@ async function pushSchema() {
         "image" TEXT,
         "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
         "updated_at" TIMESTAMP(3) NOT NULL,
-        CONSTRAINT "users_pkey" PRIMARY KEY ("id")
+        CONSTRAINT "profiles_pkey" PRIMARY KEY ("id")
       );
     `;
     
-    console.log('✅ Created users table');
+    console.log('✅ Created profiles table');
     
     // Create verification_tokens table
     await prisma.$executeRaw`

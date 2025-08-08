@@ -9,9 +9,12 @@ import { useDarkMode } from '@/hooks/useDarkMode';
 import Layout from '@/components/ui/Layout';
 import Header from '@/components/ui/Header';
 import CategoryTabs from '@/components/ui/CategoryTabs';
-import SearchBar from '@/components/ui/SearchBar';
-import FilterPanel from '@/components/features/FilterPanel';
+import CompactFilterBar from '@/components/features/CompactFilterBar';
 import GarmentCard from '@/components/features/GarmentCard';
+import { HangerFAB } from '@/components/ui/FloatingActionButton';
+import EmptyState from '@/components/features/EmptyState';
+import { demoGarments, demoTags, isGuestMode, setGuestMode, clearGuestMode } from '@/lib/demo-data';
+
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -21,9 +24,34 @@ export default function Home() {
   const [darkMode, setDarkMode, isHydrated] = useDarkMode();
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  const [isGuest, setIsGuest] = useState(false);
+  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  
+  // SWR hooks must be called before any conditional logic
+  const { data: garments = [], mutate } = useSWR(isGuest ? null : '/api/garments', fetcher);
+  const { data: tags = [] } = useSWR(isGuest ? null : '/api/tags', fetcher);
 
   useEffect(() => {
     if (status === 'loading') return; // Still loading
+    
+    // If user is authenticated, clear guest mode
+    if (session) {
+      clearGuestMode();
+      setIsGuest(false);
+      return;
+    }
+    
+    // Check if user came from guest mode link
+    const urlParams = new URLSearchParams(window.location.search);
+    const guestParam = urlParams.get('guest');
+    
+    if (guestParam === 'true' || isGuestMode()) {
+      setGuestMode(true);
+      setIsGuest(true);
+      return;
+    }
+    
     if (!session) {
       router.push('/login');
       return;
@@ -31,7 +59,7 @@ export default function Home() {
   }, [session, status, router]);
 
   // Show loading while checking authentication
-  if (status === 'loading') {
+  if (status === 'loading' && !isGuest) {
     return (
       <Layout>
         <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300 flex items-center justify-center">
@@ -41,13 +69,10 @@ export default function Home() {
     );
   }
 
-  // Don't render if not authenticated (will redirect)
-  if (!session) {
+  // Don't render if not authenticated and not in guest mode (will redirect)
+  if (!session && !isGuest) {
     return null;
   }
-
-  const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
 
   // Helpers to toggle selection
   const handleStatusSelect = (status: string) => {
@@ -61,10 +86,18 @@ export default function Home() {
       prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
     );
   };
-  const { data: garments = [], mutate } = useSWR('/api/garments', fetcher);
-  const { data: tags = [] } = useSWR('/api/tags', fetcher);
+  
+  // Use demo data for guest mode
+  const displayGarments = isGuest ? demoGarments : garments;
+  const displayTags = isGuest ? demoTags : tags;
 
   const updateGarmentStatus = async (garmentId: string, newStatus: string) => {
+    if (isGuest) {
+      // Show toast notification for guest users
+      alert('Please sign in to edit garments');
+      return;
+    }
+    
     try {
       await fetch(`/api/garments/${garmentId}`, {
         method: 'PUT',
@@ -77,7 +110,7 @@ export default function Home() {
     }
   };
 
-  const filteredGarments = (garments || []).filter(garment => {
+  const filteredGarments = (displayGarments || []).filter(garment => {
     // Category filtering (using existing activeCategory state)
     const matchesCategory = activeCategory === 'All' || garment.category === activeCategory;
 
@@ -104,28 +137,25 @@ export default function Home() {
     <Layout>
       <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
           <Header 
-            title="HangarOn" 
+            title="Hanger On" 
             showThemeToggle={isHydrated} 
             onThemeToggle={handleThemeToggle} 
             darkMode={darkMode}
+            isGuest={isGuest}
           />
           
           <div className="pt-20">
 
-            <div className="px-6 py-4">
-              <SearchBar value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-            </div>
-
-            <div className="px-6 py-4">
-             <FilterPanel
-               availableTags={tags.map((tag: any) => tag.name)}
-                selectedTags={selectedTags}
-                onTagSelect={handleTagSelect}
-               availableStatuses={["Clean", "Worn", "Dirty", "Worn 2x", "Needs Washing"]}
-               selectedStatuses={selectedStatuses}
-               onStatusSelect={handleStatusSelect}
-             />
-            </div>
+            <CompactFilterBar
+              searchQuery={searchQuery}
+              onSearchChange={setSearchQuery}
+              availableTags={displayTags.map((tag: any) => tag.name)}
+              selectedTags={selectedTags}
+              onTagSelect={handleTagSelect}
+              availableStatuses={["Clean", "Worn", "Dirty", "Worn 2x", "Needs Washing"]}
+              selectedStatuses={selectedStatuses}
+              onStatusSelect={handleStatusSelect}
+            />
             <CategoryTabs onCategoryChange={setActiveCategory} />
 
             <div className="w-full px-4 md:px-8 xl:px-16">
@@ -134,7 +164,12 @@ export default function Home() {
                   <GarmentCard
                     key={garment.id}
                     {...garment}
+                    isGuest={isGuest}
                     onEdit={() => {
+                      if (isGuest) {
+                        alert('Please sign in to edit garments');
+                        return;
+                      }
                       window.location.href = `/add?edit=${garment.id}`;
                     }}
                     onMarkAsWorn={() => {
@@ -151,12 +186,9 @@ export default function Home() {
               </div>
 
               {filteredGarments.length === 0 && (
-                <div className="text-center py-12">
-                  <div className="w-20 h-20 mx-auto mb-4 bg-gray-100/80 dark:bg-gray-700/80 rounded-full flex items-center justify-center shadow-[6px_6px_12px_rgba(0,0,0,0.1),-3px_-3px_9px_rgba(255,255,255,0.8)] dark:shadow-[6px_6px_12px_rgba(0,0,0,0.3),-3px_-3px_9px_rgba(255,255,255,0.02)] backdrop-blur-sm">
-                    <i className="ri-handbag-line text-2xl text-gray-400 dark:text-gray-500 drop-shadow-sm"></i>
-                  </div>
-                  <h3 className="text-lg font-medium text-gray-900 dark:text-white mb-2 drop-shadow-sm">
-                    {(() => {
+                <div className="col-span-full">
+                  <EmptyState
+                    title={(() => {
                       if (searchQuery) {
                         return `No items found for "${searchQuery}"`;
                       }
@@ -171,20 +203,34 @@ export default function Home() {
                       }
                       return 'Your closet is empty';
                     })()}
-                  </h3>
-                  <p className="text-gray-500 dark:text-gray-400 drop-shadow-sm">
-                    {(() => {
+                    message={(() => {
                       if (searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0) {
                         return 'Try adjusting your filters or search terms';
                       }
-                      return 'Start adding items to your wardrobe';
+                      return 'Start adding items to your wardrobe and watch your collection grow!';
                     })()}
-                  </p>
+                    actionText={(() => {
+                      if (searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0) {
+                        return 'Clear filters';
+                      }
+                      return 'Add your first item';
+                    })()}
+                    actionHref={(() => {
+                      if (searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0) {
+                        return '/';
+                      }
+                      return '/add';
+                    })()}
+                    type={searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0 ? 'search' : 'garments'}
+                  />
                 </div>
               )}
             </div>
           </div>
-      </div>
+          
+          {/* Floating Action Button */}
+          <HangerFAB isGuest={isGuest} />
+        </div>
     </Layout>
   );
 }

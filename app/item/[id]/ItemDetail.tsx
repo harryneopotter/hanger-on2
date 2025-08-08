@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import { useDarkMode } from '@/hooks/useDarkMode';
 import Layout from '@/components/ui/Layout';
 import Header from '@/components/ui/Header';
 
@@ -10,7 +11,7 @@ interface ItemDetailProps {
 }
 
 export default function ItemDetail({ itemId }: ItemDetailProps) {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useDarkMode();
 
   const garments = {
     '1': {
@@ -148,7 +149,6 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
 
   const handleThemeToggle = () => {
     setDarkMode(!darkMode);
-    document.documentElement.classList.toggle('dark');
   };
 
   return (

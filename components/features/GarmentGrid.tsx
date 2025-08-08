@@ -12,9 +12,13 @@ interface Garment {
 
 interface GarmentGridProps {
   garments: Garment[];
+  isGuest?: boolean;
+  onEdit?: (garment: Garment) => void;
+  onMarkAsWorn?: (garment: Garment) => void;
+  onMoveToLaundry?: (garment: Garment) => void;
 }
 
-const GarmentGrid: React.FC<GarmentGridProps> = ({ garments }) => {
+const GarmentGrid: React.FC<GarmentGridProps> = ({ garments, isGuest = false, onEdit, onMarkAsWorn, onMoveToLaundry }) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
       {garments.map(garment => (
@@ -26,6 +30,10 @@ const GarmentGrid: React.FC<GarmentGridProps> = ({ garments }) => {
           material={garment.material}
           status={garment.status}
           image={garment.image}
+          isGuest={isGuest}
+          onEdit={() => onEdit?.(garment)}
+          onMarkAsWorn={() => onMarkAsWorn?.(garment)}
+          onMoveToLaundry={() => onMoveToLaundry?.(garment)}
         />
       ))}
     </div>

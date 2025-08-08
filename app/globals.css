@@ -1,18 +1,110 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 @import url('https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.5.0/remixicon.min.css');
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-/* Theme Color Variables */
+/* HangerOn Brand Colors & Enhanced Color System */
 :root {
-  --theme-primary: 99 102 241; /* indigo-500 */
-  --theme-primary-dark: 79 70 229; /* indigo-600 */
-  --theme-primary-light: 165 180 252; /* indigo-300 */
+  /* Brand Colors */
+  --hanger-blue: #2563eb;
+  --hanger-amber: #f59e0b;
+  --hanger-gray: #6b7280;
+  
+  /* Status Colors */
+  --clean: #10b981;
+  --worn: #f59e0b;
+  --worn-2x: #ef4444;
+  --dirty: #7c2d12;
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, var(--hanger-blue), var(--hanger-amber));
+  --gradient-card: linear-gradient(145deg, #ffffff, #f8fafc);
+  
+  /* Legacy theme support */
+  --theme-primary: 37 99 235; /* blue-600 - matches hanger-blue */
+  --theme-primary-dark: 29 78 216; /* blue-700 */
+  --theme-primary-light: 147 197 253; /* blue-300 */
 }
 
+/* Enhanced Brand Typography */
+.brand-font {
+  font-family: 'Inter', sans-serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.hanger-accent::before {
+  content: '👔';
+  margin-right: 0.5rem;
+}
+
+/* Hanger-themed Animations */
+.hanger-loading {
+  animation: hangerSwing 2s ease-in-out infinite;
+  transform-origin: top center;
+}
+
+@keyframes hangerSwing {
+  0%, 100% { transform: rotate(-15deg); }
+  50% { transform: rotate(15deg); }
+}
+
+.hanger-spin {
+  animation: hangerSpin 1.5s linear infinite;
+}
+
+@keyframes hangerSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Card Interactions */
+.garment-card {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translateY(0);
+}
+
+.garment-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.garment-card:active {
+  transform: translateY(-2px);
+  transition: all 0.1s;
+}
+
+/* Status change animation */
+.status-change {
+  animation: statusPulse 0.6s ease-out;
+}
+
+@keyframes statusPulse {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+}
+
+/* Glassmorphism Cards */
+.glass-card {
+  background: rgba(255, 255, 255, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+}
+
+.glass-card-dark {
+  background: rgba(0, 0, 0, 0.25);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Legacy theme colors updated to match brand */
 :root[data-theme="blue"] {
-  --theme-primary: 59 130 246; /* blue-500 */
-  --theme-primary-dark: 37 99 235; /* blue-600 */
+  --theme-primary: 37 99 235; /* blue-600 - hanger-blue */
+  --theme-primary-dark: 29 78 216; /* blue-700 */
   --theme-primary-light: 147 197 253; /* blue-300 */
 }
 

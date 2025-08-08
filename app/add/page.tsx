@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useDarkMode } from '@/hooks/useDarkMode';
 import Layout from '@/components/ui/Layout';
 import ImageUpload from '@/components/features/ImageUpload';
 import ImageCropper from '@/components/features/ImageCropper';
@@ -11,7 +12,7 @@ import Header from '@/components/ui/Header';
 import TagSelector from '@/components/features/TagSelector';
 
 export default function AddItem() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useDarkMode();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const searchParams = useSearchParams();
   const router = useRouter();
@@ -161,7 +162,6 @@ export default function AddItem() {
 
   const handleThemeToggle = () => {
     setDarkMode(!darkMode);
-    document.documentElement.classList.toggle('dark');
   };
 
   return (

@@ -3,12 +3,15 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import { useDarkMode } from '@/hooks/useDarkMode';
 import Layout from '@/components/ui/Layout';
 import TagFilter from '@/components/features/TagFilter';
 import TagList from '@/components/features/TagList';
 import Header from '@/components/ui/Header';
-import CollectionForm from '@/components/features/CollectionForm';
+import CollectionForm from '@/src/components/features/CollectionForm';
 import { CreateCollection } from '@/lib/validation/schemas';
+import { Collection } from '@/types';
+import { demoCollections, isGuestMode, setGuestMode } from '@/lib/demo-data';
 
 interface Collection {
   id: string;
@@ -27,17 +30,30 @@ interface Collection {
 }
 
 export default function Collections() {
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useDarkMode();
   const [searchQuery, setSearchQuery] = useState('');
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [showCreateForm, setShowCreateForm] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
   const router = useRouter();
   const { data: session, status } = useSession();
 
   useEffect(() => {
     if (status === 'loading') return;
+    
+    // Check if user came from guest mode link
+    const urlParams = new URLSearchParams(window.location.search);
+    const guestParam = urlParams.get('guest');
+    
+    if (guestParam === 'true' || isGuestMode()) {
+      setGuestMode(true);
+      setIsGuest(true);
+      setLoading(false);
+      return;
+    }
+    
     if (!session) {
       router.push('/login');
       return;
@@ -62,43 +78,19 @@ export default function Collections() {
     }
   };
 
-  // Mock collections for fallback (can be removed once real data is available)
-  const mockCollections: Collection[] = [
-    {
-      id: '1',
-      name: 'Winter Essentials',
-      description: 'Cozy layers and warm pieces for cold weather',
-      _count: { garments: 24 },
-      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Elegant%20winter%20fashion%20collection%20for%20women%2C%20cozy%20wool%20coats%2C%20cashmere%20scarves%2C%20warm%20knitwear%2C%20sophisticated%20layering%20pieces%2C%20neutral%20winter%20tones%2C%20luxury%20fabric%20textures%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20premium%20fashion%20styling%2C%20cold%20weather%20elegance&image_size=landscape_4_3',
-      color: '#3B82F6',
-      isSmartCollection: false,
-      garments: [],
-      rules: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    },
-    {
-      id: '2',
-      name: 'Summer Breeze',
-      description: 'Light, airy pieces for warm sunny days',
-      _count: { garments: 18 },
-      image: 'https://trae-api-sg.mchost.guru/api/ide/v1/text_to_image?prompt=Fresh%20summer%20fashion%20collection%20for%20women%2C%20flowing%20lightweight%20fabrics%2C%20bright%20airy%20dresses%2C%20linen%20pieces%2C%20pastel%20colors%2C%20beach-ready%20styles%2C%20feminine%20summer%20elegance%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20breezy%20fashion%20styling%2C%20warm%20weather%20essentials&image_size=landscape_4_3',
-      color: '#F59E0B',
-      isSmartCollection: false,
-      garments: [],
-      rules: [],
-      createdAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString()
-    }
-  ];
-
-  const displayCollections = collections.length > 0 ? collections : mockCollections;
+  // Use demo data for guest mode
+  const displayCollections = isGuest ? demoCollections : (collections.length > 0 ? collections : []);
   const filteredCollections = displayCollections.filter(collection =>
     collection.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     collection.description.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const handleCreateCollection = async (data: CreateCollection) => {
+    if (isGuest) {
+      alert('Please sign in to create collections');
+      return;
+    }
+    
     try {
       const response = await fetch('/api/collections', {
         method: 'POST',
@@ -124,23 +116,41 @@ export default function Collections() {
 
   const handleThemeToggle = () => {
     setDarkMode(!darkMode);
-    document.documentElement.classList.toggle('dark');
   };
 
   const handleCollectionClick = (collectionId: string) => {
+    if (isGuest) {
+      alert('Please sign in to view collection details');
+      return;
+    }
     router.push(`/collections/${collectionId}`);
   };
 
+  // Show loading while checking authentication
+  if (status === 'loading' && !isGuest) {
+    return (
+      <Layout>
+        <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300 flex items-center justify-center">
+          <div className="text-gray-600 dark:text-gray-400">Loading...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  // Don't render if not authenticated and not in guest mode (will redirect)
+  if (!session && !isGuest) {
+    return null;
+  }
+
   return (
     <Layout>
-      <div className={darkMode ? 'dark' : ''}>
-        <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
+      <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
           <Header 
             title="Collections" 
             showThemeToggle 
             onThemeToggle={handleThemeToggle} 
             darkMode={darkMode}
-
+            isGuest={isGuest}
           />
           
           <div className="pt-20 pb-20">
@@ -158,7 +168,6 @@ export default function Collections() {
                 />
               </div>
             </div>
-            )}
 
             <div className="px-6 py-4">
               <TagFilter availableTags={[{ name: 'Casual' }, { name: 'Formal' }]} selectedTags={[]} />
@@ -222,7 +231,6 @@ export default function Collections() {
                           </div>
                         </div>
                       )}
-                      </div>
                     </div>
                     
                     <div className="p-6">
@@ -252,8 +260,8 @@ export default function Collections() {
                 </div>
               )}
             </div>
+            )}
           </div>
-        </div>
       </div>
 
       <CollectionForm

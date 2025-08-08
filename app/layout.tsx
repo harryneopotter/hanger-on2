@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Pacifico, Inter } from "next/font/google";
 import NextAuthProvider from '@/components/providers/NextAuthProvider';
+import { DarkModeProvider } from '@/contexts/DarkModeContext';
 import "./globals.css";
 
 const pacifico = Pacifico({
@@ -26,7 +27,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "HangarOn - Digital Wardrobe Manager",
+  title: "Hanger On - Digital Wardrobe Manager",
   description: "Your privacy-focused digital wardrobe manager",
 };
 
@@ -41,7 +42,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} ${pacifico.variable} ${inter.variable} antialiased font-['Inter']`}
       >
         <NextAuthProvider>
-          {children}
+          <DarkModeProvider>
+            {children}
+          </DarkModeProvider>
         </NextAuthProvider>
       </body>
     </html>

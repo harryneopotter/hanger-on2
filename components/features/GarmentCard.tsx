@@ -4,6 +4,7 @@
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useSession } from 'next-auth/react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface Collection {
   id: string;
@@ -18,12 +19,13 @@ interface GarmentCardProps {
   material: string;
   status: 'CLEAN' | 'DIRTY' | 'WORN_2X' | 'NEEDS_WASHING';
   image: string;
+  isGuest?: boolean;
   onEdit?: () => void;
   onMarkAsWorn?: () => void;
   onMoveToLaundry?: () => void;
 }
 
-export default function GarmentCard({ id, name, category, material, status, image, onEdit, onMarkAsWorn, onMoveToLaundry }: GarmentCardProps) {
+export default function GarmentCard({ id, name, category, material, status, image, isGuest = false, onEdit, onMarkAsWorn, onMoveToLaundry }: GarmentCardProps) {
   const { data: session } = useSession();
   const [showCollectionModal, setShowCollectionModal] = useState(false);
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -107,61 +109,133 @@ export default function GarmentCard({ id, name, category, material, status, imag
   };
 
   return (
-    <div className="bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] hover:shadow-[12px_12px_24px_rgba(0,0,0,0.15),-6px_-6px_18px_rgba(255,255,255,0.8)] dark:hover:shadow-[12px_12px_24px_rgba(0,0,0,0.4),-6px_-6px_18px_rgba(255,255,255,0.03)] transition-all duration-300 overflow-hidden backdrop-blur-sm border border-white/20 dark:border-gray-700/30">
+    <motion.div 
+      className="garment-card bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] overflow-hidden backdrop-blur-sm border border-white/20 dark:border-gray-700/30"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      whileHover={{ 
+        y: -8,
+        scale: 1.02,
+        boxShadow: "0 20px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(59, 130, 246, 0.1)"
+      }}
+      transition={{ 
+        type: "spring", 
+        stiffness: 300, 
+        damping: 20,
+        duration: 0.3
+      }}
+    >
       <Link href={`/item/${id}`}>
-        <div className="relative aspect-square bg-gray-100/30 dark:bg-gray-700/30 overflow-hidden shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-2px_-2px_6px_rgba(255,255,255,0.6)] dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.3),inset_-2px_-2px_6px_rgba(255,255,255,0.01)] cursor-pointer">
-          <div className={`absolute top-3 left-3 w-3 h-3 rounded-full ${getStatusDot(status)}`}></div>
-          <img
+        <motion.div 
+          className="relative aspect-square bg-gray-100/30 dark:bg-gray-700/30 overflow-hidden shadow-[inset_4px_4px_8px_rgba(0,0,0,0.06),inset_-2px_-2px_6px_rgba(255,255,255,0.6)] dark:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.3),inset_-2px_-2px_6px_rgba(255,255,255,0.01)] cursor-pointer"
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.2 }}
+        >
+          <motion.div 
+            className={`absolute top-3 left-3 w-3 h-3 rounded-full ${getStatusDot(status)} statusPulse`}
+            animate={{ scale: [1, 1.2, 1] }}
+            transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+          ></motion.div>
+          <motion.img
             src={image}
             alt={name}
             className="w-full h-full object-cover object-top"
+            whileHover={{ scale: 1.1 }}
+            transition={{ duration: 0.3 }}
           />
-          <button
+          <motion.button
             onClick={(e) => {
               e.preventDefault();
               e.stopPropagation();
+              if (isGuest) {
+                alert('Please sign in to edit garments');
+                return;
+              }
               onEdit?.();
             }}
-            className="absolute top-3 right-3 w-8 h-8 bg-white/90 dark:bg-gray-800/90 rounded-full flex items-center justify-center shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.03)] hover:shadow-[6px_6px_12px_rgba(0,0,0,0.15),-3px_-3px_9px_rgba(255,255,255,0.9)] dark:hover:shadow-[6px_6px_12px_rgba(0,0,0,0.4),-3px_-3px_9px_rgba(255,255,255,0.05)] transition-all duration-200 backdrop-blur-sm"
+            className="absolute top-3 right-3 w-8 h-8 bg-white/90 dark:bg-gray-800/90 rounded-full flex items-center justify-center shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.03)] backdrop-blur-sm"
+            whileHover={{ 
+              scale: 1.1,
+              rotate: 90,
+              boxShadow: "6px 6px 12px rgba(0,0,0,0.15), -3px -3px 9px rgba(255,255,255,0.9)"
+            }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ duration: 0.2 }}
           >
             <i className="ri-more-line text-gray-600 dark:text-gray-300"></i>
-          </button>
-        </div>
+          </motion.button>
+        </motion.div>
       </Link>
 
       {/* Quick action buttons */}
-      <div className="flex justify-around p-2 gap-1">
-        <button 
+      <motion.div 
+        className="flex justify-around p-2 gap-1"
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 0.1 }}
+      >
+        <motion.button 
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            if (isGuest) {
+              alert('Please sign in to edit garments');
+              return;
+            }
             onMarkAsWorn?.();
           }}
-          className="px-2 py-1 bg-blue-500 text-white text-xs rounded-full min-w-[40px] min-h-[32px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200"
+          className="px-2 py-1 bg-hanger-blue text-white text-xs rounded-full min-w-[40px] min-h-[32px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)]"
+          whileHover={{ 
+            scale: 1.05,
+            boxShadow: "3px 3px 6px rgba(0,0,0,0.15), -1.5px -1.5px 4.5px rgba(255,255,255,0.8)"
+          }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.15 }}
         >
           Worn
-        </button>
-        <button 
+        </motion.button>
+        <motion.button 
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            if (isGuest) {
+              alert('Please sign in to edit garments');
+              return;
+            }
             onMoveToLaundry?.();
           }}
-          className="px-2 py-1 bg-yellow-500 text-white text-xs rounded-full min-w-[40px] min-h-[32px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200"
+          className="px-2 py-1 bg-hanger-amber text-white text-xs rounded-full min-w-[40px] min-h-[32px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)]"
+          whileHover={{ 
+            scale: 1.05,
+            boxShadow: "3px 3px 6px rgba(0,0,0,0.15), -1.5px -1.5px 4.5px rgba(255,255,255,0.8)"
+          }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.15 }}
         >
           Laundry
-        </button>
-        <button 
+        </motion.button>
+        <motion.button 
           onClick={(e) => {
             e.preventDefault();
             e.stopPropagation();
+            if (isGuest) {
+              alert('Please sign in to edit garments');
+              return;
+            }
             setShowCollectionModal(true);
           }}
-          className="px-2 py-1 bg-purple-500 text-white text-xs rounded-full min-w-[40px] min-h-[32px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.15),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.4),-1.5px_-1.5px_4.5px_rgba(255,255,255,0.07)] transition-all duration-200"
+          className="px-2 py-1 bg-purple-500 text-white text-xs rounded-full min-w-[40px] min-h-[32px] flex items-center justify-center shadow-[2px_2px_5px_rgba(0,0,0,0.1),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_5px_rgba(0,0,0,0.3),-1px_-1px_3px_rgba(255,255,255,0.05)]"
+          whileHover={{ 
+            scale: 1.1,
+            rotate: 90,
+            boxShadow: "3px 3px 6px rgba(0,0,0,0.15), -1.5px -1.5px 4.5px rgba(255,255,255,0.8)"
+          }}
+          whileTap={{ scale: 0.95 }}
+          transition={{ duration: 0.15 }}
         >
           +
-        </button>
-      </div>
+        </motion.button>
+      </motion.div>
 
       <Link href={`/item/${id}`}>
         <div className="p-4 cursor-pointer">
@@ -174,47 +248,70 @@ export default function GarmentCard({ id, name, category, material, status, imag
       </Link>
 
       {/* Collection Modal */}
-      {showCollectionModal && (
-        <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" onClick={() => setShowCollectionModal(false)}>
-          <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl" onClick={(e) => e.stopPropagation()}>
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Add to Collection</h3>
+      <AnimatePresence>
+        {showCollectionModal && (
+          <motion.div 
+            className="fixed inset-0 bg-black/50 flex items-center justify-center z-50" 
+            onClick={() => setShowCollectionModal(false)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.2 }}
+          >
+            <motion.div 
+              className="bg-white dark:bg-gray-800 rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl" 
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.8, opacity: 0, y: 20 }}
+              animate={{ scale: 1, opacity: 1, y: 0 }}
+              exit={{ scale: 0.8, opacity: 0, y: 20 }}
+              transition={{ type: "spring", stiffness: 300, damping: 25 }}
+            >
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Add to Collection</h3>
             
-            {collections.length === 0 ? (
-              <p className="text-gray-600 dark:text-gray-400 text-center py-4">
-                No collections found. Create a collection first.
-              </p>
-            ) : (
-              <div className="space-y-2 max-h-60 overflow-y-auto">
-                {collections.map((collection) => (
-                  <button
-                    key={collection.id}
-                    onClick={() => addToCollection(collection.id)}
-                    disabled={loading}
-                    className="w-full text-left p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div 
-                        className="w-4 h-4 rounded-full" 
-                        style={{ backgroundColor: collection.color }}
-                      ></div>
-                      <span className="text-gray-900 dark:text-white">{collection.name}</span>
-                    </div>
-                  </button>
-                ))}
+              {collections.length === 0 ? (
+                <p className="text-gray-600 dark:text-gray-400 text-center py-4">
+                  No collections found. Create a collection first.
+                </p>
+              ) : (
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {collections.map((collection, index) => (
+                    <motion.button
+                      key={collection.id}
+                      onClick={() => addToCollection(collection.id)}
+                      disabled={loading}
+                      className="w-full text-left p-3 rounded-lg border border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
+                      initial={{ opacity: 0, x: -20 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: index * 0.05 }}
+                      whileHover={{ scale: 1.02, x: 4 }}
+                      whileTap={{ scale: 0.98 }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <motion.div 
+                          className="w-4 h-4 rounded-full" 
+                          style={{ backgroundColor: collection.color }}
+                          whileHover={{ scale: 1.2 }}
+                          transition={{ duration: 0.2 }}
+                        ></motion.div>
+                        <span className="text-gray-900 dark:text-white">{collection.name}</span>
+                      </div>
+                    </motion.button>
+                  ))}
+                </div>
+              )}
+              
+              <div className="flex gap-2 mt-4">
+                <button
+                  onClick={() => setShowCollectionModal(false)}
+                  className="flex-1 px-4 py-2 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
+                >
+                  Cancel
+                </button>
               </div>
-            )}
-            
-            <div className="flex gap-2 mt-4">
-              <button
-                onClick={() => setShowCollectionModal(false)}
-                className="flex-1 px-4 py-2 text-gray-600 dark:text-gray-400 border border-gray-300 dark:border-gray-600 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-              >
-                Cancel
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.div>
   );
 }
