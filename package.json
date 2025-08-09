@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "cross-env NODE_OPTIONS=\"--max-old-space-size=4096\" CHOKIDAR_USEPOLLING=false WATCHPACK_POLLING=false next build",
+    "vercel-build": "prisma generate && next build",
     "build:safe": "cross-env NODE_ENV=production NODE_OPTIONS=\"--max-old-space-size=4096\" CHOKIDAR_USEPOLLING=false WATCHPACK_POLLING=false TAILWIND_DISABLE_TOUCH=true next build",
     "lint": "next lint",
     "format": "prettier --write \"**/*.{ts,tsx,js,jsx,json}\"",
