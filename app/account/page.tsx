@@ -7,6 +7,7 @@ import { signOut, useSession } from 'next-auth/react';
 import Header from '../../components/ui/Header';
 import { useRouter } from 'next/navigation';
 import useSWR from 'swr';
+import Image from 'next/image';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -115,8 +116,14 @@ export default function AccountPage() {
           {/* Profile Header */}
           <div className="bg-gray-50/80 dark:bg-gray-800/80 rounded-2xl shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30 p-6 mb-6">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200/50 dark:bg-gray-700/50 shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.02)]">
-                <img src={userAvatar} alt="Profile" className="w-full h-full object-cover" />
+              <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200/50 dark:bg-gray-700/50 shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.02)] relative">
+                <Image 
+                  src={userAvatar} 
+                  alt="Profile" 
+                  fill
+                  className="object-cover" 
+                  sizes="64px"
+                />
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white drop-shadow-sm">

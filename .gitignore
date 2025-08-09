@@ -38,8 +38,9 @@ yarn-error.log*
 *.eslintrc.local
 *.prettierrc.local
 
-# Documentation files
-*.md
+# Documentation files (except README)
+DEVELOPER_DOCS.md
+SETUP.md
 *.txt
 
 # Prisma generated client and native engines (do not commit)
