@@ -5,6 +5,12 @@ const nextConfig: NextConfig = {
   images: {
     unoptimized: true,
   },
+  // Ensure Prisma engines are available at runtime on Vercel
+  output: 'standalone',
+  experimental: {
+    ...(typeof (globalThis as any).experimental === 'object' ? (globalThis as any).experimental : {}),
+    serverComponentsExternalPackages: ['@prisma/client', 'prisma'],
+  },
   // Skip ESLint during production builds to allow build to succeed
   eslint: {
     ignoreDuringBuilds: true,
@@ -14,6 +20,11 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   webpack: (config, { dev, isServer }) => {
+    // Mark Prisma packages as externals so Next doesn't bundle them
+    if (!config.externals) config.externals = [];
+    if (Array.isArray(config.externals)) {
+      config.externals.push('@prisma/client', 'prisma');
+    }
     // Restrict file system access to project directory only
     const projectRoot = process.cwd();
     

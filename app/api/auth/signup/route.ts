@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { PrismaClient } from '@prisma/client';
 import bcrypt from 'bcryptjs';
+import { prisma } from '@/lib/prisma';
 
-const prisma = new PrismaClient();
+// Force Node.js runtime to ensure Prisma engine availability
+export const runtime = 'nodejs';
 
 export async function POST(req: NextRequest) {
   try {
