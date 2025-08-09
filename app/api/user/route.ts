@@ -7,9 +7,12 @@ export const runtime = 'nodejs';
 
 export async function GET() {
   try {
+    console.log('🔍 User API called');
     const session = await getServerSession(authOptions);
+    console.log('📋 Session:', { hasSession: !!session, userId: session?.user?.id, email: session?.user?.email });
     
     if (!session || !session.user?.id) {
+      console.log('❌ No session or user ID');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
