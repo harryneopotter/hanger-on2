@@ -38,9 +38,10 @@ export async function GET(req: NextRequest) {
     });
 
     return NextResponse.json(garments);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error fetching garments:', error);
-    if (error?.message?.includes('Unauthorized')) {
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    if (errorMessage.includes('Unauthorized')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -95,12 +96,17 @@ export async function POST(req: NextRequest) {
     // Fetch the complete garment with images and tags
     const completeGarment = await garmentService.getGarmentById(created.id, userId);
     return NextResponse.json(completeGarment || created, { status: 201 });
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error creating garment:', error);
-    if (error?.issues) {
-      return NextResponse.json({ error: error.issues }, { status: 400 });
+    
+    // Handle Zod validation errors
+    if (error && typeof error === 'object' && 'issues' in error) {
+      return NextResponse.json({ error: (error as { issues: unknown }).issues }, { status: 400 });
     }
-    if (error?.message?.includes('Unauthorized')) {
+    
+    // Handle auth errors
+    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    if (errorMessage.includes('Unauthorized')) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
