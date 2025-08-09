@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import ImageCropper from './ImageCropper';
-import { supabase } from '../../lib/supabase';
+import { getSupabase } from '../../lib/supabase';
 
 interface ImageUploadProps {
   onImageUploaded?: (imageUrl: string) => void;
@@ -68,6 +68,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded }) => {
       const fileName = `garment_${timestamp}_${randomId}.jpg`;
       
       // Upload to Supabase Storage
+      const supabase = getSupabase();
       const { data, error } = await supabase.storage
         .from('garment-images')
         .upload(fileName, croppedImageBlob, {
@@ -82,7 +83,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded }) => {
       }
       
       // Get public URL
-      const { data: { publicUrl } } = supabase.storage
+      const { data: { publicUrl } } = getSupabase().storage
         .from('garment-images')
         .getPublicUrl(fileName);
       

@@ -1,7 +1,8 @@
-
 'use client';
 
-import { useState, useEffect } from 'react';
+export const dynamic = 'force-dynamic';
+
+import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useDarkMode } from '@/hooks/useDarkMode';
@@ -11,7 +12,7 @@ import ImageCropper from '@/components/features/ImageCropper';
 import Header from '@/components/ui/Header';
 import TagSelector from '@/components/features/TagSelector';
 
-export default function AddItem() {
+function AddItemContent() {
   const [darkMode, setDarkMode] = useDarkMode();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const searchParams = useSearchParams();
@@ -388,5 +389,13 @@ export default function AddItem() {
         </div>
       </div>
     </Layout>
+  );
+}
+
+export default function AddItem() {
+  return (
+    <Suspense fallback={null}>
+      <AddItemContent />
+    </Suspense>
   );
 }
