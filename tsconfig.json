@@ -21,13 +21,13 @@
     "alwaysStrict": true, // Enable alwaysStrict
     "jsx": "preserve",
     "incremental": true,
-    "plugins": [ 
+    "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@/*": ["./*"],
+      "@/*": ["./*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],

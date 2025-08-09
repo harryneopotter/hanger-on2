@@ -1,4 +1,3 @@
-
 'use client';
 
 import { usePathname } from 'next/navigation';
@@ -8,36 +7,36 @@ export default function BottomNavigation() {
   const pathname = usePathname();
 
   const navItems = [
-    { 
-      href: '/', 
-      icon: 'ri-handbag-2-line', 
+    {
+      href: '/',
+      icon: 'ri-handbag-2-line',
       activeIcon: 'ri-handbag-2-fill',
-      label: 'Closet' 
+      label: 'Closet',
     },
-    { 
-      href: '/add', 
-      icon: 'ri-add-circle-line', 
+    {
+      href: '/add',
+      icon: 'ri-add-circle-line',
       activeIcon: 'ri-add-circle-fill',
-      label: 'Add' 
+      label: 'Add',
     },
-    { 
-      href: '/collections', 
-      icon: 'ri-folder-line', 
+    {
+      href: '/collections',
+      icon: 'ri-folder-line',
       activeIcon: 'ri-folder-fill',
-      label: 'Collections' 
+      label: 'Collections',
     },
-    { 
-      href: '/stats', 
-      icon: 'ri-bar-chart-2-line', 
+    {
+      href: '/stats',
+      icon: 'ri-bar-chart-2-line',
       activeIcon: 'ri-bar-chart-2-fill',
-      label: 'Stats' 
+      label: 'Stats',
     },
-    { 
-      href: '/settings', 
-      icon: 'ri-settings-3-line', 
+    {
+      href: '/settings',
+      icon: 'ri-settings-3-line',
       activeIcon: 'ri-settings-3-fill',
-      label: 'Settings' 
-    }
+      label: 'Settings',
+    },
   ];
 
   return (
@@ -50,24 +49,24 @@ export default function BottomNavigation() {
               key={item.href}
               href={item.href}
               className={`flex flex-col items-center justify-center space-y-1 transition-all duration-200 ${
-                isActive 
-                  ? 'shadow-[inset_3px_3px_6px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.8)] dark:shadow-[inset_3px_3px_6px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.02)]' 
+                isActive
+                  ? 'shadow-[inset_3px_3px_6px_rgba(0,0,0,0.1),inset_-2px_-2px_4px_rgba(255,255,255,0.8)] dark:shadow-[inset_3px_3px_6px_rgba(0,0,0,0.3),inset_-2px_-2px_4px_rgba(255,255,255,0.02)]'
                   : 'shadow-[2px_2px_4px_rgba(0,0,0,0.05),-1px_-1px_3px_rgba(255,255,255,0.7)] dark:shadow-[2px_2px_4px_rgba(0,0,0,0.2),-1px_-1px_3px_rgba(255,255,255,0.01)] hover:shadow-[3px_3px_6px_rgba(0,0,0,0.08),-2px_-2px_4px_rgba(255,255,255,0.8)] dark:hover:shadow-[3px_3px_6px_rgba(0,0,0,0.25),-2px_-2px_4px_rgba(255,255,255,0.02)]'
               }`}
             >
               <div className="w-6 h-6 flex items-center justify-center">
-                <i 
+                <i
                   className={`${isActive ? item.activeIcon : item.icon} text-lg ${
-                    isActive 
-                      ? 'text-theme-primary-dark dark:text-theme-primary' 
+                    isActive
+                      ? 'text-theme-primary-dark dark:text-theme-primary'
                       : 'text-gray-500 dark:text-gray-400'
                   } drop-shadow-sm`}
                 />
               </div>
-              <span 
+              <span
                 className={`text-xs font-medium ${
-                  isActive 
-                    ? 'text-theme-primary-dark dark:text-theme-primary' 
+                  isActive
+                    ? 'text-theme-primary-dark dark:text-theme-primary'
                     : 'text-gray-500 dark:text-gray-400'
                 } drop-shadow-sm`}
               >

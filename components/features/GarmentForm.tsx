@@ -13,12 +13,14 @@ interface GarmentFormProps {
 }
 
 const GarmentForm: React.FC<GarmentFormProps> = ({ initialData, onSubmit }) => {
-  const [formData, setFormData] = useState(initialData || {
-    name: '',
-    category: '',
-    material: '',
-    status: 'Clean',
-  });
+  const [formData, setFormData] = useState(
+    initialData || {
+      name: '',
+      category: '',
+      material: '',
+      status: 'Clean',
+    },
+  );
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     setFormData({
@@ -33,9 +35,17 @@ const GarmentForm: React.FC<GarmentFormProps> = ({ initialData, onSubmit }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-6 rounded-2xl bg-gray-50/50 dark:bg-gray-800/50 shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30">
+    <form
+      onSubmit={handleSubmit}
+      className="p-6 rounded-2xl bg-gray-50/50 dark:bg-gray-800/50 shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30"
+    >
       <div className="mb-6">
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Name</label>
+        <label
+          htmlFor="name"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
+          Name
+        </label>
         <input
           type="text"
           id="name"
@@ -48,7 +58,12 @@ const GarmentForm: React.FC<GarmentFormProps> = ({ initialData, onSubmit }) => {
       </div>
 
       <div className="mb-6">
-        <label htmlFor="category" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Category</label>
+        <label
+          htmlFor="category"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
+          Category
+        </label>
         <input
           type="text"
           id="category"
@@ -61,7 +76,12 @@ const GarmentForm: React.FC<GarmentFormProps> = ({ initialData, onSubmit }) => {
       </div>
 
       <div className="mb-6">
-        <label htmlFor="material" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Material</label>
+        <label
+          htmlFor="material"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
+          Material
+        </label>
         <input
           type="text"
           id="material"
@@ -74,7 +94,12 @@ const GarmentForm: React.FC<GarmentFormProps> = ({ initialData, onSubmit }) => {
       </div>
 
       <div className="mb-6">
-        <label htmlFor="status" className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Status</label>
+        <label
+          htmlFor="status"
+          className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+        >
+          Status
+        </label>
         <select
           id="status"
           name="status"

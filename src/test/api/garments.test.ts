@@ -11,7 +11,7 @@ const loginUser = async () => {
   await fetch(`${API_BASE}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: 'demo@example.com', password: 'password123' })
+    body: JSON.stringify({ email: 'demo@example.com', password: 'password123' }),
   });
 };
 
@@ -30,7 +30,7 @@ describe('Garments API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/garments`);
-      
+
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(Array.isArray(data)).toBe(true);
@@ -39,7 +39,7 @@ describe('Garments API', () => {
         id: expect.any(String),
         name: expect.any(String),
         category: expect.any(String),
-        userId: 'user-1'
+        userId: 'user-1',
       });
     });
 
@@ -47,11 +47,11 @@ describe('Garments API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/garments?category=Pants`);
-      
+
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(Array.isArray(data)).toBe(true);
-      data.forEach(garment => {
+      data.forEach((garment) => {
         expect(garment.category).toBe('Pants');
       });
     });
@@ -60,11 +60,11 @@ describe('Garments API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/garments?status=CLEAN`);
-      
+
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(Array.isArray(data)).toBe(true);
-      data.forEach(garment => {
+      data.forEach((garment) => {
         expect(garment.status).toBe('CLEAN');
       });
     });
@@ -73,11 +73,11 @@ describe('Garments API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/garments?search=jeans`);
-      
+
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(Array.isArray(data)).toBe(true);
-      data.forEach(garment => {
+      data.forEach((garment) => {
         expect(garment.name.toLowerCase()).toContain('jeans');
       });
     });
@@ -86,7 +86,7 @@ describe('Garments API', () => {
       await logoutUser();
 
       const response = await fetch(`${API_BASE}/api/garments`);
-      
+
       expect(response.status).toBe(401);
       const data = await response.json();
       expect(data.error).toBe('Unauthorized');
@@ -104,13 +104,13 @@ describe('Garments API', () => {
         color: 'Red',
         size: 'M',
         brand: 'Test Brand',
-        status: 'CLEAN'
+        status: 'CLEAN',
       };
 
       const response = await fetch(`${API_BASE}/api/garments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(garmentData)
+        body: JSON.stringify(garmentData),
       });
 
       expect(response.status).toBe(201);
@@ -120,7 +120,7 @@ describe('Garments API', () => {
         ...garmentData,
         userId: 'user-1',
         createdAt: expect.any(String),
-        updatedAt: expect.any(String)
+        updatedAt: expect.any(String),
       });
     });
 
@@ -129,13 +129,13 @@ describe('Garments API', () => {
 
       const garmentData = {
         category: 'Tops',
-        material: 'Cotton'
+        material: 'Cotton',
       };
 
       const response = await fetch(`${API_BASE}/api/garments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(garmentData)
+        body: JSON.stringify(garmentData),
       });
 
       expect(response.status).toBe(400);
@@ -148,13 +148,13 @@ describe('Garments API', () => {
 
       const garmentData = {
         name: 'Test Shirt',
-        category: 'Tops'
+        category: 'Tops',
       };
 
       const response = await fetch(`${API_BASE}/api/garments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(garmentData)
+        body: JSON.stringify(garmentData),
       });
 
       expect(response.status).toBe(401);
@@ -168,13 +168,13 @@ describe('Garments API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/garments/g-1`);
-      
+
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(data).toMatchObject({
         id: 'g-1',
         name: expect.any(String),
-        userId: 'user-1'
+        userId: 'user-1',
       });
     });
 
@@ -182,7 +182,7 @@ describe('Garments API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/garments/non-existent`);
-      
+
       expect(response.status).toBe(404);
       const data = await response.json();
       expect(data.error).toBe('Garment not found');
@@ -192,7 +192,7 @@ describe('Garments API', () => {
       await logoutUser();
 
       const response = await fetch(`${API_BASE}/api/garments/g-1`);
-      
+
       expect(response.status).toBe(401);
       const data = await response.json();
       expect(data.error).toBe('Unauthorized');
@@ -205,13 +205,13 @@ describe('Garments API', () => {
 
       const updateData = {
         name: 'Updated Jeans',
-        color: 'Dark Blue'
+        color: 'Dark Blue',
       };
 
       const response = await fetch(`${API_BASE}/api/garments/g-1`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       expect(response.status).toBe(200);
@@ -220,7 +220,7 @@ describe('Garments API', () => {
         id: 'g-1',
         name: 'Updated Jeans',
         color: 'Dark Blue',
-        updatedAt: expect.any(String)
+        updatedAt: expect.any(String),
       });
     });
 
@@ -228,13 +228,13 @@ describe('Garments API', () => {
       await loginUser();
 
       const updateData = {
-        name: 'Updated Name'
+        name: 'Updated Name',
       };
 
       const response = await fetch(`${API_BASE}/api/garments/non-existent`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       expect(response.status).toBe(404);
@@ -246,13 +246,13 @@ describe('Garments API', () => {
       await logoutUser();
 
       const updateData = {
-        name: 'Updated Name'
+        name: 'Updated Name',
       };
 
       const response = await fetch(`${API_BASE}/api/garments/g-1`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       expect(response.status).toBe(401);
@@ -266,7 +266,7 @@ describe('Garments API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/garments/g-1`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       expect(response.status).toBe(204);
@@ -276,7 +276,7 @@ describe('Garments API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/garments/non-existent`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       expect(response.status).toBe(404);
@@ -288,7 +288,7 @@ describe('Garments API', () => {
       await logoutUser();
 
       const response = await fetch(`${API_BASE}/api/garments/g-1`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       expect(response.status).toBe(401);

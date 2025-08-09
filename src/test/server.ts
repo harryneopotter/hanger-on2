@@ -16,7 +16,7 @@ const mockGarments = [
     material: 'Denim',
     color: 'Blue',
     size: 'M',
-    brand: 'Levi\'s',
+    brand: "Levi's",
     status: 'CLEAN',
     userId: 'user-1',
     createdAt: new Date().toISOString(),
@@ -38,9 +38,27 @@ const mockGarments = [
 ];
 
 const mockTags = [
-  { id: 't-1', name: 'Casual', color: '#3B82F6', userId: 'user-1', createdAt: new Date().toISOString() },
-  { id: 't-2', name: 'Work', color: '#10B981', userId: 'user-1', createdAt: new Date().toISOString() },
-  { id: 't-3', name: 'Summer', color: '#F59E0B', userId: 'user-1', createdAt: new Date().toISOString() },
+  {
+    id: 't-1',
+    name: 'Casual',
+    color: '#3B82F6',
+    userId: 'user-1',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 't-2',
+    name: 'Work',
+    color: '#10B981',
+    userId: 'user-1',
+    createdAt: new Date().toISOString(),
+  },
+  {
+    id: 't-3',
+    name: 'Summer',
+    color: '#F59E0B',
+    userId: 'user-1',
+    createdAt: new Date().toISOString(),
+  },
 ];
 
 const mockCollections = [
@@ -113,12 +131,15 @@ export const handlers = [
     const category = url.searchParams.get('category');
     const status = url.searchParams.get('status');
     const search = url.searchParams.get('search');
-    
+
     let filteredGarments = garments;
-    if (category) filteredGarments = filteredGarments.filter(g => g.category === category);
-    if (status) filteredGarments = filteredGarments.filter(g => g.status === status);
-    if (search) filteredGarments = filteredGarments.filter(g => g.name.toLowerCase().includes(search.toLowerCase()));
-    
+    if (category) filteredGarments = filteredGarments.filter((g) => g.category === category);
+    if (status) filteredGarments = filteredGarments.filter((g) => g.status === status);
+    if (search)
+      filteredGarments = filteredGarments.filter((g) =>
+        g.name.toLowerCase().includes(search.toLowerCase()),
+      );
+
     return HttpResponse.json(filteredGarments);
   }),
 
@@ -142,7 +163,7 @@ export const handlers = [
   http.get('/api/garments/:id', ({ params }) => {
     if (!loggedIn) return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const { id } = params;
-    const garment = garments.find(g => g.id === id);
+    const garment = garments.find((g) => g.id === id);
     if (!garment) return HttpResponse.json({ error: 'Garment not found' }, { status: 404 });
     return HttpResponse.json(garment);
   }),
@@ -151,9 +172,10 @@ export const handlers = [
     if (!loggedIn) return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const { id } = params;
     const body = await request.json();
-    const garmentIndex = garments.findIndex(g => g.id === id);
-    if (garmentIndex === -1) return HttpResponse.json({ error: 'Garment not found' }, { status: 404 });
-    
+    const garmentIndex = garments.findIndex((g) => g.id === id);
+    if (garmentIndex === -1)
+      return HttpResponse.json({ error: 'Garment not found' }, { status: 404 });
+
     garments[garmentIndex] = {
       ...garments[garmentIndex],
       ...body,
@@ -165,9 +187,10 @@ export const handlers = [
   http.delete('/api/garments/:id', ({ params }) => {
     if (!loggedIn) return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const { id } = params;
-    const garmentIndex = garments.findIndex(g => g.id === id);
-    if (garmentIndex === -1) return HttpResponse.json({ error: 'Garment not found' }, { status: 404 });
-    
+    const garmentIndex = garments.findIndex((g) => g.id === id);
+    if (garmentIndex === -1)
+      return HttpResponse.json({ error: 'Garment not found' }, { status: 404 });
+
     garments.splice(garmentIndex, 1);
     return new HttpResponse(null, { status: 204 });
   }),
@@ -184,7 +207,7 @@ export const handlers = [
     if (!body.name) {
       return HttpResponse.json({ error: 'Name is required' }, { status: 400 });
     }
-    if (tags.find(t => t.name === body.name)) {
+    if (tags.find((t) => t.name === body.name)) {
       return HttpResponse.json({ error: 'Tag already exists' }, { status: 409 });
     }
     const newTag = {
@@ -201,9 +224,9 @@ export const handlers = [
     if (!loggedIn) return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const { id } = params;
     const body = await request.json();
-    const tagIndex = tags.findIndex(t => t.id === id);
+    const tagIndex = tags.findIndex((t) => t.id === id);
     if (tagIndex === -1) return HttpResponse.json({ error: 'Tag not found' }, { status: 404 });
-    
+
     tags[tagIndex] = { ...tags[tagIndex], ...body };
     return HttpResponse.json(tags[tagIndex]);
   }),
@@ -211,9 +234,9 @@ export const handlers = [
   http.delete('/api/tags/:id', ({ params }) => {
     if (!loggedIn) return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const { id } = params;
-    const tagIndex = tags.findIndex(t => t.id === id);
+    const tagIndex = tags.findIndex((t) => t.id === id);
     if (tagIndex === -1) return HttpResponse.json({ error: 'Tag not found' }, { status: 404 });
-    
+
     tags.splice(tagIndex, 1);
     return new HttpResponse(null, { status: 204 });
   }),
@@ -244,7 +267,7 @@ export const handlers = [
   http.get('/api/collections/:id', ({ params }) => {
     if (!loggedIn) return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const { id } = params;
-    const collection = collections.find(c => c.id === id);
+    const collection = collections.find((c) => c.id === id);
     if (!collection) return HttpResponse.json({ error: 'Collection not found' }, { status: 404 });
     return HttpResponse.json(collection);
   }),
@@ -253,9 +276,10 @@ export const handlers = [
     if (!loggedIn) return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const { id } = params;
     const body = await request.json();
-    const collectionIndex = collections.findIndex(c => c.id === id);
-    if (collectionIndex === -1) return HttpResponse.json({ error: 'Collection not found' }, { status: 404 });
-    
+    const collectionIndex = collections.findIndex((c) => c.id === id);
+    if (collectionIndex === -1)
+      return HttpResponse.json({ error: 'Collection not found' }, { status: 404 });
+
     collections[collectionIndex] = {
       ...collections[collectionIndex],
       ...body,
@@ -267,9 +291,10 @@ export const handlers = [
   http.delete('/api/collections/:id', ({ params }) => {
     if (!loggedIn) return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const { id } = params;
-    const collectionIndex = collections.findIndex(c => c.id === id);
-    if (collectionIndex === -1) return HttpResponse.json({ error: 'Collection not found' }, { status: 404 });
-    
+    const collectionIndex = collections.findIndex((c) => c.id === id);
+    if (collectionIndex === -1)
+      return HttpResponse.json({ error: 'Collection not found' }, { status: 404 });
+
     collections.splice(collectionIndex, 1);
     return new HttpResponse(null, { status: 204 });
   }),
@@ -279,25 +304,31 @@ export const handlers = [
     if (!loggedIn) return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
     const { id } = params;
     const body = await request.json();
-    const collection = collections.find(c => c.id === id);
+    const collection = collections.find((c) => c.id === id);
     if (!collection) return HttpResponse.json({ error: 'Collection not found' }, { status: 404 });
-    
-    const garment = garments.find(g => g.id === body.garmentId);
+
+    const garment = garments.find((g) => g.id === body.garmentId);
     if (!garment) return HttpResponse.json({ error: 'Garment not found' }, { status: 404 });
-    
-    return HttpResponse.json({ collectionId: id, garmentId: body.garmentId, addedAt: new Date().toISOString() }, { status: 201 });
+
+    return HttpResponse.json(
+      { collectionId: id, garmentId: body.garmentId, addedAt: new Date().toISOString() },
+      { status: 201 },
+    );
   }),
 
   // Images
   http.post('/api/images', async () => {
     if (!loggedIn) return HttpResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    return HttpResponse.json({ 
-      id: `img-${Date.now()}`,
-      url: 'https://example.com/mock-image.jpg',
-      fileName: 'mock-image.jpg',
-      fileSize: 1024,
-      mimeType: 'image/jpeg'
-    }, { status: 201 });
+    return HttpResponse.json(
+      {
+        id: `img-${Date.now()}`,
+        url: 'https://example.com/mock-image.jpg',
+        fileName: 'mock-image.jpg',
+        fileSize: 1024,
+        mimeType: 'image/jpeg',
+      },
+      { status: 201 },
+    );
   }),
 ];
 

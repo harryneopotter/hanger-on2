@@ -18,17 +18,21 @@ interface TagSelectorProps {
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
-export default function TagSelector({ selectedTags, onTagsChange, disabled = false }: TagSelectorProps) {
+export default function TagSelector({
+  selectedTags,
+  onTagsChange,
+  disabled = false,
+}: TagSelectorProps) {
   const { data: tags = [], mutate } = useSWR('/api/tags', fetcher);
   const [showAddTag, setShowAddTag] = useState(false);
 
   const handleTagToggle = (tagId: string) => {
     if (disabled) return;
-    
+
     const newSelectedTags = selectedTags.includes(tagId)
-      ? selectedTags.filter(id => id !== tagId)
+      ? selectedTags.filter((id) => id !== tagId)
       : [...selectedTags, tagId];
-    
+
     onTagsChange(newSelectedTags);
   };
 
@@ -43,9 +47,7 @@ export default function TagSelector({ selectedTags, onTagsChange, disabled = fal
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
-        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-          Tags
-        </label>
+        <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">Tags</label>
         <button
           type="button"
           onClick={() => setShowAddTag(!showAddTag)}
@@ -95,9 +97,7 @@ export default function TagSelector({ selectedTags, onTagsChange, disabled = fal
                     style={{ backgroundColor: tag.color }}
                   />
                   {tag.name}
-                  {isSelected && (
-                    <span className="ml-1 text-xs">✓</span>
-                  )}
+                  {isSelected && <span className="ml-1 text-xs">✓</span>}
                 </button>
               );
             })}

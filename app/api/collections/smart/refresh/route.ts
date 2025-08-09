@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
 
     // Return updated collection
     const updatedCollection = await collectionService.getCollectionById(collectionId, userId);
-    
+
     if (!updatedCollection) {
       return NextResponse.json({ error: 'Collection not found' }, { status: 404 });
     }
@@ -49,21 +49,21 @@ export async function PUT(req: NextRequest) {
 
     // Get all smart collections for the user
     const collections = await collectionService.getAllCollections(userId);
-    const smartCollections = collections.filter(c => c.isSmartCollection);
+    const smartCollections = collections.filter((c) => c.isSmartCollection);
 
     // Refresh each smart collection
-    const refreshPromises = smartCollections.map(collection => 
-      collectionService.applySmartCollectionRules(collection.id, userId)
+    const refreshPromises = smartCollections.map((collection) =>
+      collectionService.applySmartCollectionRules(collection.id, userId),
     );
 
     await Promise.all(refreshPromises);
 
     // Return updated collections
     const updatedCollections = await collectionService.getAllCollections(userId);
-    
+
     return NextResponse.json({
       message: `Refreshed ${smartCollections.length} smart collections`,
-      collections: updatedCollections.filter(c => c.isSmartCollection)
+      collections: updatedCollections.filter((c) => c.isSmartCollection),
     });
   } catch (error: any) {
     console.error('Error refreshing all smart collections:', error);

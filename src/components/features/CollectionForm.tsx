@@ -18,7 +18,7 @@ const RULE_FIELDS = [
   { value: 'brand', label: 'Brand' },
   { value: 'material', label: 'Material' },
   { value: 'status', label: 'Status' },
-  { value: 'tags', label: 'Tags' }
+  { value: 'tags', label: 'Tags' },
 ];
 
 const RULE_OPERATORS: { value: RuleOperator; label: string }[] = [
@@ -28,7 +28,7 @@ const RULE_OPERATORS: { value: RuleOperator; label: string }[] = [
   { value: 'ENDS_WITH', label: 'Ends with' },
   { value: 'IN', label: 'In (comma-separated)' },
   { value: 'NOT_EQUALS', label: 'Not equals' },
-  { value: 'NOT_CONTAINS', label: 'Does not contain' }
+  { value: 'NOT_CONTAINS', label: 'Does not contain' },
 ];
 
 const PRESET_COLORS = [
@@ -42,12 +42,12 @@ const PRESET_COLORS = [
   '#F97316', // Orange
 ];
 
-export default function CollectionForm({ 
-  isOpen, 
-  onClose, 
-  onSubmit, 
-  initialData, 
-  title = 'Create Collection' 
+export default function CollectionForm({
+  isOpen,
+  onClose,
+  onSubmit,
+  initialData,
+  title = 'Create Collection',
 }: CollectionFormProps) {
   const [formData, setFormData] = useState<CreateCollection>({
     name: '',
@@ -56,7 +56,7 @@ export default function CollectionForm({
     image: '',
     isSmartCollection: false,
     rules: [],
-    garmentIds: []
+    garmentIds: [],
   });
   const [rules, setRules] = useState<CollectionRule[]>([]);
   const [loading, setLoading] = useState(false);
@@ -71,7 +71,7 @@ export default function CollectionForm({
         image: initialData.image || '',
         isSmartCollection: initialData.isSmartCollection || false,
         rules: initialData.rules || [],
-        garmentIds: initialData.garmentIds || []
+        garmentIds: initialData.garmentIds || [],
       });
       setRules(initialData.rules || []);
     }
@@ -85,7 +85,7 @@ export default function CollectionForm({
     try {
       const submitData = {
         ...formData,
-        rules: formData.isSmartCollection ? rules : undefined
+        rules: formData.isSmartCollection ? rules : undefined,
       };
       await onSubmit(submitData);
       onClose();
@@ -97,7 +97,7 @@ export default function CollectionForm({
         image: '',
         isSmartCollection: false,
         rules: [],
-        garmentIds: []
+        garmentIds: [],
       });
       setRules([]);
     } catch (error) {
@@ -109,11 +109,14 @@ export default function CollectionForm({
   };
 
   const addRule = () => {
-    setRules([...rules, {
-      field: 'category',
-      operator: 'EQUALS',
-      value: ''
-    }]);
+    setRules([
+      ...rules,
+      {
+        field: 'category',
+        operator: 'EQUALS',
+        value: '',
+      },
+    ]);
   };
 
   const updateRule = (index: number, field: keyof CollectionRule, value: string) => {
@@ -186,8 +189,8 @@ export default function CollectionForm({
                   type="button"
                   onClick={() => setFormData({ ...formData, color })}
                   className={`w-8 h-8 rounded-full border-2 transition-all ${
-                    formData.color === color 
-                      ? 'border-gray-900 dark:border-white scale-110' 
+                    formData.color === color
+                      ? 'border-gray-900 dark:border-white scale-110'
                       : 'border-gray-300 dark:border-gray-600 hover:scale-105'
                   }`}
                   style={{ backgroundColor: color }}
@@ -225,7 +228,10 @@ export default function CollectionForm({
               </div>
 
               {rules.map((rule, index) => (
-                <div key={index} className="flex gap-3 items-start p-4 bg-gray-50 dark:bg-gray-700 rounded-lg">
+                <div
+                  key={index}
+                  className="flex gap-3 items-start p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                >
                   <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-3">
                     <select
                       value={rule.field}
@@ -241,7 +247,9 @@ export default function CollectionForm({
 
                     <select
                       value={rule.operator}
-                      onChange={(e) => updateRule(index, 'operator', e.target.value as RuleOperator)}
+                      onChange={(e) =>
+                        updateRule(index, 'operator', e.target.value as RuleOperator)
+                      }
                       className="px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
                     >
                       {RULE_OPERATORS.map((operator) => (

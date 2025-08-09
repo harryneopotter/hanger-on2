@@ -19,13 +19,13 @@ export async function POST(request: Request) {
   try {
     const body = await request.json();
     const validatedData = CreateTagSchema.parse(body);
-    
+
     const tag = await TagService.createTag(validatedData.name, validatedData.color);
-    
+
     return NextResponse.json(tag, { status: 201 });
   } catch (error) {
     console.error('Error creating tag:', error);
-    
+
     if (error instanceof Error) {
       if (error.message === 'Unauthorized') {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -34,12 +34,12 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: 'Tag already exists' }, { status: 409 });
       }
     }
-    
+
     // Handle Zod validation errors
     if (error && typeof error === 'object' && 'issues' in error) {
       return NextResponse.json({ error: 'Invalid input', details: error }, { status: 400 });
     }
-    
+
     return NextResponse.json({ error: 'Failed to create tag' }, { status: 500 });
   }
 }

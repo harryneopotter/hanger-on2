@@ -12,14 +12,12 @@ interface LayoutProps {
 export default function Layout({ children }: LayoutProps) {
   const [darkMode] = useDarkMode();
   const [theme] = useTheme();
-// removed local darkMode – using useDarkMode hook
+  // removed local darkMode – using useDarkMode hook
 
   return (
-<div className="min-h-screen">
+    <div className="min-h-screen">
       <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
-        <div className="pb-20">
-          {children}
-        </div>
+        <div className="pb-20">{children}</div>
         <BottomNavigation />
       </div>
     </div>

@@ -11,14 +11,14 @@ vi.mock('next-auth/react', () => ({
   useSession: vi.fn(),
   signIn: vi.fn(),
   signOut: vi.fn(),
-  getSession: vi.fn()
+  getSession: vi.fn(),
 }));
 
 // Mock Next.js router
 vi.mock('next/navigation', () => ({
   useRouter: vi.fn(),
   usePathname: vi.fn(() => '/'),
-  useSearchParams: vi.fn(() => new URLSearchParams())
+  useSearchParams: vi.fn(() => new URLSearchParams()),
 }));
 
 // Mock fetch
@@ -34,9 +34,9 @@ const LoginComponent = () => {
     const result = await signIn('credentials', {
       email,
       password,
-      redirect: false
+      redirect: false,
     });
-    
+
     if (result?.ok) {
       router.push('/dashboard');
     }
@@ -61,14 +61,13 @@ const LoginComponent = () => {
 
   return (
     <div>
-      <form onSubmit={(e) => {
-        e.preventDefault();
-        const formData = new FormData(e.currentTarget);
-        handleLogin(
-          formData.get('email') as string,
-          formData.get('password') as string
-        );
-      }}>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          const formData = new FormData(e.currentTarget);
+          handleLogin(formData.get('email') as string, formData.get('password') as string);
+        }}
+      >
         <input name="email" type="email" placeholder="Email" required />
         <input name="password" type="password" placeholder="Password" required />
         <button type="submit">Sign In</button>
@@ -106,7 +105,7 @@ const mockRouter = {
   back: vi.fn(),
   forward: vi.fn(),
   refresh: vi.fn(),
-  prefetch: vi.fn()
+  prefetch: vi.fn(),
 };
 
 describe('Authentication Integration Tests', () => {
@@ -120,7 +119,7 @@ describe('Authentication Integration Tests', () => {
     it('displays login form when user is not authenticated', () => {
       (useSession as any).mockReturnValue({
         data: null,
-        status: 'unauthenticated'
+        status: 'unauthenticated',
       });
 
       render(<LoginComponent />);
@@ -134,7 +133,7 @@ describe('Authentication Integration Tests', () => {
     it('shows loading state during authentication', () => {
       (useSession as any).mockReturnValue({
         data: null,
-        status: 'loading'
+        status: 'loading',
       });
 
       render(<LoginComponent />);
@@ -146,7 +145,7 @@ describe('Authentication Integration Tests', () => {
       const user = userEvent.setup();
       (useSession as any).mockReturnValue({
         data: null,
-        status: 'unauthenticated'
+        status: 'unauthenticated',
       });
       (signIn as any).mockResolvedValue({ ok: true });
 
@@ -163,7 +162,7 @@ describe('Authentication Integration Tests', () => {
       expect(signIn).toHaveBeenCalledWith('credentials', {
         email: 'test@example.com',
         password: 'password123',
-        redirect: false
+        redirect: false,
       });
 
       await waitFor(() => {
@@ -175,7 +174,7 @@ describe('Authentication Integration Tests', () => {
       const user = userEvent.setup();
       (useSession as any).mockReturnValue({
         data: null,
-        status: 'unauthenticated'
+        status: 'unauthenticated',
       });
       (signIn as any).mockResolvedValue({ ok: false, error: 'Invalid credentials' });
 
@@ -192,7 +191,7 @@ describe('Authentication Integration Tests', () => {
       expect(signIn).toHaveBeenCalledWith('credentials', {
         email: 'test@example.com',
         password: 'wrongpassword',
-        redirect: false
+        redirect: false,
       });
 
       // Should not redirect on failed login
@@ -203,7 +202,7 @@ describe('Authentication Integration Tests', () => {
       const user = userEvent.setup();
       (useSession as any).mockReturnValue({
         data: null,
-        status: 'unauthenticated'
+        status: 'unauthenticated',
       });
 
       render(<LoginComponent />);
@@ -212,7 +211,7 @@ describe('Authentication Integration Tests', () => {
       await user.click(googleButton);
 
       expect(signIn).toHaveBeenCalledWith('google', {
-        callbackUrl: '/dashboard'
+        callbackUrl: '/dashboard',
       });
     });
   });
@@ -222,15 +221,15 @@ describe('Authentication Integration Tests', () => {
       user: {
         id: 'user-123',
         email: 'test@example.com',
-        name: 'Test User'
+        name: 'Test User',
       },
-      expires: '2024-12-31'
+      expires: '2024-12-31',
     };
 
     it('displays user information when authenticated', () => {
       (useSession as any).mockReturnValue({
         data: mockSession,
-        status: 'authenticated'
+        status: 'authenticated',
       });
 
       render(<LoginComponent />);
@@ -243,7 +242,7 @@ describe('Authentication Integration Tests', () => {
       const user = userEvent.setup();
       (useSession as any).mockReturnValue({
         data: mockSession,
-        status: 'authenticated'
+        status: 'authenticated',
       });
 
       render(<LoginComponent />);
@@ -259,7 +258,7 @@ describe('Authentication Integration Tests', () => {
     it('shows loading state while checking authentication', () => {
       (useSession as any).mockReturnValue({
         data: null,
-        status: 'loading'
+        status: 'loading',
       });
 
       render(<ProtectedComponent />);
@@ -270,7 +269,7 @@ describe('Authentication Integration Tests', () => {
     it('redirects unauthenticated users to login', () => {
       (useSession as any).mockReturnValue({
         data: null,
-        status: 'unauthenticated'
+        status: 'unauthenticated',
       });
 
       render(<ProtectedComponent />);
@@ -284,14 +283,14 @@ describe('Authentication Integration Tests', () => {
         user: {
           id: 'user-123',
           email: 'test@example.com',
-          name: 'Test User'
+          name: 'Test User',
         },
-        expires: '2024-12-31'
+        expires: '2024-12-31',
       };
 
       (useSession as any).mockReturnValue({
         data: mockSession,
-        status: 'authenticated'
+        status: 'authenticated',
       });
 
       render(<ProtectedComponent />);
@@ -306,27 +305,27 @@ describe('Authentication Integration Tests', () => {
     it('includes session in authenticated API requests', async () => {
       const mockSession = {
         user: { id: 'user-123', email: 'test@example.com' },
-        expires: '2024-12-31'
+        expires: '2024-12-31',
       };
 
       mockFetch.mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({ garments: [] })
+        json: () => Promise.resolve({ garments: [] }),
       });
 
       // Simulate authenticated API call
       const response = await fetch('/api/garments', {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${mockSession.user.id}`
-        }
+          Authorization: `Bearer ${mockSession.user.id}`,
+        },
       });
 
       expect(mockFetch).toHaveBeenCalledWith('/api/garments', {
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'Bearer user-123'
-        }
+          Authorization: 'Bearer user-123',
+        },
       });
 
       expect(response.ok).toBe(true);
@@ -336,7 +335,7 @@ describe('Authentication Integration Tests', () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 401,
-        json: () => Promise.resolve({ error: 'Unauthorized' })
+        json: () => Promise.resolve({ error: 'Unauthorized' }),
       });
 
       const response = await fetch('/api/garments');
@@ -352,7 +351,7 @@ describe('Authentication Integration Tests', () => {
       // Mock expired session
       (useSession as any).mockReturnValue({
         data: null,
-        status: 'unauthenticated'
+        status: 'unauthenticated',
       });
 
       render(<ProtectedComponent />);
@@ -365,14 +364,14 @@ describe('Authentication Integration Tests', () => {
         user: {
           id: 'user-123',
           email: 'test@example.com',
-          name: 'Test User'
+          name: 'Test User',
         },
-        expires: '2024-12-31'
+        expires: '2024-12-31',
       };
 
       (useSession as any).mockReturnValue({
         data: mockSession,
-        status: 'authenticated'
+        status: 'authenticated',
       });
 
       render(<ProtectedComponent />);
@@ -386,7 +385,7 @@ describe('Authentication Integration Tests', () => {
     it('handles successful user registration', async () => {
       mockFetch.mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({ message: 'User created successfully' })
+        json: () => Promise.resolve({ message: 'User created successfully' }),
       });
 
       const response = await fetch('/api/auth/signup', {
@@ -394,8 +393,8 @@ describe('Authentication Integration Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'newuser@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       expect(mockFetch).toHaveBeenCalledWith('/api/auth/signup', {
@@ -403,8 +402,8 @@ describe('Authentication Integration Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'newuser@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       expect(response.ok).toBe(true);
@@ -414,7 +413,7 @@ describe('Authentication Integration Tests', () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 409,
-        json: () => Promise.resolve({ error: 'Email already registered' })
+        json: () => Promise.resolve({ error: 'Email already registered' }),
       });
 
       const response = await fetch('/api/auth/signup', {
@@ -422,8 +421,8 @@ describe('Authentication Integration Tests', () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           email: 'existing@example.com',
-          password: 'password123'
-        })
+          password: 'password123',
+        }),
       });
 
       const data = await response.json();
@@ -437,7 +436,7 @@ describe('Authentication Integration Tests', () => {
     it('handles network errors during authentication', async () => {
       (useSession as any).mockReturnValue({
         data: null,
-        status: 'unauthenticated'
+        status: 'unauthenticated',
       });
       (signIn as any).mockRejectedValue(new Error('Network error'));
 
@@ -459,7 +458,7 @@ describe('Authentication Integration Tests', () => {
     it('handles malformed session data', () => {
       (useSession as any).mockReturnValue({
         data: { user: null }, // Malformed session
-        status: 'authenticated'
+        status: 'authenticated',
       });
 
       render(<ProtectedComponent />);

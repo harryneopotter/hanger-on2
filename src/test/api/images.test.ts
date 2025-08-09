@@ -11,7 +11,7 @@ const loginUser = async () => {
   await fetch(`${API_BASE}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: 'demo@example.com', password: 'password123' })
+    body: JSON.stringify({ email: 'demo@example.com', password: 'password123' }),
   });
 };
 
@@ -43,7 +43,7 @@ describe('Images API', () => {
 
       const response = await fetch(`${API_BASE}/api/images`, {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       expect(response.status).toBe(201);
@@ -53,7 +53,7 @@ describe('Images API', () => {
         url: expect.any(String),
         fileName: expect.any(String),
         fileSize: expect.any(Number),
-        mimeType: expect.any(String)
+        mimeType: expect.any(String),
       });
     });
 
@@ -66,7 +66,7 @@ describe('Images API', () => {
 
       const response = await fetch(`${API_BASE}/api/images`, {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       expect(response.status).toBe(201);
@@ -84,7 +84,7 @@ describe('Images API', () => {
 
       const response = await fetch(`${API_BASE}/api/images`, {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       expect(response.status).toBe(201);
@@ -94,7 +94,7 @@ describe('Images API', () => {
         url: expect.stringMatching(/^https?:\/\/.+/),
         fileName: expect.any(String),
         fileSize: expect.any(Number),
-        mimeType: expect.any(String)
+        mimeType: expect.any(String),
       });
     });
 
@@ -110,7 +110,7 @@ describe('Images API', () => {
 
       const response = await fetch(`${API_BASE}/api/images`, {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       expect(response.status).toBe(201);
@@ -120,7 +120,7 @@ describe('Images API', () => {
         url: expect.any(String),
         fileName: expect.any(String),
         fileSize: expect.any(Number),
-        mimeType: expect.any(String)
+        mimeType: expect.any(String),
       });
     });
 
@@ -133,7 +133,7 @@ describe('Images API', () => {
 
       const response = await fetch(`${API_BASE}/api/images`, {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       expect(response.status).toBe(201);
@@ -150,7 +150,7 @@ describe('Images API', () => {
 
       const response = await fetch(`${API_BASE}/api/images`, {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       expect(response.status).toBe(401);
@@ -165,7 +165,7 @@ describe('Images API', () => {
 
       const response = await fetch(`${API_BASE}/api/images`, {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       // Mock server always returns success, but in real implementation
@@ -178,20 +178,20 @@ describe('Images API', () => {
 
       const imageData = {
         fileName: 'test.jpg',
-        base64Data: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVR...'
+        base64Data: 'data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD//gA7Q1JFQVR...',
       };
 
       const response = await fetch(`${API_BASE}/api/images`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(imageData)
+        body: JSON.stringify(imageData),
       });
 
       expect(response.status).toBe(201);
       const data = await response.json();
       expect(data).toMatchObject({
         id: expect.any(String),
-        url: expect.any(String)
+        url: expect.any(String),
       });
     });
 
@@ -199,30 +199,30 @@ describe('Images API', () => {
       await loginUser();
 
       const uploads = [];
-      
+
       for (let i = 0; i < 3; i++) {
         const mockFile = createMockFile(`image-${i}.jpg`, 'image/jpeg');
         const formData = new FormData();
         formData.append('image', mockFile);
         formData.append('garmentId', 'g-1');
-        
+
         const response = await fetch(`${API_BASE}/api/images`, {
           method: 'POST',
-          body: formData
+          body: formData,
         });
-        
+
         expect(response.status).toBe(201);
         const data = await response.json();
         uploads.push(data);
       }
 
       expect(uploads).toHaveLength(3);
-      uploads.forEach(upload => {
+      uploads.forEach((upload) => {
         expect(upload).toMatchObject({
           id: expect.any(String),
-          url: expect.any(String)
+          url: expect.any(String),
         });
       });
     });
   });
-})
+});

@@ -29,7 +29,8 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       wearCount: 8,
       careInstructions: 'Hand wash cold, hang dry, iron on low heat',
       notes: 'Perfect for work meetings and dinner dates. Pairs well with high-waist trousers.',
-      image: 'https://readdy.ai/api/search-image?query=Elegant%20silk%20blouse%20for%20women%2C%20flowing%20fabric%2C%20professional%20feminine%20style%2C%20soft%20pastel%20colors%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20high-quality%20fashion%20photography%2C%20delicate%20texture%20details&width=400&height=400&seq=blouse1&orientation=squarish'
+      image:
+        'https://readdy.ai/api/search-image?query=Elegant%20silk%20blouse%20for%20women%2C%20flowing%20fabric%2C%20professional%20feminine%20style%2C%20soft%20pastel%20colors%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20high-quality%20fashion%20photography%2C%20delicate%20texture%20details&width=400&height=400&seq=blouse1&orientation=squarish',
     },
     '2': {
       id: '2',
@@ -37,7 +38,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       category: 'Pants',
       material: 'Denim',
       status: 'Worn 2x' as const,
-      brand: 'Levi\'s',
+      brand: "Levi's",
       size: '28',
       color: 'Dark Wash',
       price: '$98',
@@ -46,7 +47,8 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       wearCount: 15,
       careInstructions: 'Machine wash cold, tumble dry low, wash inside out',
       notes: 'Great fit, very comfortable. Goes with everything in my wardrobe.',
-      image: 'https://readdy.ai/api/search-image?query=High-waisted%20denim%20jeans%20for%20women%2C%20modern%20fit%2C%20dark%20blue%20wash%2C%20feminine%20silhouette%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20fashion%20styling%2C%20premium%20denim%20texture&width=400&height=400&seq=jeans2&orientation=squarish'
+      image:
+        'https://readdy.ai/api/search-image?query=High-waisted%20denim%20jeans%20for%20women%2C%20modern%20fit%2C%20dark%20blue%20wash%2C%20feminine%20silhouette%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20fashion%20styling%2C%20premium%20denim%20texture&width=400&height=400&seq=jeans2&orientation=squarish',
     },
     '3': {
       id: '3',
@@ -63,7 +65,8 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       wearCount: 12,
       careInstructions: 'Wipe with damp cloth, use leather conditioner monthly',
       notes: 'Incredibly comfortable for all-day wear. Classic and versatile.',
-      image: 'https://readdy.ai/api/search-image?query=Classic%20ballet%20flats%20for%20women%2C%20soft%20leather%2C%20elegant%20feminine%20design%2C%20neutral%20beige%20color%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20luxury%20footwear%20styling%2C%20sophisticated%20details&width=400&height=400&seq=flats1&orientation=squarish'
+      image:
+        'https://readdy.ai/api/search-image?query=Classic%20ballet%20flats%20for%20women%2C%20soft%20leather%2C%20elegant%20feminine%20design%2C%20neutral%20beige%20color%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20luxury%20footwear%20styling%2C%20sophisticated%20details&width=400&height=400&seq=flats1&orientation=squarish',
     },
     '4': {
       id: '4',
@@ -80,7 +83,8 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       wearCount: 22,
       careInstructions: 'Dry clean only, store flat, use cashmere comb',
       notes: 'Needs dry cleaning. Perfect layering piece for office and weekends.',
-      image: 'https://readdy.ai/api/search-image?query=Luxurious%20cashmere%20cardigan%20for%20women%2C%20soft%20knit%20texture%2C%20elegant%20draping%2C%20warm%20neutral%20tones%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20premium%20knitwear%20styling%2C%20cozy%20feminine%20fashion&width=400&height=400&seq=cardigan1&orientation=squarish'
+      image:
+        'https://readdy.ai/api/search-image?query=Luxurious%20cashmere%20cardigan%20for%20women%2C%20soft%20knit%20texture%2C%20elegant%20draping%2C%20warm%20neutral%20tones%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20premium%20knitwear%20styling%2C%20cozy%20feminine%20fashion&width=400&height=400&seq=cardigan1&orientation=squarish',
     },
     '5': {
       id: '5',
@@ -97,7 +101,8 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       wearCount: 6,
       careInstructions: 'Machine wash cold, hang dry, steam if needed',
       notes: 'Beautiful color, perfect for brunch and casual dates. Very flattering silhouette.',
-      image: 'https://readdy.ai/api/search-image?query=Elegant%20midi%20dress%20for%20women%2C%20flowing%20cotton%20fabric%2C%20feminine%20silhouette%2C%20sophisticated%20design%2C%20soft%20colors%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20modern%20fashion%20styling%2C%20versatile%20wardrobe%20piece&width=400&height=400&seq=dress1&orientation=squarish'
+      image:
+        'https://readdy.ai/api/search-image?query=Elegant%20midi%20dress%20for%20women%2C%20flowing%20cotton%20fabric%2C%20feminine%20silhouette%2C%20sophisticated%20design%2C%20soft%20colors%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20modern%20fashion%20styling%2C%20versatile%20wardrobe%20piece&width=400&height=400&seq=dress1&orientation=squarish',
     },
     '6': {
       id: '6',
@@ -114,8 +119,9 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       wearCount: 18,
       careInstructions: 'Polish regularly, waterproof spray before wearing',
       notes: 'Investment piece. Goes with everything from jeans to dresses.',
-      image: 'https://readdy.ai/api/search-image?query=Stylish%20ankle%20boots%20for%20women%2C%20premium%20leather%20construction%2C%20modern%20heel%20design%2C%20versatile%20black%20color%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20luxury%20footwear%20styling%2C%20contemporary%20fashion&width=400&height=400&seq=boots2&orientation=squarish'
-    }
+      image:
+        'https://readdy.ai/api/search-image?query=Stylish%20ankle%20boots%20for%20women%2C%20premium%20leather%20construction%2C%20modern%20heel%20design%2C%20versatile%20black%20color%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20luxury%20footwear%20styling%2C%20contemporary%20fashion&width=400&height=400&seq=boots2&orientation=squarish',
+    },
   };
 
   const item = garments[itemId as keyof typeof garments];
@@ -125,8 +131,12 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       <Layout>
         <div className="bg-gray-50 dark:bg-gray-900 min-h-screen flex items-center justify-center">
           <div className="text-center">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">Item not found</h2>
-            <Link href="/" className="text-theme-primary-dark dark:text-theme-primary">Return to closet</Link>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-2">
+              Item not found
+            </h2>
+            <Link href="/" className="text-theme-primary-dark dark:text-theme-primary">
+              Return to closet
+            </Link>
           </div>
         </div>
       </Layout>
@@ -170,7 +180,9 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
                 onClick={handleThemeToggle}
                 className="w-10 h-10 flex items-center justify-center rounded-full bg-gray-50/80 dark:bg-gray-700/80 shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.03)] hover:shadow-[6px_6px_12px_rgba(0,0,0,0.15),-3px_-3px_9px_rgba(255,255,255,0.9)] dark:hover:shadow-[6px_6px_12px_rgba(0,0,0,0.4),-3px_-3px_9px_rgba(255,255,255,0.05)] transition-all duration-200 backdrop-blur-sm border border-white/20 dark:border-gray-600/30"
               >
-                <i className={`${darkMode ? 'ri-sun-line' : 'ri-moon-line'} text-lg text-gray-600 dark:text-gray-300 drop-shadow-sm`}></i>
+                <i
+                  className={`${darkMode ? 'ri-sun-line' : 'ri-moon-line'} text-lg text-gray-600 dark:text-gray-300 drop-shadow-sm`}
+                ></i>
               </button>
             </div>
           </header>
@@ -190,10 +202,14 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
               <div className="bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30 p-6 mb-6">
                 <div className="flex items-start justify-between mb-4">
                   <div>
-                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 drop-shadow-sm">{item.name}</h2>
+                    <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-1 drop-shadow-sm">
+                      {item.name}
+                    </h2>
                     <p className="text-gray-600 dark:text-gray-400 drop-shadow-sm">{item.brand}</p>
                   </div>
-                  <div className={`px-3 py-1.5 rounded-full text-sm font-medium ${getStatusColor(item.status)} backdrop-blur-sm`}>
+                  <div
+                    className={`px-3 py-1.5 rounded-full text-sm font-medium ${getStatusColor(item.status)} backdrop-blur-sm`}
+                  >
                     {item.status}
                   </div>
                 </div>
@@ -220,15 +236,21 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
                 <div className="space-y-4">
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 dark:text-gray-400">Price</span>
-                    <span className="font-semibold text-gray-900 dark:text-white">{item.price}</span>
+                    <span className="font-semibold text-gray-900 dark:text-white">
+                      {item.price}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 dark:text-gray-400">Purchase Date</span>
-                    <span className="text-gray-900 dark:text-white">{new Date(item.purchaseDate).toLocaleDateString()}</span>
+                    <span className="text-gray-900 dark:text-white">
+                      {new Date(item.purchaseDate).toLocaleDateString()}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 dark:text-gray-400">Last Worn</span>
-                    <span className="text-gray-900 dark:text-white">{new Date(item.lastWorn).toLocaleDateString()}</span>
+                    <span className="text-gray-900 dark:text-white">
+                      {new Date(item.lastWorn).toLocaleDateString()}
+                    </span>
                   </div>
                   <div className="flex justify-between items-center">
                     <span className="text-gray-600 dark:text-gray-400">Wear Count</span>
@@ -238,13 +260,21 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
               </div>
 
               <div className="bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30 p-6 mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 drop-shadow-sm">Care Instructions</h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed drop-shadow-sm">{item.careInstructions}</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 drop-shadow-sm">
+                  Care Instructions
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed drop-shadow-sm">
+                  {item.careInstructions}
+                </p>
               </div>
 
               <div className="bg-gray-50/50 dark:bg-gray-800/50 rounded-2xl shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30 p-6 mb-6">
-                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 drop-shadow-sm">Notes</h3>
-                <p className="text-gray-600 dark:text-gray-400 leading-relaxed drop-shadow-sm">{item.notes}</p>
+                <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-3 drop-shadow-sm">
+                  Notes
+                </h3>
+                <p className="text-gray-600 dark:text-gray-400 leading-relaxed drop-shadow-sm">
+                  {item.notes}
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">

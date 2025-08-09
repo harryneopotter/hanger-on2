@@ -1,5 +1,5 @@
-import { CreateGarment, UpdateGarment } from "@/lib/validation/schemas";
-import { db } from "@/lib/db";
+import { CreateGarment, UpdateGarment } from '@/lib/validation/schemas';
+import { db } from '@/lib/db';
 
 export class GarmentService {
   async getAllGarments(userId: string) {
@@ -10,11 +10,11 @@ export class GarmentService {
           images: true,
           tags: {
             include: {
-              tag: true
-            }
-          }
+              tag: true,
+            },
+          },
         },
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
       });
     } catch (error) {
       console.error('Error fetching garments:', error);
@@ -30,10 +30,10 @@ export class GarmentService {
           images: true,
           tags: {
             include: {
-              tag: true
-            }
-          }
-        }
+              tag: true,
+            },
+          },
+        },
       });
     } catch (error) {
       console.error('Error fetching garment:', error);
@@ -47,16 +47,16 @@ export class GarmentService {
         data: {
           ...data,
           userId,
-          status: data.status || 'CLEAN'
+          status: data.status || 'CLEAN',
         },
         include: {
           images: true,
           tags: {
             include: {
-              tag: true
-            }
-          }
-        }
+              tag: true,
+            },
+          },
+        },
       });
     } catch (error) {
       console.error('Error creating garment:', error);
@@ -73,10 +73,10 @@ export class GarmentService {
           images: true,
           tags: {
             include: {
-              tag: true
-            }
-          }
-        }
+              tag: true,
+            },
+          },
+        },
       });
     } catch (error) {
       console.error('Error updating garment:', error);
@@ -87,7 +87,7 @@ export class GarmentService {
   async deleteGarment(id: string, userId: string) {
     try {
       return await db.garment.delete({
-        where: { id, userId }
+        where: { id, userId },
       });
     } catch (error) {
       console.error('Error deleting garment:', error);
@@ -95,13 +95,20 @@ export class GarmentService {
     }
   }
 
-  async addImageToGarment(garmentId: string, imageUrl: string, fileName: string, fileSize: number, mimeType: string, userId: string) {
+  async addImageToGarment(
+    garmentId: string,
+    imageUrl: string,
+    fileName: string,
+    fileSize: number,
+    mimeType: string,
+    userId: string,
+  ) {
     try {
       // Verify garment belongs to user
       const garment = await db.garment.findFirst({
-        where: { id: garmentId, userId }
+        where: { id: garmentId, userId },
       });
-      
+
       if (!garment) {
         throw new Error('Garment not found');
       }
@@ -112,8 +119,8 @@ export class GarmentService {
           fileName,
           fileSize,
           mimeType,
-          garmentId
-        }
+          garmentId,
+        },
       });
     } catch (error) {
       console.error('Error adding image to garment:', error);
@@ -125,26 +132,26 @@ export class GarmentService {
     try {
       // Verify garment belongs to user
       const garment = await db.garment.findFirst({
-        where: { id: garmentId, userId }
+        where: { id: garmentId, userId },
       });
-      
+
       if (!garment) {
         throw new Error('Garment not found');
       }
 
       // Remove existing tag associations
       await db.garmentTag.deleteMany({
-        where: { garmentId }
+        where: { garmentId },
       });
 
       // Create new tag associations
-      const tagAssociations = tagIds.map(tagId => ({
+      const tagAssociations = tagIds.map((tagId) => ({
         garmentId,
-        tagId
+        tagId,
       }));
 
       await db.garmentTag.createMany({
-        data: tagAssociations
+        data: tagAssociations,
       });
 
       return await this.getGarmentById(garmentId, userId);
@@ -166,9 +173,9 @@ export class GarmentService {
   }) {
     try {
       const { userId, search, category, color, brand, material, status, tags } = params;
-      
+
       const whereConditions: any = { userId };
-      
+
       // Add search conditions
       if (search) {
         whereConditions.OR = [
@@ -176,10 +183,10 @@ export class GarmentService {
           { category: { contains: search, mode: 'insensitive' } },
           { color: { contains: search, mode: 'insensitive' } },
           { brand: { contains: search, mode: 'insensitive' } },
-          { material: { contains: search, mode: 'insensitive' } }
+          { material: { contains: search, mode: 'insensitive' } },
         ];
       }
-      
+
       // Add specific field filters
       if (category) {
         whereConditions.category = { contains: category, mode: 'insensitive' };
@@ -196,33 +203,33 @@ export class GarmentService {
       if (status) {
         whereConditions.status = status;
       }
-      
+
       // Add tag filter
       if (tags && tags.length > 0) {
         whereConditions.tags = {
           some: {
             tag: {
               name: {
-                in: tags
-              }
-            }
-          }
+                in: tags,
+              },
+            },
+          },
         };
       }
-      
+
       return await db.garment.findMany({
         where: whereConditions,
         include: {
           images: true,
           tags: {
             include: {
-              tag: true
-            }
-          }
+              tag: true,
+            },
+          },
         },
         orderBy: {
-          createdAt: 'desc'
-        }
+          createdAt: 'desc',
+        },
       });
     } catch (error) {
       console.error('Error searching garments:', error);

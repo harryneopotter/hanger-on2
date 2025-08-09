@@ -20,7 +20,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const { tagIds, ...garmentData } = body;
     const data = UpdateGarmentSchema.parse({ ...garmentData, id: params.id });
     const updated = await garmentService.updateGarment(params.id, data, userId);
-    
+
     // Handle tag associations if provided
     if (tagIds && Array.isArray(tagIds)) {
       try {
@@ -30,7 +30,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         // Don't fail the entire request if tag assignment fails
       }
     }
-    
+
     // Fetch the complete garment with tags
     const completeGarment = await garmentService.getGarmentById(params.id, userId);
     return NextResponse.json(completeGarment || updated);

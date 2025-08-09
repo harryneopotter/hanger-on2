@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -14,7 +13,7 @@ import GarmentCard from '@/components/features/GarmentCard';
 import { HangerFAB } from '@/components/ui/FloatingActionButton';
 import EmptyState from '@/components/features/EmptyState';
 import { demoGarments, demoTags, isGuestMode, setGuestMode, clearGuestMode } from '@/lib/demo-data';
-
+import type { Garment, Tag, GarmentTag } from '@/types';
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
@@ -27,31 +26,34 @@ export default function Home() {
   const [isGuest, setIsGuest] = useState(false);
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  
+
   // SWR hooks must be called before any conditional logic
-  const { data: garments = [], mutate } = useSWR(isGuest ? null : '/api/garments', fetcher);
-  const { data: tags = [] } = useSWR(isGuest ? null : '/api/tags', fetcher);
+  const { data: garments = [], mutate }: { data: Garment[]; mutate: () => void } = useSWR(
+    isGuest ? null : '/api/garments',
+    fetcher,
+  );
+  const { data: tags = [] }: { data: Tag[] } = useSWR(isGuest ? null : '/api/tags', fetcher);
 
   useEffect(() => {
     if (status === 'loading') return; // Still loading
-    
+
     // If user is authenticated, clear guest mode
     if (session) {
       clearGuestMode();
       setIsGuest(false);
       return;
     }
-    
+
     // Check if user came from guest mode link
     const urlParams = new URLSearchParams(window.location.search);
     const guestParam = urlParams.get('guest');
-    
+
     if (guestParam === 'true' || isGuestMode()) {
       setGuestMode(true);
       setIsGuest(true);
       return;
     }
-    
+
     if (!session) {
       router.push('/login');
       return;
@@ -75,18 +77,18 @@ export default function Home() {
   }
 
   // Helpers to toggle selection
-  const handleStatusSelect = (status: string) => {
+  const handleStatusSelect = (statusToToggle: string) => {
     setSelectedStatuses((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
+      prev.includes(statusToToggle) ? prev.filter((s) => s !== statusToToggle) : [...prev, statusToToggle],
     );
   };
 
   const handleTagSelect = (tag: string) => {
     setSelectedTags((prev) =>
-      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag],
     );
   };
-  
+
   // Use demo data for guest mode
   const displayGarments = isGuest ? demoGarments : garments;
   const displayTags = isGuest ? demoTags : tags;
@@ -97,12 +99,12 @@ export default function Home() {
       alert('Please sign in to edit garments');
       return;
     }
-    
+
     try {
       await fetch(`/api/garments/${garmentId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify({ status: newStatus }),
       });
       mutate(); // Refresh data
     } catch (error) {
@@ -110,21 +112,25 @@ export default function Home() {
     }
   };
 
-  const filteredGarments = (displayGarments || []).filter(garment => {
+  const filteredGarments = (displayGarments || []).filter((garment) => {
     // Category filtering (using existing activeCategory state)
     const matchesCategory = activeCategory === 'All' || garment.category === activeCategory;
 
     // Search filtering
-    const matchesSearch = garment.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         garment.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                         (garment.material && garment.material.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesSearch =
+      garment.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      garment.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (garment.material && garment.material.toLowerCase().includes(searchQuery.toLowerCase()));
 
     // Status filtering
-    const matchesStatus = selectedStatuses.length === 0 || selectedStatuses.includes(garment.status);
+    const matchesStatus =
+      selectedStatuses.length === 0 || selectedStatuses.includes(garment.status);
 
     // Tag filtering
-    const matchesTags = selectedTags.length === 0 || 
-                       (garment.tags && garment.tags.some((tag: any) => selectedTags.includes(tag.tag.name)));
+    const matchesTags =
+      selectedTags.length === 0 ||
+      (garment.tags &&
+        garment.tags.some((tag: GarmentTag) => selectedTags.includes(tag.tag?.name || '')));
 
     return matchesCategory && matchesSearch && matchesStatus && matchesTags;
   });
@@ -136,101 +142,104 @@ export default function Home() {
   return (
     <Layout>
       <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
-          <Header 
-            title="Hanger On" 
-            showThemeToggle={isHydrated} 
-            onThemeToggle={handleThemeToggle} 
-            darkMode={darkMode}
-            isGuest={isGuest}
+        <Header
+          title="Hanger On"
+          showThemeToggle={isHydrated}
+          onThemeToggle={handleThemeToggle}
+          darkMode={darkMode}
+          isGuest={isGuest}
+        />
+
+        <div className="pt-20">
+          <CompactFilterBar
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            availableTags={displayTags.map((tag: Tag) => tag.name)}
+            selectedTags={selectedTags}
+            onTagSelect={handleTagSelect}
+            availableStatuses={['Clean', 'Worn', 'Dirty', 'Worn 2x', 'Needs Washing']}
+            selectedStatuses={selectedStatuses}
+            onStatusSelect={handleStatusSelect}
           />
-          
-          <div className="pt-20">
+          <CategoryTabs onCategoryChange={setActiveCategory} />
 
-            <CompactFilterBar
-              searchQuery={searchQuery}
-              onSearchChange={setSearchQuery}
-              availableTags={displayTags.map((tag: any) => tag.name)}
-              selectedTags={selectedTags}
-              onTagSelect={handleTagSelect}
-              availableStatuses={["Clean", "Worn", "Dirty", "Worn 2x", "Needs Washing"]}
-              selectedStatuses={selectedStatuses}
-              onStatusSelect={handleStatusSelect}
-            />
-            <CategoryTabs onCategoryChange={setActiveCategory} />
-
-            <div className="w-full px-4 md:px-8 xl:px-16">
-              <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
-                {filteredGarments.map((garment) => (
-                  <GarmentCard
-                    key={garment.id}
-                    {...garment}
-                    isGuest={isGuest}
-                    onEdit={() => {
-                      if (isGuest) {
-                        alert('Please sign in to edit garments');
-                        return;
-                      }
-                      window.location.href = `/add?edit=${garment.id}`;
-                    }}
-                    onMarkAsWorn={() => {
-                      let nextStatus = garment.status;
-                      if (garment.status === "CLEAN") nextStatus = "WORN_2X";
-                      else if (garment.status === "WORN_2X") nextStatus = "NEEDS_WASHING";
-                      updateGarmentStatus(garment.id, nextStatus);
-                    }}
-                    onMoveToLaundry={() => {
-                      updateGarmentStatus(garment.id, 'DIRTY');
-                    }}
-                  />
-                ))}
-              </div>
-
-              {filteredGarments.length === 0 && (
-                <div className="col-span-full">
-                  <EmptyState
-                    title={(() => {
-                      if (searchQuery) {
-                        return `No items found for "${searchQuery}"`;
-                      }
-                      if (activeCategory !== 'All' && selectedStatuses.length > 0) {
-                        return `No ${selectedStatuses.join(' or ')} items in ${activeCategory}`;
-                      }
-                      if (activeCategory !== 'All') {
-                        return `No items in ${activeCategory}`;
-                      }
-                      if (selectedStatuses.length > 0) {
-                        return `No ${selectedStatuses.join(' or ')} items found`;
-                      }
-                      return 'Your closet is empty';
-                    })()}
-                    message={(() => {
-                      if (searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0) {
-                        return 'Try adjusting your filters or search terms';
-                      }
-                      return 'Start adding items to your wardrobe and watch your collection grow!';
-                    })()}
-                    actionText={(() => {
-                      if (searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0) {
-                        return 'Clear filters';
-                      }
-                      return 'Add your first item';
-                    })()}
-                    actionHref={(() => {
-                      if (searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0) {
-                        return '/';
-                      }
-                      return '/add';
-                    })()}
-                    type={searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0 ? 'search' : 'garments'}
-                  />
-                </div>
-              )}
+          <div className="w-full px-4 md:px-8 xl:px-16">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-6">
+              {filteredGarments.map((garment) => (
+                <GarmentCard
+                  key={garment.id}
+                  {...garment}
+                  isGuest={isGuest}
+                  onEdit={() => {
+                    if (isGuest) {
+                      alert('Please sign in to edit garments');
+                      return;
+                    }
+                    window.location.href = `/add?edit=${garment.id}`;
+                  }}
+                  onMarkAsWorn={() => {
+                    let nextStatus = garment.status;
+                    if (garment.status === 'CLEAN') nextStatus = 'WORN_2X';
+                    else if (garment.status === 'WORN_2X') nextStatus = 'NEEDS_WASHING';
+                    updateGarmentStatus(garment.id, nextStatus);
+                  }}
+                  onMoveToLaundry={() => {
+                    updateGarmentStatus(garment.id, 'DIRTY');
+                  }}
+                />
+              ))}
             </div>
+
+            {filteredGarments.length === 0 && (
+              <div className="col-span-full">
+                <EmptyState
+                  title={(() => {
+                    if (searchQuery) {
+                      return `No items found for "${searchQuery}"`;
+                    }
+                    if (activeCategory !== 'All' && selectedStatuses.length > 0) {
+                      return `No ${selectedStatuses.join(' or ')} items in ${activeCategory}`;
+                    }
+                    if (activeCategory !== 'All') {
+                      return `No items in ${activeCategory}`;
+                    }
+                    if (selectedStatuses.length > 0) {
+                      return `No ${selectedStatuses.join(' or ')} items found`;
+                    }
+                    return 'Your closet is empty';
+                  })()}
+                  message={(() => {
+                    if (searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0) {
+                      return 'Try adjusting your filters or search terms';
+                    }
+                    return 'Start adding items to your wardrobe and watch your collection grow!';
+                  })()}
+                  actionText={(() => {
+                    if (searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0) {
+                      return 'Clear filters';
+                    }
+                    return 'Add your first item';
+                  })()}
+                  actionHref={(() => {
+                    if (searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0) {
+                      return '/';
+                    }
+                    return '/add';
+                  })()}
+                  type={
+                    searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0
+                      ? 'search'
+                      : 'garments'
+                  }
+                />
+              </div>
+            )}
           </div>
-          
-          {/* Floating Action Button */}
-          <HangerFAB isGuest={isGuest} />
         </div>
+
+        {/* Floating Action Button */}
+        <HangerFAB isGuest={isGuest} />
+      </div>
     </Layout>
   );
 }

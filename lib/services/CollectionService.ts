@@ -1,5 +1,5 @@
-import { db } from "@/lib/db";
-import { RuleOperator } from "@prisma/client";
+import { db } from '@/lib/db';
+import { RuleOperator } from '@prisma/client';
 
 export interface CreateCollection {
   name: string;
@@ -35,21 +35,21 @@ export class CollectionService {
                   images: true,
                   tags: {
                     include: {
-                      tag: true
-                    }
-                  }
-                }
-              }
-            }
+                      tag: true,
+                    },
+                  },
+                },
+              },
+            },
           },
           rules: true,
           _count: {
             select: {
-              garments: true
-            }
-          }
+              garments: true,
+            },
+          },
         },
-        orderBy: { createdAt: 'desc' }
+        orderBy: { createdAt: 'desc' },
       });
     } catch (error) {
       console.error('Error fetching collections:', error);
@@ -69,16 +69,16 @@ export class CollectionService {
                   images: true,
                   tags: {
                     include: {
-                      tag: true
-                    }
-                  }
-                }
-              }
+                      tag: true,
+                    },
+                  },
+                },
+              },
             },
-            orderBy: { addedAt: 'desc' }
+            orderBy: { addedAt: 'desc' },
           },
-          rules: true
-        }
+          rules: true,
+        },
       });
     } catch (error) {
       console.error('Error fetching collection:', error);
@@ -92,7 +92,7 @@ export class CollectionService {
         data: {
           ...data,
           userId,
-          isSmartCollection: data.isSmartCollection || false
+          isSmartCollection: data.isSmartCollection || false,
         },
         include: {
           garments: {
@@ -102,20 +102,20 @@ export class CollectionService {
                   images: true,
                   tags: {
                     include: {
-                      tag: true
-                    }
-                  }
-                }
-              }
-            }
+                      tag: true,
+                    },
+                  },
+                },
+              },
+            },
           },
           rules: true,
           _count: {
             select: {
-              garments: true
-            }
-          }
-        }
+              garments: true,
+            },
+          },
+        },
       });
     } catch (error) {
       console.error('Error creating collection:', error);
@@ -136,20 +136,20 @@ export class CollectionService {
                   images: true,
                   tags: {
                     include: {
-                      tag: true
-                    }
-                  }
-                }
-              }
-            }
+                      tag: true,
+                    },
+                  },
+                },
+              },
+            },
           },
           rules: true,
           _count: {
             select: {
-              garments: true
-            }
-          }
-        }
+              garments: true,
+            },
+          },
+        },
       });
     } catch (error) {
       console.error('Error updating collection:', error);
@@ -160,7 +160,7 @@ export class CollectionService {
   async deleteCollection(id: string, userId: string) {
     try {
       return await db.collection.delete({
-        where: { id, userId }
+        where: { id, userId },
       });
     } catch (error) {
       console.error('Error deleting collection:', error);
@@ -172,9 +172,9 @@ export class CollectionService {
     try {
       // Verify collection belongs to user
       const collection = await db.collection.findFirst({
-        where: { id: collectionId, userId }
+        where: { id: collectionId, userId },
       });
-      
+
       if (!collection) {
         throw new Error('Collection not found');
       }
@@ -183,8 +183,8 @@ export class CollectionService {
       const garments = await db.garment.findMany({
         where: {
           id: { in: garmentIds },
-          userId
-        }
+          userId,
+        },
       });
 
       if (garments.length !== garmentIds.length) {
@@ -192,14 +192,14 @@ export class CollectionService {
       }
 
       // Create collection-garment associations (skip duplicates)
-      const collectionGarments = garmentIds.map(garmentId => ({
+      const collectionGarments = garmentIds.map((garmentId) => ({
         collectionId,
-        garmentId
+        garmentId,
       }));
 
       await db.collectionGarment.createMany({
         data: collectionGarments,
-        skipDuplicates: true
+        skipDuplicates: true,
       });
 
       return true;
@@ -213,9 +213,9 @@ export class CollectionService {
     try {
       // Verify collection belongs to user
       const collection = await db.collection.findFirst({
-        where: { id: collectionId, userId }
+        where: { id: collectionId, userId },
       });
-      
+
       if (!collection) {
         throw new Error('Collection not found');
       }
@@ -223,8 +223,8 @@ export class CollectionService {
       await db.collectionGarment.deleteMany({
         where: {
           collectionId,
-          garmentId: { in: garmentIds }
-        }
+          garmentId: { in: garmentIds },
+        },
       });
 
       return true;
@@ -240,17 +240,17 @@ export class CollectionService {
         data: {
           ...data,
           userId,
-          isSmartCollection: true
-        }
+          isSmartCollection: true,
+        },
       });
 
       // Create rules for the smart collection
       if (rules.length > 0) {
         await db.collectionRule.createMany({
-          data: rules.map(rule => ({
+          data: rules.map((rule) => ({
             ...rule,
-            collectionId: collection.id
-          }))
+            collectionId: collection.id,
+          })),
         });
       }
 
@@ -268,25 +268,25 @@ export class CollectionService {
     try {
       // Verify collection belongs to user and is a smart collection
       const collection = await db.collection.findFirst({
-        where: { id: collectionId, userId, isSmartCollection: true }
+        where: { id: collectionId, userId, isSmartCollection: true },
       });
-      
+
       if (!collection) {
         throw new Error('Smart collection not found');
       }
 
       // Remove existing rules
       await db.collectionRule.deleteMany({
-        where: { collectionId }
+        where: { collectionId },
       });
 
       // Create new rules
       if (rules.length > 0) {
         await db.collectionRule.createMany({
-          data: rules.map(rule => ({
+          data: rules.map((rule) => ({
             ...rule,
-            collectionId
-          }))
+            collectionId,
+          })),
         });
       }
 
@@ -304,7 +304,7 @@ export class CollectionService {
     try {
       const collection = await db.collection.findFirst({
         where: { id: collectionId, userId, isSmartCollection: true },
-        include: { rules: true }
+        include: { rules: true },
       });
 
       if (!collection || !collection.isSmartCollection) {
@@ -313,7 +313,7 @@ export class CollectionService {
 
       // Clear existing garments from smart collection
       await db.collectionGarment.deleteMany({
-        where: { collectionId }
+        where: { collectionId },
       });
 
       if (collection.rules.length === 0) {
@@ -322,13 +322,13 @@ export class CollectionService {
 
       // Build query based on rules
       const garments = await this.getGarmentsMatchingRules(collection.rules, userId);
-      
+
       if (garments.length > 0) {
         await db.collectionGarment.createMany({
-          data: garments.map(garment => ({
+          data: garments.map((garment) => ({
             collectionId,
-            garmentId: garment.id
-          }))
+            garmentId: garment.id,
+          })),
         });
       }
     } catch (error) {
@@ -339,17 +339,17 @@ export class CollectionService {
 
   private async getGarmentsMatchingRules(rules: any[], userId: string) {
     const whereConditions: any = { userId };
-    
+
     // Build complex where conditions for all rules
     const ruleConditions: any[] = [];
-    
+
     for (const rule of rules) {
       const condition = this.buildRuleCondition(rule);
       if (condition) {
         ruleConditions.push(condition);
       }
     }
-    
+
     // Combine all rule conditions with AND logic
     if (ruleConditions.length > 0) {
       whereConditions.AND = ruleConditions;
@@ -361,19 +361,19 @@ export class CollectionService {
         images: true,
         tags: {
           include: {
-            tag: true
-          }
-        }
+            tag: true,
+          },
+        },
       },
       orderBy: {
-        createdAt: 'desc'
-      }
+        createdAt: 'desc',
+      },
     });
   }
-  
+
   private buildRuleCondition(rule: any) {
     const { field, operator, value } = rule;
-    
+
     switch (field) {
       case 'category':
         return { category: this.buildWhereCondition(operator, value) };
@@ -390,10 +390,10 @@ export class CollectionService {
           tags: {
             some: {
               tag: {
-                name: this.buildWhereCondition(operator, value)
-              }
-            }
-          }
+                name: this.buildWhereCondition(operator, value),
+              },
+            },
+          },
         };
       default:
         return null;
@@ -411,7 +411,7 @@ export class CollectionService {
       case 'ENDS_WITH':
         return { endsWith: value, mode: 'insensitive' };
       case 'IN':
-        return { in: value.split(',').map(v => v.trim()) };
+        return { in: value.split(',').map((v) => v.trim()) };
       case 'NOT_EQUALS':
         return { not: { equals: value } };
       case 'NOT_CONTAINS':

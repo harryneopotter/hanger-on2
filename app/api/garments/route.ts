@@ -9,7 +9,7 @@ export async function GET(req: NextRequest) {
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    
+
     const { searchParams } = new URL(req.url);
     const search = searchParams.get('search');
     const category = searchParams.get('category');
@@ -18,13 +18,13 @@ export async function GET(req: NextRequest) {
     const material = searchParams.get('material');
     const status = searchParams.get('status');
     const tags = searchParams.get('tags');
-    
+
     // If no search parameters, return all garments
     if (!search && !category && !color && !brand && !material && !status && !tags) {
       const garments = await garmentService.getAllGarments(userId);
       return NextResponse.json(garments);
     }
-    
+
     // Use search functionality for filtered results
     const garments = await garmentService.searchGarments({
       userId,
@@ -34,9 +34,9 @@ export async function GET(req: NextRequest) {
       brand,
       material,
       status,
-      tags: tags ? tags.split(',') : undefined
+      tags: tags ? tags.split(',') : undefined,
     });
-    
+
     return NextResponse.json(garments);
   } catch (error: any) {
     console.error('Error fetching garments:', error);
@@ -52,36 +52,36 @@ export async function POST(req: NextRequest) {
     const body = await req.json();
     const { imageUrl, tagIds, ...garmentData } = body;
     const data = CreateGarmentSchema.parse(garmentData);
-    
+
     const userId = await getUserId();
     if (!userId) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
-    
+
     // Create the garment first
     const created = await garmentService.createGarment(data, userId);
-    
+
     // If there's an image URL, add it to the garment
     if (imageUrl && created.id) {
       try {
         // Extract filename from URL for metadata
         const urlParts = imageUrl.split('/');
         const fileName = urlParts[urlParts.length - 1] || 'uploaded-image.jpg';
-        
+
         await garmentService.addImageToGarment(
           created.id,
           imageUrl,
           fileName,
           0, // File size not available from URL
           'image/jpeg', // Default MIME type
-          userId
+          userId,
         );
       } catch (imageError) {
         console.error('Failed to add image to garment:', imageError);
         // Don't fail the entire request if image addition fails
       }
     }
-    
+
     // Handle tag associations if provided
     if (tagIds && Array.isArray(tagIds) && tagIds.length > 0 && created.id) {
       try {
@@ -91,7 +91,7 @@ export async function POST(req: NextRequest) {
         // Don't fail the entire request if tag assignment fails
       }
     }
-    
+
     // Fetch the complete garment with images and tags
     const completeGarment = await garmentService.getGarmentById(created.id, userId);
     return NextResponse.json(completeGarment || created, { status: 201 });

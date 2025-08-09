@@ -29,9 +29,7 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NextAuthProvider>
-        {children}
-      </NextAuthProvider>
+      <NextAuthProvider>{children}</NextAuthProvider>
     </QueryClientProvider>
   );
 };
@@ -51,7 +49,7 @@ describe('Error Handling and Edge Cases', () => {
       mockFetch.mockRejectedValue(new Error('Network timeout'));
 
       const response = fetch('/api/garments');
-      
+
       await expect(response).rejects.toThrow('Network timeout');
     });
 
@@ -59,7 +57,7 @@ describe('Error Handling and Edge Cases', () => {
       mockFetch.mockRejectedValue(new Error('Connection refused'));
 
       const response = fetch('/api/collections');
-      
+
       await expect(response).rejects.toThrow('Connection refused');
     });
 
@@ -67,7 +65,7 @@ describe('Error Handling and Edge Cases', () => {
       mockFetch.mockRejectedValue(new Error('DNS resolution failed'));
 
       const response = fetch('/api/tags');
-      
+
       await expect(response).rejects.toThrow('DNS resolution failed');
     });
   });
@@ -154,12 +152,12 @@ describe('Error Handling and Edge Cases', () => {
         ok: false,
         status: 422,
         statusText: 'Unprocessable Entity',
-        json: async () => ({ 
+        json: async () => ({
           error: 'Validation failed',
           details: {
             name: ['Name is required'],
-            email: ['Invalid email format']
-          }
+            email: ['Invalid email format'],
+          },
         }),
       });
 
@@ -178,7 +176,7 @@ describe('Error Handling and Edge Cases', () => {
         status: 429,
         statusText: 'Too Many Requests',
         headers: new Headers({
-          'Retry-After': '60'
+          'Retry-After': '60',
         }),
         json: async () => ({ error: 'Rate limit exceeded' }),
       });
@@ -223,7 +221,7 @@ describe('Error Handling and Edge Cases', () => {
         status: 503,
         statusText: 'Service Unavailable',
         headers: new Headers({
-          'Retry-After': '120'
+          'Retry-After': '120',
         }),
         json: async () => ({ error: 'Service temporarily unavailable' }),
       });
@@ -240,7 +238,7 @@ describe('Error Handling and Edge Cases', () => {
       const testData = {
         name: '',
         category: '',
-        material: ''
+        material: '',
       };
 
       mockFetch.mockResolvedValue({
@@ -250,14 +248,14 @@ describe('Error Handling and Edge Cases', () => {
           error: 'Validation failed',
           details: {
             name: ['Name cannot be empty'],
-            category: ['Category is required']
-          }
-        })
+            category: ['Category is required'],
+          },
+        }),
       });
 
       const response = await fetch('/api/garments', {
         method: 'POST',
-        body: JSON.stringify(testData)
+        body: JSON.stringify(testData),
       });
 
       expect(response.status).toBe(422);
@@ -267,7 +265,7 @@ describe('Error Handling and Edge Cases', () => {
       const testData = {
         name: null,
         category: undefined,
-        material: 'Cotton'
+        material: 'Cotton',
       };
 
       mockFetch.mockResolvedValue({
@@ -277,14 +275,14 @@ describe('Error Handling and Edge Cases', () => {
           error: 'Validation failed',
           details: {
             name: ['Name cannot be null'],
-            category: ['Category is required']
-          }
-        })
+            category: ['Category is required'],
+          },
+        }),
       });
 
       const response = await fetch('/api/garments', {
         method: 'POST',
-        body: JSON.stringify(testData)
+        body: JSON.stringify(testData),
       });
 
       expect(response.status).toBe(422);
@@ -295,7 +293,7 @@ describe('Error Handling and Edge Cases', () => {
       const testData = {
         name: longString,
         category: 'Shirt',
-        material: 'Cotton'
+        material: 'Cotton',
       };
 
       mockFetch.mockResolvedValue({
@@ -304,14 +302,14 @@ describe('Error Handling and Edge Cases', () => {
         json: async () => ({
           error: 'Validation failed',
           details: {
-            name: ['Name exceeds maximum length']
-          }
-        })
+            name: ['Name exceeds maximum length'],
+          },
+        }),
       });
 
       const response = await fetch('/api/garments', {
         method: 'POST',
-        body: JSON.stringify(testData)
+        body: JSON.stringify(testData),
       });
 
       expect(response.status).toBe(422);
@@ -321,18 +319,18 @@ describe('Error Handling and Edge Cases', () => {
       const testData = {
         name: '🧥👕👖 Special Garment 特殊服装',
         category: 'Émoji & Unicode',
-        material: 'Spéciål Matériål'
+        material: 'Spéciål Matériål',
       };
 
       mockFetch.mockResolvedValue({
         ok: true,
         status: 201,
-        json: async () => ({ id: 'test-id', ...testData })
+        json: async () => ({ id: 'test-id', ...testData }),
       });
 
       const response = await fetch('/api/garments', {
         method: 'POST',
-        body: JSON.stringify(testData)
+        body: JSON.stringify(testData),
       });
 
       expect(response.status).toBe(201);
@@ -343,7 +341,7 @@ describe('Error Handling and Edge Cases', () => {
 
       const response = fetch('/api/garments', {
         method: 'POST',
-        body: '{invalid json}'
+        body: '{invalid json}',
       });
 
       await expect(response).rejects.toThrow('Unexpected token in JSON');
@@ -360,13 +358,13 @@ describe('Error Handling and Edge Cases', () => {
   describe('File Upload Edge Cases', () => {
     it('should handle oversized files', async () => {
       const oversizedFile = new File(['x'.repeat(10 * 1024 * 1024)], 'large.jpg', {
-        type: 'image/jpeg'
+        type: 'image/jpeg',
       });
 
       mockFetch.mockResolvedValue({
         ok: false,
         status: 413,
-        json: async () => ({ error: 'File too large' })
+        json: async () => ({ error: 'File too large' }),
       });
 
       const formData = new FormData();
@@ -374,7 +372,7 @@ describe('Error Handling and Edge Cases', () => {
 
       const response = await fetch('/api/images/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       expect(response.status).toBe(413);
@@ -382,13 +380,13 @@ describe('Error Handling and Edge Cases', () => {
 
     it('should handle invalid file types', async () => {
       const invalidFile = new File(['content'], 'document.pdf', {
-        type: 'application/pdf'
+        type: 'application/pdf',
       });
 
       mockFetch.mockResolvedValue({
         ok: false,
         status: 415,
-        json: async () => ({ error: 'Unsupported file type' })
+        json: async () => ({ error: 'Unsupported file type' }),
       });
 
       const formData = new FormData();
@@ -396,7 +394,7 @@ describe('Error Handling and Edge Cases', () => {
 
       const response = await fetch('/api/images/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       expect(response.status).toBe(415);
@@ -404,13 +402,13 @@ describe('Error Handling and Edge Cases', () => {
 
     it('should handle corrupted image files', async () => {
       const corruptedFile = new File(['corrupted data'], 'image.jpg', {
-        type: 'image/jpeg'
+        type: 'image/jpeg',
       });
 
       mockFetch.mockResolvedValue({
         ok: false,
         status: 422,
-        json: async () => ({ error: 'Invalid image file' })
+        json: async () => ({ error: 'Invalid image file' }),
       });
 
       const formData = new FormData();
@@ -418,7 +416,7 @@ describe('Error Handling and Edge Cases', () => {
 
       const response = await fetch('/api/images/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       expect(response.status).toBe(422);
@@ -426,13 +424,13 @@ describe('Error Handling and Edge Cases', () => {
 
     it('should handle empty files', async () => {
       const emptyFile = new File([], 'empty.jpg', {
-        type: 'image/jpeg'
+        type: 'image/jpeg',
       });
 
       mockFetch.mockResolvedValue({
         ok: false,
         status: 422,
-        json: async () => ({ error: 'File cannot be empty' })
+        json: async () => ({ error: 'File cannot be empty' }),
       });
 
       const formData = new FormData();
@@ -440,7 +438,7 @@ describe('Error Handling and Edge Cases', () => {
 
       const response = await fetch('/api/images/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       expect(response.status).toBe(422);
@@ -452,7 +450,7 @@ describe('Error Handling and Edge Cases', () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 503,
-        json: async () => ({ error: 'Database connection timeout' })
+        json: async () => ({ error: 'Database connection timeout' }),
       });
 
       const response = await fetch('/api/garments');
@@ -464,7 +462,7 @@ describe('Error Handling and Edge Cases', () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 503,
-        json: async () => ({ error: 'Database connection pool exhausted' })
+        json: async () => ({ error: 'Database connection pool exhausted' }),
       });
 
       const response = await fetch('/api/collections');
@@ -476,12 +474,12 @@ describe('Error Handling and Edge Cases', () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 409,
-        json: async () => ({ error: 'Unique constraint violation' })
+        json: async () => ({ error: 'Unique constraint violation' }),
       });
 
       const response = await fetch('/api/tags', {
         method: 'POST',
-        body: JSON.stringify({ name: 'Existing Tag' })
+        body: JSON.stringify({ name: 'Existing Tag' }),
       });
 
       expect(response.status).toBe(409);
@@ -491,15 +489,15 @@ describe('Error Handling and Edge Cases', () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 422,
-        json: async () => ({ error: 'Referenced record does not exist' })
+        json: async () => ({ error: 'Referenced record does not exist' }),
       });
 
       const response = await fetch('/api/garments', {
         method: 'POST',
-        body: JSON.stringify({ 
+        body: JSON.stringify({
           name: 'Test Garment',
-          userId: 'non-existent-user'
-        })
+          userId: 'non-existent-user',
+        }),
       });
 
       expect(response.status).toBe(422);
@@ -511,13 +509,13 @@ describe('Error Handling and Edge Cases', () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 401,
-        json: async () => ({ error: 'Token expired' })
+        json: async () => ({ error: 'Token expired' }),
       });
 
       const response = await fetch('/api/garments', {
         headers: {
-          'Authorization': 'Bearer expired-token'
-        }
+          Authorization: 'Bearer expired-token',
+        },
       });
 
       expect(response.status).toBe(401);
@@ -527,13 +525,13 @@ describe('Error Handling and Edge Cases', () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 401,
-        json: async () => ({ error: 'Invalid token format' })
+        json: async () => ({ error: 'Invalid token format' }),
       });
 
       const response = await fetch('/api/garments', {
         headers: {
-          'Authorization': 'Bearer malformed.token.here'
-        }
+          Authorization: 'Bearer malformed.token.here',
+        },
       });
 
       expect(response.status).toBe(401);
@@ -543,7 +541,7 @@ describe('Error Handling and Edge Cases', () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 401,
-        json: async () => ({ error: 'Authentication required' })
+        json: async () => ({ error: 'Authentication required' }),
       });
 
       const response = await fetch('/api/garments');
@@ -555,7 +553,7 @@ describe('Error Handling and Edge Cases', () => {
       mockFetch.mockResolvedValue({
         ok: false,
         status: 401,
-        json: async () => ({ error: 'Session expired' })
+        json: async () => ({ error: 'Session expired' }),
       });
 
       const response = await fetch('/api/collections');
@@ -569,24 +567,24 @@ describe('Error Handling and Edge Cases', () => {
       // Simulate two concurrent updates to the same resource
       const updatePromise1 = fetch('/api/garments/test-id', {
         method: 'PUT',
-        body: JSON.stringify({ name: 'Update 1' })
+        body: JSON.stringify({ name: 'Update 1' }),
       });
 
       const updatePromise2 = fetch('/api/garments/test-id', {
         method: 'PUT',
-        body: JSON.stringify({ name: 'Update 2' })
+        body: JSON.stringify({ name: 'Update 2' }),
       });
 
       mockFetch
         .mockResolvedValueOnce({
           ok: true,
           status: 200,
-          json: async () => ({ id: 'test-id', name: 'Update 1' })
+          json: async () => ({ id: 'test-id', name: 'Update 1' }),
         })
         .mockResolvedValueOnce({
           ok: false,
           status: 409,
-          json: async () => ({ error: 'Resource was modified by another request' })
+          json: async () => ({ error: 'Resource was modified by another request' }),
         });
 
       const [result1, result2] = await Promise.all([updatePromise1, updatePromise2]);
@@ -597,23 +595,23 @@ describe('Error Handling and Edge Cases', () => {
 
     it('should handle simultaneous deletion attempts', async () => {
       const deletePromise1 = fetch('/api/garments/test-id', {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       const deletePromise2 = fetch('/api/garments/test-id', {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       mockFetch
         .mockResolvedValueOnce({
           ok: true,
           status: 204,
-          json: async () => ({})
+          json: async () => ({}),
         })
         .mockResolvedValueOnce({
           ok: false,
           status: 404,
-          json: async () => ({ error: 'Resource not found' })
+          json: async () => ({ error: 'Resource not found' }),
         });
 
       const [result1, result2] = await Promise.all([deletePromise1, deletePromise2]);
@@ -629,13 +627,13 @@ describe('Error Handling and Edge Cases', () => {
         id: `item-${i}`,
         name: `Item ${i}`,
         category: 'Test Category',
-        material: 'Test Material'
+        material: 'Test Material',
       }));
 
       mockFetch.mockResolvedValue({
         ok: true,
         status: 200,
-        json: async () => largeDataset
+        json: async () => largeDataset,
       });
 
       const response = await fetch('/api/garments');
@@ -650,7 +648,7 @@ describe('Error Handling and Edge Cases', () => {
       mockFetch.mockRejectedValue(new Error('Out of memory'));
 
       const largeFile = new File(['x'.repeat(100 * 1024 * 1024)], 'huge.jpg', {
-        type: 'image/jpeg'
+        type: 'image/jpeg',
       });
 
       const formData = new FormData();
@@ -658,7 +656,7 @@ describe('Error Handling and Edge Cases', () => {
 
       const response = fetch('/api/images/upload', {
         method: 'POST',
-        body: formData
+        body: formData,
       });
 
       await expect(response).rejects.toThrow('Out of memory');
@@ -703,11 +701,11 @@ describe('Error Handling and Edge Cases', () => {
   describe('Toast Notification Error Handling', () => {
     it('should display error toast for failed API calls', async () => {
       const mockToastError = vi.mocked(toast.error);
-      
+
       mockFetch.mockResolvedValue({
         ok: false,
         status: 500,
-        json: async () => ({ error: 'Server error' })
+        json: async () => ({ error: 'Server error' }),
       });
 
       try {
@@ -725,7 +723,7 @@ describe('Error Handling and Edge Cases', () => {
 
     it('should display generic error toast for network failures', async () => {
       const mockToastError = vi.mocked(toast.error);
-      
+
       mockFetch.mockRejectedValue(new Error('Network error'));
 
       try {

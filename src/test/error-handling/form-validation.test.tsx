@@ -35,9 +35,7 @@ const TestWrapper = ({ children }: { children: React.ReactNode }) => {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <NextAuthProvider>
-        {children}
-      </NextAuthProvider>
+      <NextAuthProvider>{children}</NextAuthProvider>
     </QueryClientProvider>
   );
 };
@@ -64,14 +62,14 @@ describe('Form Validation Edge Cases', () => {
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
       const longName = 'a'.repeat(1000);
 
       await user.type(nameInput, longName);
-      
+
       expect(nameInput).toHaveValue(longName);
     });
 
@@ -80,14 +78,14 @@ describe('Form Validation Edge Cases', () => {
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
       const specialChars = '!@#$%^&*()_+-=[]{}|;:",./<>?`~';
 
       await user.type(nameInput, specialChars);
-      
+
       expect(nameInput).toHaveValue(specialChars);
     });
 
@@ -96,14 +94,14 @@ describe('Form Validation Edge Cases', () => {
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
       const unicodeText = '👕 Émoji Tëst 测试 العربية';
 
       await user.type(nameInput, unicodeText);
-      
+
       expect(nameInput).toHaveValue(unicodeText);
     });
 
@@ -112,14 +110,14 @@ describe('Form Validation Edge Cases', () => {
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
       const submitButton = screen.getByRole('button', { name: /submit/i });
 
       await user.type(nameInput, 'Test Garment');
-      
+
       // Rapid clicks
       await user.click(submitButton);
       await user.click(submitButton);
@@ -134,11 +132,11 @@ describe('Form Validation Edge Cases', () => {
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const submitButton = screen.getByRole('button', { name: /submit/i });
-      
+
       await user.click(submitButton);
 
       // Form should not submit with empty required fields
@@ -150,7 +148,7 @@ describe('Form Validation Edge Cases', () => {
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
@@ -168,7 +166,7 @@ describe('Form Validation Edge Cases', () => {
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
@@ -177,21 +175,24 @@ describe('Form Validation Edge Cases', () => {
       // Simulate paste operation
       await user.click(nameInput);
       await user.paste(largeContent);
-      
+
       expect(nameInput).toHaveValue(largeContent);
     });
 
     it('should handle form reset during submission', async () => {
       const user = userEvent.setup();
       let resolveSubmit: (value: any) => void;
-      const delayedSubmit = vi.fn(() => new Promise(resolve => {
-        resolveSubmit = resolve;
-      }));
+      const delayedSubmit = vi.fn(
+        () =>
+          new Promise((resolve) => {
+            resolveSubmit = resolve;
+          }),
+      );
 
       render(
         <TestWrapper>
           <GarmentForm onSubmit={delayedSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
@@ -202,10 +203,10 @@ describe('Form Validation Edge Cases', () => {
 
       // Clear form while submission is pending
       await user.clear(nameInput);
-      
+
       // Resolve the submission
       resolveSubmit!({ success: true });
-      
+
       await waitFor(() => {
         expect(delayedSubmit).toHaveBeenCalled();
       });
@@ -226,7 +227,7 @@ describe('Form Validation Edge Cases', () => {
       render(
         <TestWrapper>
           <CollectionForm onSubmit={mockOnSubmit} onClose={mockOnClose} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
@@ -250,7 +251,7 @@ describe('Form Validation Edge Cases', () => {
       render(
         <TestWrapper>
           <CollectionForm onSubmit={mockOnSubmit} onClose={mockOnClose} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
@@ -276,7 +277,7 @@ describe('Form Validation Edge Cases', () => {
       render(
         <TestWrapper>
           <CollectionForm onSubmit={mockOnSubmit} onClose={mockOnClose} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
@@ -288,7 +289,7 @@ describe('Form Validation Edge Cases', () => {
         const colorInput = colorInputs[0];
         await user.clear(colorInput);
         await user.type(colorInput, 'invalid-color');
-        
+
         // Form should handle invalid color gracefully
         const submitButton = screen.getByRole('button', { name: /create collection/i });
         await user.click(submitButton);
@@ -300,7 +301,7 @@ describe('Form Validation Edge Cases', () => {
       render(
         <TestWrapper>
           <CollectionForm onSubmit={mockOnSubmit} onClose={mockOnClose} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
@@ -325,16 +326,16 @@ describe('Form Validation Edge Cases', () => {
       render(
         <TestWrapper>
           <CollectionForm onSubmit={mockOnSubmit} onClose={mockOnClose} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const smartCollectionCheckbox = screen.getByLabelText(/smart collection/i);
-      
+
       // Toggle multiple times
       await user.click(smartCollectionCheckbox);
       await user.click(smartCollectionCheckbox);
       await user.click(smartCollectionCheckbox);
-      
+
       expect(smartCollectionCheckbox).toBeChecked();
     });
   });
@@ -343,18 +344,18 @@ describe('Form Validation Edge Cases', () => {
     it('should handle HTML injection attempts', async () => {
       const user = userEvent.setup();
       const mockOnSubmit = vi.fn();
-      
+
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
       const maliciousInput = '<script>alert("XSS")</script>';
 
       await user.type(nameInput, maliciousInput);
-      
+
       // Input should be treated as plain text
       expect(nameInput).toHaveValue(maliciousInput);
       expect(screen.queryByText('alert')).not.toBeInTheDocument();
@@ -363,31 +364,31 @@ describe('Form Validation Edge Cases', () => {
     it('should handle SQL injection attempts', async () => {
       const user = userEvent.setup();
       const mockOnSubmit = vi.fn();
-      
+
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
       const sqlInjection = "'; DROP TABLE garments; --";
 
       await user.type(nameInput, sqlInjection);
-      
+
       expect(nameInput).toHaveValue(sqlInjection);
     });
 
     it('should handle extremely nested object structures', () => {
       const deepObject: any = {};
       let current = deepObject;
-      
+
       // Create deeply nested object
       for (let i = 0; i < 1000; i++) {
         current.nested = {};
         current = current.nested;
       }
-      
+
       // Should handle without stack overflow
       expect(() => JSON.stringify(deepObject)).not.toThrow();
     });
@@ -395,18 +396,18 @@ describe('Form Validation Edge Cases', () => {
     it('should handle null bytes in input', async () => {
       const user = userEvent.setup();
       const mockOnSubmit = vi.fn();
-      
+
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
       const nullByteInput = 'Test\x00Name';
 
       await user.type(nameInput, nullByteInput);
-      
+
       expect(nameInput).toHaveValue(nullByteInput);
     });
   });
@@ -415,18 +416,18 @@ describe('Form Validation Edge Cases', () => {
     it('should handle keyboard navigation with disabled elements', async () => {
       const user = userEvent.setup();
       const mockOnSubmit = vi.fn();
-      
+
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const submitButton = screen.getByRole('button', { name: /submit/i });
-      
+
       // Try to focus disabled button
       await user.tab();
-      
+
       // Should skip disabled elements in tab order
       expect(document.activeElement).not.toBe(submitButton);
     });
@@ -435,11 +436,11 @@ describe('Form Validation Edge Cases', () => {
       const user = userEvent.setup();
       const mockOnSubmit = vi.fn();
       const mockOnClose = vi.fn();
-      
+
       render(
         <TestWrapper>
           <CollectionForm onSubmit={mockOnSubmit} onClose={mockOnClose} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const smartCollectionCheckbox = screen.getByLabelText(/smart collection/i);
@@ -452,11 +453,11 @@ describe('Form Validation Edge Cases', () => {
 
     it('should handle high contrast mode', () => {
       const mockOnSubmit = vi.fn();
-      
+
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       // Elements should be visible and accessible in high contrast
@@ -468,7 +469,7 @@ describe('Form Validation Edge Cases', () => {
       // Mock reduced motion preference
       Object.defineProperty(window, 'matchMedia', {
         writable: true,
-        value: vi.fn().mockImplementation(query => ({
+        value: vi.fn().mockImplementation((query) => ({
           matches: query === '(prefers-reduced-motion: reduce)',
           media: query,
           onchange: null,
@@ -481,11 +482,11 @@ describe('Form Validation Edge Cases', () => {
       });
 
       const mockOnSubmit = vi.fn();
-      
+
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       // Form should render without animations
@@ -498,36 +499,36 @@ describe('Form Validation Edge Cases', () => {
     it('should handle rapid state updates', async () => {
       const user = userEvent.setup();
       const mockOnSubmit = vi.fn();
-      
+
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
-      
+
       // Rapid typing simulation
       const rapidText = 'abcdefghijklmnopqrstuvwxyz';
       for (const char of rapidText) {
         await user.type(nameInput, char, { delay: 1 });
       }
-      
+
       expect(nameInput).toHaveValue(rapidText);
     });
 
     it('should handle memory leaks in event listeners', () => {
       const mockOnSubmit = vi.fn();
-      
+
       const { unmount } = render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       // Unmount component
       unmount();
-      
+
       // Should not cause memory leaks
       expect(() => unmount()).not.toThrow();
     });
@@ -535,26 +536,26 @@ describe('Form Validation Edge Cases', () => {
     it('should handle large form data serialization', async () => {
       const user = userEvent.setup();
       const mockOnSubmit = vi.fn();
-      
+
       render(
         <TestWrapper>
           <GarmentForm onSubmit={mockOnSubmit} />
-        </TestWrapper>
+        </TestWrapper>,
       );
 
       const nameInput = screen.getByLabelText(/name/i);
       const largeData = 'x'.repeat(100000);
-      
+
       await user.type(nameInput, largeData);
-      
+
       const submitButton = screen.getByRole('button', { name: /submit/i });
       await user.click(submitButton);
-      
+
       // Should handle large data without performance issues
       expect(mockOnSubmit).toHaveBeenCalledWith(
         expect.objectContaining({
-          name: largeData
-        })
+          name: largeData,
+        }),
       );
     });
   });

@@ -18,10 +18,16 @@ interface GarmentGridProps {
   onMoveToLaundry?: (garment: Garment) => void;
 }
 
-const GarmentGrid: React.FC<GarmentGridProps> = ({ garments, isGuest = false, onEdit, onMarkAsWorn, onMoveToLaundry }) => {
+const GarmentGrid: React.FC<GarmentGridProps> = ({
+  garments,
+  isGuest = false,
+  onEdit,
+  onMarkAsWorn,
+  onMoveToLaundry,
+}) => {
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 p-4">
-      {garments.map(garment => (
+      {garments.map((garment) => (
         <GarmentCard
           key={garment.id}
           id={garment.id}

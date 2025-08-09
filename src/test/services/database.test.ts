@@ -101,8 +101,9 @@ describe('Database Services', () => {
       it('should handle database errors', async () => {
         mockDb.garment.findMany.mockRejectedValue(new Error('Database error'));
 
-        await expect(new GarmentService().getAllGarments(userId))
-          .rejects.toThrow('Failed to fetch garments');
+        await expect(new GarmentService().getAllGarments(userId)).rejects.toThrow(
+          'Failed to fetch garments',
+        );
       });
     });
 
@@ -253,7 +254,7 @@ describe('Database Services', () => {
           imageData.fileName,
           imageData.fileSize,
           imageData.mimeType,
-          userId
+          userId,
         );
 
         expect(mockDb.garment.findFirst).toHaveBeenCalledWith({
@@ -281,8 +282,8 @@ describe('Database Services', () => {
             imageData.fileName,
             imageData.fileSize,
             imageData.mimeType,
-            userId
-          )
+            userId,
+          ),
         ).rejects.toThrow('Failed to add image to garment');
       });
     });
@@ -308,7 +309,7 @@ describe('Database Services', () => {
           where: { garmentId },
         });
         expect(mockDb.garmentTag.createMany).toHaveBeenCalledWith({
-          data: tagIds.map(tagId => ({ garmentId, tagId })),
+          data: tagIds.map((tagId) => ({ garmentId, tagId })),
         });
         expect(result).toEqual(mockGarment);
       });
@@ -516,7 +517,7 @@ describe('Database Services', () => {
         const result = await new CollectionService().addGarmentsToCollection(
           collectionId,
           garmentIds,
-          userId
+          userId,
         );
 
         expect(mockDb.collection.findFirst).toHaveBeenCalledWith({
@@ -529,7 +530,7 @@ describe('Database Services', () => {
           },
         });
         expect(mockDb.collectionGarment.createMany).toHaveBeenCalledWith({
-          data: garmentIds.map(garmentId => ({ collectionId, garmentId })),
+          data: garmentIds.map((garmentId) => ({ collectionId, garmentId })),
           skipDuplicates: true,
         });
         expect(result).toBe(true);
@@ -539,7 +540,7 @@ describe('Database Services', () => {
         mockDb.collection.findFirst.mockResolvedValue(null);
 
         await expect(
-          new CollectionService().addGarmentsToCollection(collectionId, garmentIds, userId)
+          new CollectionService().addGarmentsToCollection(collectionId, garmentIds, userId),
         ).rejects.toThrow('Failed to add garments to collection');
       });
 
@@ -548,7 +549,7 @@ describe('Database Services', () => {
         mockDb.garment.findMany.mockResolvedValue([{ id: 'garment1', userId }]); // Only one garment found
 
         await expect(
-          new CollectionService().addGarmentsToCollection(collectionId, garmentIds, userId)
+          new CollectionService().addGarmentsToCollection(collectionId, garmentIds, userId),
         ).rejects.toThrow('Failed to add garments to collection');
       });
     });
@@ -571,7 +572,7 @@ describe('Database Services', () => {
         const result = await collectionService.createSmartCollection(
           { name: 'Smart Collection' },
           rules,
-          userId
+          userId,
         );
 
         expect(mockDb.collection.create).toHaveBeenCalledWith({
@@ -582,7 +583,7 @@ describe('Database Services', () => {
           },
         });
         expect(mockDb.collectionRule.createMany).toHaveBeenCalledWith({
-          data: rules.map(rule => ({ ...rule, collectionId: smartCollection.id })),
+          data: rules.map((rule) => ({ ...rule, collectionId: smartCollection.id })),
         });
         expect(result).toEqual(smartCollection);
       });
@@ -602,7 +603,9 @@ describe('Database Services', () => {
         mockDb.collectionGarment.createMany.mockResolvedValue({ count: 2 });
 
         const collectionService = new CollectionService();
-        vi.spyOn(collectionService as any, 'getGarmentsMatchingRules').mockResolvedValue(matchingGarments);
+        vi.spyOn(collectionService as any, 'getGarmentsMatchingRules').mockResolvedValue(
+          matchingGarments,
+        );
 
         await collectionService.applySmartCollectionRules(collectionId, userId);
 
@@ -610,7 +613,7 @@ describe('Database Services', () => {
           where: { collectionId },
         });
         expect(mockDb.collectionGarment.createMany).toHaveBeenCalledWith({
-          data: matchingGarments.map(garment => ({
+          data: matchingGarments.map((garment) => ({
             collectionId,
             garmentId: garment.id,
           })),
@@ -638,7 +641,7 @@ describe('Database Services', () => {
   describe('TagService', () => {
     // Note: TagService currently uses mock data in development
     // These tests verify the mock behavior and can be updated when real DB implementation is added
-    
+
     beforeEach(() => {
       // Reset mock data
       process.env.NODE_ENV = 'development';
@@ -674,15 +677,17 @@ describe('Database Services', () => {
       });
 
       it('should throw error for duplicate tag name', async () => {
-        await expect(TagService.createTag('Casual', '#FF0000'))
-          .rejects.toThrow('Tag already exists');
+        await expect(TagService.createTag('Casual', '#FF0000')).rejects.toThrow(
+          'Tag already exists',
+        );
       });
 
       it('should throw error in production', async () => {
         process.env.NODE_ENV = 'production';
 
-        await expect(TagService.createTag('Test', '#FF0000'))
-          .rejects.toThrow('Database not configured');
+        await expect(TagService.createTag('Test', '#FF0000')).rejects.toThrow(
+          'Database not configured',
+        );
       });
     });
 
@@ -696,19 +701,17 @@ describe('Database Services', () => {
 
         const remainingTags = await TagService.getAllTags();
         expect(remainingTags).toHaveLength(initialCount - 1);
-        expect(remainingTags.find(tag => tag.id === '1')).toBeUndefined();
+        expect(remainingTags.find((tag) => tag.id === '1')).toBeUndefined();
       });
 
       it('should throw error for non-existent tag', async () => {
-        await expect(TagService.deleteTag('non-existent'))
-          .rejects.toThrow('Tag not found');
+        await expect(TagService.deleteTag('non-existent')).rejects.toThrow('Tag not found');
       });
 
       it('should throw error in production', async () => {
         process.env.NODE_ENV = 'production';
 
-        await expect(TagService.deleteTag('1'))
-          .rejects.toThrow('Database not configured');
+        await expect(TagService.deleteTag('1')).rejects.toThrow('Database not configured');
       });
     });
   });

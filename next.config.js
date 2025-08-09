@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    optimizePackageImports: ['@prisma/client', 'swr']
+    optimizePackageImports: ['@prisma/client', 'swr'],
   },
   // Skip ESLint during production builds to allow build to succeed
   eslint: {

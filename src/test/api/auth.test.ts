@@ -17,13 +17,13 @@ describe('Authentication API', () => {
       const userData = {
         email: 'test@example.com',
         password: 'password123',
-        name: 'Test User'
+        name: 'Test User',
       };
 
       const response = await fetch(`${API_BASE}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(userData),
       });
 
       expect(response.status).toBe(200);
@@ -31,19 +31,19 @@ describe('Authentication API', () => {
       expect(data).toMatchObject({
         id: expect.any(String),
         email: userData.email,
-        name: expect.any(String)
+        name: expect.any(String),
       });
     });
 
     it('should return 400 for missing email', async () => {
       const userData = {
-        password: 'password123'
+        password: 'password123',
       };
 
       const response = await fetch(`${API_BASE}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(userData),
       });
 
       expect(response.status).toBe(400);
@@ -53,13 +53,13 @@ describe('Authentication API', () => {
 
     it('should return 400 for missing password', async () => {
       const userData = {
-        email: 'test@example.com'
+        email: 'test@example.com',
       };
 
       const response = await fetch(`${API_BASE}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(userData),
       });
 
       expect(response.status).toBe(400);
@@ -70,13 +70,13 @@ describe('Authentication API', () => {
     it('should return 409 for existing user', async () => {
       const userData = {
         email: 'existing@example.com',
-        password: 'password123'
+        password: 'password123',
       };
 
       const response = await fetch(`${API_BASE}/api/auth/signup`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(userData)
+        body: JSON.stringify(userData),
       });
 
       expect(response.status).toBe(409);
@@ -89,13 +89,13 @@ describe('Authentication API', () => {
     it('should login with valid credentials', async () => {
       const credentials = {
         email: 'demo@example.com',
-        password: 'password123'
+        password: 'password123',
       };
 
       const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials)
+        body: JSON.stringify(credentials),
       });
 
       expect(response.status).toBe(200);
@@ -103,20 +103,20 @@ describe('Authentication API', () => {
       expect(data).toMatchObject({
         id: 'user-1',
         email: 'demo@example.com',
-        name: 'Demo User'
+        name: 'Demo User',
       });
     });
 
     it('should return 401 for invalid credentials', async () => {
       const credentials = {
         email: 'invalid@example.com',
-        password: 'wrongpassword'
+        password: 'wrongpassword',
       };
 
       const response = await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(credentials)
+        body: JSON.stringify(credentials),
       });
 
       expect(response.status).toBe(401);
@@ -131,12 +131,12 @@ describe('Authentication API', () => {
       await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'demo@example.com', password: 'password123' })
+        body: JSON.stringify({ email: 'demo@example.com', password: 'password123' }),
       });
 
       // Then logout
       const response = await fetch(`${API_BASE}/api/auth/logout`, {
-        method: 'POST'
+        method: 'POST',
       });
 
       expect(response.status).toBe(200);
@@ -149,17 +149,17 @@ describe('Authentication API', () => {
       await fetch(`${API_BASE}/api/auth/login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: 'demo@example.com', password: 'password123' })
+        body: JSON.stringify({ email: 'demo@example.com', password: 'password123' }),
       });
 
       const updateData = {
-        name: 'Updated Name'
+        name: 'Updated Name',
       };
 
       const response = await fetch(`${API_BASE}/api/user/profile`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       expect(response.status).toBe(200);
@@ -172,13 +172,13 @@ describe('Authentication API', () => {
       await fetch(`${API_BASE}/api/auth/logout`, { method: 'POST' });
 
       const updateData = {
-        name: 'Updated Name'
+        name: 'Updated Name',
       };
 
       const response = await fetch(`${API_BASE}/api/user/profile`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       expect(response.status).toBe(401);

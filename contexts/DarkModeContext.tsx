@@ -18,13 +18,13 @@ export function DarkModeProvider({ children }: { children: React.ReactNode }) {
     // Only run on client side after hydration
     const stored = localStorage.getItem('darkMode');
     let initialDarkMode = false;
-    
+
     if (stored !== null) {
       initialDarkMode = stored === 'true';
     } else {
       initialDarkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
     }
-    
+
     setDarkModeState(initialDarkMode);
     setIsHydrated(true);
   }, []);

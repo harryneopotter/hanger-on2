@@ -22,25 +22,25 @@ const TagList: React.FC<TagListProps> = ({ tags, onTagDeleted, showCount = false
 
   const handleDeleteTag = async (tagId: string, tagName: string) => {
     if (deletingTags.has(tagId)) return;
-    
-    setDeletingTags(prev => new Set(prev).add(tagId));
-    
+
+    setDeletingTags((prev) => new Set(prev).add(tagId));
+
     try {
       const response = await fetch(`/api/tags/${tagId}`, {
         method: 'DELETE',
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to delete tag');
       }
-      
+
       onTagDeleted?.(tagId);
     } catch (error) {
       console.error('Error deleting tag:', error);
       // You might want to show a toast notification here
     } finally {
-      setDeletingTags(prev => {
+      setDeletingTags((prev) => {
         const newSet = new Set(prev);
         newSet.delete(tagId);
         return newSet;
@@ -60,8 +60,10 @@ const TagList: React.FC<TagListProps> = ({ tags, onTagDeleted, showCount = false
     <div className="flex flex-wrap gap-2 p-2">
       {tags.map((tag) => {
         const isDeleting = deletingTags.has(tag.id);
-        const tagStyle = tag.color ? { backgroundColor: tag.color + '20', borderColor: tag.color } : {};
-        
+        const tagStyle = tag.color
+          ? { backgroundColor: tag.color + '20', borderColor: tag.color }
+          : {};
+
         return (
           <div
             key={tag.id}
@@ -70,10 +72,7 @@ const TagList: React.FC<TagListProps> = ({ tags, onTagDeleted, showCount = false
           >
             <span className="flex items-center gap-1">
               {tag.color && (
-                <div 
-                  className="w-2 h-2 rounded-full" 
-                  style={{ backgroundColor: tag.color }}
-                />
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: tag.color }} />
               )}
               {tag.name}
               {showCount && tag._count && (
@@ -91,7 +90,12 @@ const TagList: React.FC<TagListProps> = ({ tags, onTagDeleted, showCount = false
                 <div className="w-3 h-3 border border-gray-400 border-t-transparent rounded-full animate-spin" />
               ) : (
                 <svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth="2"
+                    d="M6 18L18 6M6 6l12 12"
+                  />
                 </svg>
               )}
             </button>
