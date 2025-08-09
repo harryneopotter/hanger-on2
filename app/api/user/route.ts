@@ -19,7 +19,7 @@ export async function GET() {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
-    const user = await prisma.user.findUnique({
+    let user = await prisma.user.findUnique({
       where: {
         id: session.user.id,
       },
@@ -33,7 +33,32 @@ export async function GET() {
     });
 
     if (!user) {
-      return NextResponse.json({ error: 'User not found' }, { status: 404 });
+      console.log('❌ User not found in profiles table. Creating missing user record...');
+      
+      // Create the missing user record using session data
+      try {
+        user = await prisma.user.create({
+          data: {
+            id: session.user.id,
+            name: session.user.name || 'User',
+            email: session.user.email!,
+            image: session.user.image,
+          },
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            image: true,
+            createdAt: true,
+          },
+        });
+        console.log('✅ Created missing user record:', user.email);
+      } catch (createError) {
+        console.error('❌ Failed to create user record:', createError);
+        return NextResponse.json({ error: 'Failed to create user record' }, { status: 500 });
+      }
+    } else {
+      console.log('✅ User found in profiles table:', user.email);
     }
 
     // Get user's garment count
