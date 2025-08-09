@@ -11,6 +11,9 @@ export async function GET() {
     const session = await getServerSession(authOptions);
     console.log('📋 Session:', { hasSession: !!session, userId: session?.user?.id, email: session?.user?.email });
     
+    // Check what tables we're querying
+    console.log('🔍 Looking for user in profiles table with ID:', session?.user?.id);
+    
     if (!session || !session.user?.id) {
       console.log('❌ No session or user ID');
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
