@@ -7,10 +7,8 @@ const nextConfig: NextConfig = {
   },
   // Ensure Prisma engines are available at runtime on Vercel
   output: 'standalone',
-  experimental: {
-    ...(typeof (globalThis as any).experimental === 'object' ? (globalThis as any).experimental : {}),
-    serverComponentsExternalPackages: ['@prisma/client', 'prisma'],
-  },
+  // Externalize Prisma packages on the server
+  serverExternalPackages: ['@prisma/client', 'prisma'],
   // Skip ESLint during production builds to allow build to succeed
   eslint: {
     ignoreDuringBuilds: true,

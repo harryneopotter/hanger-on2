@@ -1,11 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   experimental: {
-    optimizePackageImports: ['@prisma/client', 'swr'],
-    serverComponentsExternalPackages: ['@prisma/client', 'prisma'],
+    optimizePackageImports: ['swr'],
   },
   // Ensure Prisma engines are available at runtime on Vercel
   output: 'standalone',
+  // Externalize Prisma packages on the server
+  serverExternalPackages: ['@prisma/client', 'prisma'],
   // Skip ESLint during production builds to allow build to succeed
   eslint: {
     ignoreDuringBuilds: true,
