@@ -41,3 +41,7 @@ yarn-error.log*
 # Documentation files
 *.md
 *.txt
+
+# Prisma generated client and native engines (do not commit)
+lib/generated/prisma/
+node_modules/@prisma/
