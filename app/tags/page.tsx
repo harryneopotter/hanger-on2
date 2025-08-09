@@ -21,7 +21,10 @@ export default function TagsPage() {
 
   const handleTagDeleted = (tagId: string) => {
     // Optimistically update the UI
-    mutate(tags.filter((tag: any) => tag.id !== tagId), false);
+    mutate(
+      tags.filter((tag: any) => tag.id !== tagId),
+      false,
+    );
   };
 
   const handleThemeToggle = () => {
@@ -31,13 +34,13 @@ export default function TagsPage() {
   return (
     <Layout>
       <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300">
-        <Header 
-          title="Tag Management" 
-          showThemeToggle 
-          onThemeToggle={handleThemeToggle} 
+        <Header
+          title="Tag Management"
+          showThemeToggle
+          onThemeToggle={handleThemeToggle}
           darkMode={darkMode}
         />
-        
+
         <div className="pt-20 px-6 py-8">
           <div className="max-w-4xl mx-auto">
             {/* Page Header */}
@@ -46,7 +49,8 @@ export default function TagsPage() {
                 Manage Your Tags
               </h1>
               <p className="text-gray-600 dark:text-gray-400">
-                Create and organize tags to categorize your garments. Tags help you quickly find and filter your wardrobe items.
+                Create and organize tags to categorize your garments. Tags help you quickly find and
+                filter your wardrobe items.
               </p>
             </div>
 
@@ -61,19 +65,13 @@ export default function TagsPage() {
             {/* Existing Tags Section */}
             <div className="bg-white/80 dark:bg-gray-800/80 rounded-2xl p-6 shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.8)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] backdrop-blur-sm">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">
-                  Your Tags
-                </h2>
+                <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Your Tags</h2>
                 <span className="text-sm text-gray-500 dark:text-gray-400">
                   {tags.length} {tags.length === 1 ? 'tag' : 'tags'}
                 </span>
               </div>
-              
-              <TagList 
-                tags={tags} 
-                onTagDeleted={handleTagDeleted} 
-                showCount={true}
-              />
+
+              <TagList tags={tags} onTagDeleted={handleTagDeleted} showCount={true} />
             </div>
 
             {/* Usage Tips */}

@@ -15,16 +15,16 @@ export default function TagInput({ onTagAdded, disabled = false }: TagInputProps
 
   const handleAddTag = async () => {
     if (!tagName.trim() || isLoading || disabled) return;
-    
+
     setIsLoading(true);
     setError(null);
-    
+
     try {
       const tagData: CreateTag = {
         name: tagName.trim(),
-        color: `#${Math.floor(Math.random()*16777215).toString(16)}` // Random color
+        color: `#${Math.floor(Math.random() * 16777215).toString(16)}`, // Random color
       };
-      
+
       const response = await fetch('/api/tags', {
         method: 'POST',
         headers: {
@@ -32,12 +32,12 @@ export default function TagInput({ onTagAdded, disabled = false }: TagInputProps
         },
         body: JSON.stringify(tagData),
       });
-      
+
       if (!response.ok) {
         const errorData = await response.json();
         throw new Error(errorData.message || 'Failed to create tag');
       }
-      
+
       const createdTag = await response.json();
       setTagName('');
       onTagAdded?.(createdTag);
@@ -82,9 +82,7 @@ export default function TagInput({ onTagAdded, disabled = false }: TagInputProps
           {isLoading ? '...' : 'Add'}
         </button>
       </div>
-      {error && (
-        <p className="text-red-500 text-sm px-4">{error}</p>
-      )}
+      {error && <p className="text-red-500 text-sm px-4">{error}</p>}
     </div>
   );
 }

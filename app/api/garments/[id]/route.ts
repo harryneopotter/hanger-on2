@@ -20,7 +20,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     const { tagIds, ...garmentData } = body;
     const data = UpdateGarmentSchema.parse({ ...garmentData, id: params.id });
     const updated = await garmentService.updateGarment(params.id, data, userId);
-    
+
     // Handle tag associations if provided
     if (tagIds && Array.isArray(tagIds)) {
       try {
@@ -30,14 +30,18 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         // Don't fail the entire request if tag assignment fails
       }
     }
-    
+
     // Fetch the complete garment with tags
     const completeGarment = await garmentService.getGarmentById(params.id, userId);
     return NextResponse.json(completeGarment || updated);
-  } catch (error: any) {
-    if (error?.issues) {
-      return NextResponse.json({ error: error.issues }, { status: 400 });
+  } catch (error: unknown) {
+    console.error('Error updating garment:', error);
+    
+    // Handle Zod validation errors
+    if (error && typeof error === 'object' && 'issues' in error) {
+      return NextResponse.json({ error: (error as { issues: unknown }).issues }, { status: 400 });
     }
+    
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 }

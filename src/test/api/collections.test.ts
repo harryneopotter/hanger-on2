@@ -11,7 +11,7 @@ const loginUser = async () => {
   await fetch(`${API_BASE}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: 'demo@example.com', password: 'password123' })
+    body: JSON.stringify({ email: 'demo@example.com', password: 'password123' }),
   });
 };
 
@@ -30,7 +30,7 @@ describe('Collections API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/collections`);
-      
+
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(Array.isArray(data)).toBe(true);
@@ -39,7 +39,7 @@ describe('Collections API', () => {
         id: expect.any(String),
         name: expect.any(String),
         userId: 'user-1',
-        isSmartCollection: expect.any(Boolean)
+        isSmartCollection: expect.any(Boolean),
       });
     });
 
@@ -47,7 +47,7 @@ describe('Collections API', () => {
       await logoutUser();
 
       const response = await fetch(`${API_BASE}/api/collections`);
-      
+
       expect(response.status).toBe(401);
       const data = await response.json();
       expect(data.error).toBe('Unauthorized');
@@ -62,13 +62,13 @@ describe('Collections API', () => {
         name: 'Test Collection',
         description: 'A test collection',
         color: '#FF5733',
-        isSmartCollection: false
+        isSmartCollection: false,
       };
 
       const response = await fetch(`${API_BASE}/api/collections`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(collectionData)
+        body: JSON.stringify(collectionData),
       });
 
       expect(response.status).toBe(201);
@@ -78,7 +78,7 @@ describe('Collections API', () => {
         ...collectionData,
         userId: 'user-1',
         createdAt: expect.any(String),
-        updatedAt: expect.any(String)
+        updatedAt: expect.any(String),
       });
     });
 
@@ -89,13 +89,13 @@ describe('Collections API', () => {
         name: 'Smart Collection',
         description: 'A smart collection with rules',
         color: '#33FF57',
-        isSmartCollection: true
+        isSmartCollection: true,
       };
 
       const response = await fetch(`${API_BASE}/api/collections`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(collectionData)
+        body: JSON.stringify(collectionData),
       });
 
       expect(response.status).toBe(201);
@@ -103,7 +103,7 @@ describe('Collections API', () => {
       expect(data).toMatchObject({
         id: expect.any(String),
         ...collectionData,
-        userId: 'user-1'
+        userId: 'user-1',
       });
       expect(data.isSmartCollection).toBe(true);
     });
@@ -113,13 +113,13 @@ describe('Collections API', () => {
 
       const collectionData = {
         description: 'A collection without name',
-        color: '#FF5733'
+        color: '#FF5733',
       };
 
       const response = await fetch(`${API_BASE}/api/collections`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(collectionData)
+        body: JSON.stringify(collectionData),
       });
 
       expect(response.status).toBe(400);
@@ -132,13 +132,13 @@ describe('Collections API', () => {
 
       const collectionData = {
         name: 'Test Collection',
-        description: 'A test collection'
+        description: 'A test collection',
       };
 
       const response = await fetch(`${API_BASE}/api/collections`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(collectionData)
+        body: JSON.stringify(collectionData),
       });
 
       expect(response.status).toBe(401);
@@ -152,13 +152,13 @@ describe('Collections API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/collections/c-1`);
-      
+
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(data).toMatchObject({
         id: 'c-1',
         name: expect.any(String),
-        userId: 'user-1'
+        userId: 'user-1',
       });
     });
 
@@ -166,7 +166,7 @@ describe('Collections API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/collections/non-existent`);
-      
+
       expect(response.status).toBe(404);
       const data = await response.json();
       expect(data.error).toBe('Collection not found');
@@ -176,7 +176,7 @@ describe('Collections API', () => {
       await logoutUser();
 
       const response = await fetch(`${API_BASE}/api/collections/c-1`);
-      
+
       expect(response.status).toBe(401);
       const data = await response.json();
       expect(data.error).toBe('Unauthorized');
@@ -190,13 +190,13 @@ describe('Collections API', () => {
       const updateData = {
         name: 'Updated Collection',
         description: 'Updated description',
-        color: '#FF0000'
+        color: '#FF0000',
       };
 
       const response = await fetch(`${API_BASE}/api/collections/c-1`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       expect(response.status).toBe(200);
@@ -206,7 +206,7 @@ describe('Collections API', () => {
         name: 'Updated Collection',
         description: 'Updated description',
         color: '#FF0000',
-        updatedAt: expect.any(String)
+        updatedAt: expect.any(String),
       });
     });
 
@@ -214,13 +214,13 @@ describe('Collections API', () => {
       await loginUser();
 
       const updateData = {
-        name: 'Updated Name'
+        name: 'Updated Name',
       };
 
       const response = await fetch(`${API_BASE}/api/collections/non-existent`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       expect(response.status).toBe(404);
@@ -232,13 +232,13 @@ describe('Collections API', () => {
       await logoutUser();
 
       const updateData = {
-        name: 'Updated Name'
+        name: 'Updated Name',
       };
 
       const response = await fetch(`${API_BASE}/api/collections/c-1`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       expect(response.status).toBe(401);
@@ -252,7 +252,7 @@ describe('Collections API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/collections/c-1`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       expect(response.status).toBe(204);
@@ -262,7 +262,7 @@ describe('Collections API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/collections/non-existent`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       expect(response.status).toBe(404);
@@ -274,7 +274,7 @@ describe('Collections API', () => {
       await logoutUser();
 
       const response = await fetch(`${API_BASE}/api/collections/c-1`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       expect(response.status).toBe(401);
@@ -288,13 +288,13 @@ describe('Collections API', () => {
       await loginUser();
 
       const garmentData = {
-        garmentId: 'g-1'
+        garmentId: 'g-1',
       };
 
       const response = await fetch(`${API_BASE}/api/collections/c-1/garments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(garmentData)
+        body: JSON.stringify(garmentData),
       });
 
       expect(response.status).toBe(201);
@@ -302,7 +302,7 @@ describe('Collections API', () => {
       expect(data).toMatchObject({
         collectionId: 'c-1',
         garmentId: 'g-1',
-        addedAt: expect.any(String)
+        addedAt: expect.any(String),
       });
     });
 
@@ -310,13 +310,13 @@ describe('Collections API', () => {
       await loginUser();
 
       const garmentData = {
-        garmentId: 'g-1'
+        garmentId: 'g-1',
       };
 
       const response = await fetch(`${API_BASE}/api/collections/non-existent/garments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(garmentData)
+        body: JSON.stringify(garmentData),
       });
 
       expect(response.status).toBe(404);
@@ -328,13 +328,13 @@ describe('Collections API', () => {
       await loginUser();
 
       const garmentData = {
-        garmentId: 'non-existent'
+        garmentId: 'non-existent',
       };
 
       const response = await fetch(`${API_BASE}/api/collections/c-1/garments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(garmentData)
+        body: JSON.stringify(garmentData),
       });
 
       expect(response.status).toBe(404);
@@ -346,16 +346,18 @@ describe('Collections API', () => {
       await logoutUser();
 
       const garmentData = {
-        garmentId: 'g-1'
+        garmentId: 'g-1',
       };
 
       const response = await fetch(`${API_BASE}/api/collections/c-1/garments`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(garmentData)
+        body: JSON.stringify(garmentData),
       });
 
       expect(response.status).toBe(401);
       const data = await response.json();
       expect(data.error).toBe('Unauthorized');
     });
+  });
+});

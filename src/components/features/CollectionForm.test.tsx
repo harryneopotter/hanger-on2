@@ -25,7 +25,7 @@ describe('CollectionForm', () => {
         onClose={mockOnClose}
         onSubmit={mockOnSubmit}
         title="Test Collection"
-      />
+      />,
     );
 
     expect(screen.getByText('Test Collection')).toBeInTheDocument();
@@ -34,13 +34,7 @@ describe('CollectionForm', () => {
   });
 
   it('calls onClose when close button is clicked', () => {
-    render(
-      <CollectionForm
-        isOpen={true}
-        onClose={mockOnClose}
-        onSubmit={mockOnSubmit}
-      />
-    );
+    render(<CollectionForm isOpen={true} onClose={mockOnClose} onSubmit={mockOnSubmit} />);
 
     const closeButton = screen.getByRole('button', { name: /close/i });
     fireEvent.click(closeButton);
@@ -48,13 +42,7 @@ describe('CollectionForm', () => {
   });
 
   it('does not render when isOpen is false', () => {
-    render(
-      <CollectionForm
-        isOpen={false}
-        onClose={mockOnClose}
-        onSubmit={mockOnSubmit}
-      />
-    );
+    render(<CollectionForm isOpen={false} onClose={mockOnClose} onSubmit={mockOnSubmit} />);
 
     expect(screen.queryByText('Create Collection')).not.toBeInTheDocument();
   });

@@ -71,7 +71,7 @@ describe('GarmentCard', () => {
         onEdit={mockOnEdit}
         onMarkAsWorn={mockOnMarkAsWorn}
         onMoveToLaundry={mockOnMoveToLaundry}
-      />
+      />,
     );
 
     expect(screen.getByText('Blue Jeans')).toBeInTheDocument();
@@ -82,7 +82,7 @@ describe('GarmentCard', () => {
 
   it('displays correct status label and styling for CLEAN status', () => {
     render(<GarmentCard {...mockGarment} status="CLEAN" />);
-    
+
     const statusElement = screen.getByText('Clean');
     expect(statusElement).toBeInTheDocument();
     expect(statusElement).toHaveClass('text-emerald-700');
@@ -90,7 +90,7 @@ describe('GarmentCard', () => {
 
   it('displays correct status label and styling for WORN_2X status', () => {
     render(<GarmentCard {...mockGarment} status="WORN_2X" />);
-    
+
     const statusElement = screen.getByText('Worn 2x');
     expect(statusElement).toBeInTheDocument();
     expect(statusElement).toHaveClass('text-amber-700');
@@ -98,7 +98,7 @@ describe('GarmentCard', () => {
 
   it('displays correct status label and styling for DIRTY status', () => {
     render(<GarmentCard {...mockGarment} status="DIRTY" />);
-    
+
     const statusElement = screen.getByText('Dirty');
     expect(statusElement).toBeInTheDocument();
     expect(statusElement).toHaveClass('text-red-700');
@@ -106,7 +106,7 @@ describe('GarmentCard', () => {
 
   it('displays correct status label and styling for NEEDS_WASHING status', () => {
     render(<GarmentCard {...mockGarment} status="NEEDS_WASHING" />);
-    
+
     const statusElement = screen.getByText('Needs Washing');
     expect(statusElement).toBeInTheDocument();
     expect(statusElement).toHaveClass('text-red-700');
@@ -119,7 +119,7 @@ describe('GarmentCard', () => {
         onEdit={mockOnEdit}
         onMarkAsWorn={mockOnMarkAsWorn}
         onMoveToLaundry={mockOnMoveToLaundry}
-      />
+      />,
     );
 
     const editButton = screen.getByRole('button', { name: /more/i });
@@ -135,7 +135,7 @@ describe('GarmentCard', () => {
         onEdit={mockOnEdit}
         onMarkAsWorn={mockOnMarkAsWorn}
         onMoveToLaundry={mockOnMoveToLaundry}
-      />
+      />,
     );
 
     const wornButton = screen.getByText('Worn');
@@ -151,7 +151,7 @@ describe('GarmentCard', () => {
         onEdit={mockOnEdit}
         onMarkAsWorn={mockOnMarkAsWorn}
         onMoveToLaundry={mockOnMoveToLaundry}
-      />
+      />,
     );
 
     const laundryButton = screen.getByText('Laundry');
@@ -167,7 +167,7 @@ describe('GarmentCard', () => {
         onEdit={mockOnEdit}
         onMarkAsWorn={mockOnMarkAsWorn}
         onMoveToLaundry={mockOnMoveToLaundry}
-      />
+      />,
     );
 
     const addButton = screen.getByText('+');
@@ -179,10 +179,11 @@ describe('GarmentCard', () => {
   it('fetches collections when modal is opened and user is authenticated', async () => {
     const mockFetch = vi.fn().mockResolvedValue({
       ok: true,
-      json: () => Promise.resolve([
-        { id: 'c-1', name: 'Work Outfits', color: '#10B981' },
-        { id: 'c-2', name: 'Casual Wear', color: '#3B82F6' },
-      ]),
+      json: () =>
+        Promise.resolve([
+          { id: 'c-1', name: 'Work Outfits', color: '#10B981' },
+          { id: 'c-2', name: 'Casual Wear', color: '#3B82F6' },
+        ]),
     });
     global.fetch = mockFetch;
 
@@ -192,7 +193,7 @@ describe('GarmentCard', () => {
         onEdit={mockOnEdit}
         onMarkAsWorn={mockOnMarkAsWorn}
         onMoveToLaundry={mockOnMoveToLaundry}
-      />
+      />,
     );
 
     const addButton = screen.getByText('+');
@@ -221,7 +222,7 @@ describe('GarmentCard', () => {
         onEdit={mockOnEdit}
         onMarkAsWorn={mockOnMarkAsWorn}
         onMoveToLaundry={mockOnMoveToLaundry}
-      />
+      />,
     );
 
     const addButton = screen.getByText('+');
@@ -234,11 +235,10 @@ describe('GarmentCard', () => {
   });
 
   it('adds garment to collection when collection is clicked', async () => {
-    const mockCollections = [
-      { id: 'c-1', name: 'Work Outfits', color: '#10B981' },
-    ];
+    const mockCollections = [{ id: 'c-1', name: 'Work Outfits', color: '#10B981' }];
 
-    const mockFetch = vi.fn()
+    const mockFetch = vi
+      .fn()
       .mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(mockCollections),
@@ -255,7 +255,7 @@ describe('GarmentCard', () => {
         onEdit={mockOnEdit}
         onMarkAsWorn={mockOnMarkAsWorn}
         onMoveToLaundry={mockOnMoveToLaundry}
-      />
+      />,
     );
 
     const addButton = screen.getByText('+');
@@ -286,7 +286,7 @@ describe('GarmentCard', () => {
         onEdit={mockOnEdit}
         onMarkAsWorn={mockOnMarkAsWorn}
         onMoveToLaundry={mockOnMoveToLaundry}
-      />
+      />,
     );
 
     const addButton = screen.getByText('+');
@@ -315,14 +315,16 @@ describe('GarmentCard', () => {
         onEdit={mockOnEdit}
         onMarkAsWorn={mockOnMarkAsWorn}
         onMoveToLaundry={mockOnMoveToLaundry}
-      />
+      />,
     );
 
     const addButton = screen.getByText('+');
     fireEvent.click(addButton);
 
     await waitFor(() => {
-      expect(screen.getByText('No collections found. Create a collection first.')).toBeInTheDocument();
+      expect(
+        screen.getByText('No collections found. Create a collection first.'),
+      ).toBeInTheDocument();
     });
   });
 
@@ -337,7 +339,7 @@ describe('GarmentCard', () => {
         onEdit={mockOnEdit}
         onMarkAsWorn={mockOnMarkAsWorn}
         onMoveToLaundry={mockOnMoveToLaundry}
-      />
+      />,
     );
 
     const addButton = screen.getByText('+');
@@ -357,7 +359,7 @@ describe('GarmentCard', () => {
         onEdit={mockOnEdit}
         onMarkAsWorn={mockOnMarkAsWorn}
         onMoveToLaundry={mockOnMoveToLaundry}
-      />
+      />,
     );
 
     const addButton = screen.getByText('+');
@@ -382,7 +384,7 @@ describe('GarmentCard', () => {
     render(<GarmentCard {...mockGarment} />);
 
     const links = screen.getAllByRole('link');
-    const itemLinks = links.filter(link => link.getAttribute('href') === '/item/g-1');
+    const itemLinks = links.filter((link) => link.getAttribute('href') === '/item/g-1');
     expect(itemLinks.length).toBeGreaterThan(0);
   });
 });

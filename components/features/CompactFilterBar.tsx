@@ -29,7 +29,8 @@ const CompactFilterBar: React.FC<CompactFilterBarProps> = ({
   const [showTagsModal, setShowTagsModal] = useState(false);
   const [showStatusModal, setShowStatusModal] = useState(false);
 
-  const hasActiveFilters = selectedTags.length > 0 || selectedStatuses.length > 0 || searchQuery.length > 0;
+  const hasActiveFilters =
+    selectedTags.length > 0 || selectedStatuses.length > 0 || searchQuery.length > 0;
 
   return (
     <>
@@ -46,9 +47,7 @@ const CompactFilterBar: React.FC<CompactFilterBarProps> = ({
             } shadow-[4px_4px_8px_rgba(0,0,0,0.06),-2px_-2px_6px_rgba(255,255,255,0.7)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30`}
           >
             <i className="ri-search-line text-lg"></i>
-            <span className="text-sm font-medium truncate">
-              {searchQuery || 'Search...'}
-            </span>
+            <span className="text-sm font-medium truncate">{searchQuery || 'Search...'}</span>
           </button>
 
           {/* Tags Button */}
@@ -135,7 +134,9 @@ const CompactFilterBar: React.FC<CompactFilterBarProps> = ({
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md shadow-2xl max-h-[80vh] overflow-hidden flex flex-col">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Filter by Tags</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Filter by Tags
+              </h3>
               <button
                 onClick={() => setShowTagsModal(false)}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -161,13 +162,15 @@ const CompactFilterBar: React.FC<CompactFilterBarProps> = ({
                   ))}
                 </div>
               ) : (
-                <p className="text-gray-500 dark:text-gray-400 text-center py-8">No tags available</p>
+                <p className="text-gray-500 dark:text-gray-400 text-center py-8">
+                  No tags available
+                </p>
               )}
             </div>
             <div className="flex gap-2 mt-4 pt-4 border-t border-gray-200 dark:border-gray-600">
               <button
                 onClick={() => {
-                  selectedTags.forEach(tag => onTagSelect(tag));
+                  selectedTags.forEach((tag) => onTagSelect(tag));
                 }}
                 className="flex-1 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
               >
@@ -189,7 +192,9 @@ const CompactFilterBar: React.FC<CompactFilterBarProps> = ({
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 w-full max-w-md shadow-2xl">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">Filter by Status</h3>
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                Filter by Status
+              </h3>
               <button
                 onClick={() => setShowStatusModal(false)}
                 className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
@@ -208,14 +213,14 @@ const CompactFilterBar: React.FC<CompactFilterBarProps> = ({
                   }`}
                   onClick={() => onStatusSelect(status)}
                 >
-                  <div className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                    selectedStatuses.includes(status)
-                      ? 'border-white'
-                      : 'border-gray-400 dark:border-gray-500'
-                  }`}>
-                    {selectedStatuses.includes(status) && (
-                      <i className="ri-check-line text-xs"></i>
-                    )}
+                  <div
+                    className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
+                      selectedStatuses.includes(status)
+                        ? 'border-white'
+                        : 'border-gray-400 dark:border-gray-500'
+                    }`}
+                  >
+                    {selectedStatuses.includes(status) && <i className="ri-check-line text-xs"></i>}
                   </div>
                   <span className="text-sm font-medium">{status}</span>
                 </button>
@@ -224,7 +229,7 @@ const CompactFilterBar: React.FC<CompactFilterBarProps> = ({
             <div className="flex gap-2 mt-6">
               <button
                 onClick={() => {
-                  selectedStatuses.forEach(status => onStatusSelect(status));
+                  selectedStatuses.forEach((status) => onStatusSelect(status));
                 }}
                 className="flex-1 px-4 py-2 text-sm text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
               >

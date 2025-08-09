@@ -18,7 +18,7 @@ const RULE_FIELDS = [
   { value: 'brand', label: 'Brand' },
   { value: 'material', label: 'Material' },
   { value: 'status', label: 'Status' },
-  { value: 'tags', label: 'Tags' }
+  { value: 'tags', label: 'Tags' },
 ];
 
 const RULE_OPERATORS: { value: RuleOperator; label: string; description: string }[] = [
@@ -28,7 +28,7 @@ const RULE_OPERATORS: { value: RuleOperator; label: string; description: string 
   { value: 'ENDS_WITH', label: 'Ends with', description: 'Ends with text' },
   { value: 'IN', label: 'In list', description: 'Comma-separated values' },
   { value: 'NOT_EQUALS', label: 'Not equals', description: 'Does not match' },
-  { value: 'NOT_CONTAINS', label: 'Does not contain', description: 'Does not contain text' }
+  { value: 'NOT_CONTAINS', label: 'Does not contain', description: 'Does not contain text' },
 ];
 
 export default function SmartCollectionManager({
@@ -36,7 +36,7 @@ export default function SmartCollectionManager({
   rules,
   onUpdateRules,
   onRefreshCollection,
-  garmentCount
+  garmentCount,
 }: SmartCollectionManagerProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isRefreshing, setIsRefreshing] = useState(false);
@@ -56,17 +56,23 @@ export default function SmartCollectionManager({
 
   const handleTestRules = async () => {
     try {
-      const response = await fetch('/api/garments?' + new URLSearchParams({
-        ...rules.reduce((acc, rule) => {
-          if (rule.field === 'tags') {
-            acc.tags = rule.value;
-          } else {
-            acc[rule.field] = rule.value;
-          }
-          return acc;
-        }, {} as Record<string, string>)
-      }));
-      
+      const response = await fetch(
+        '/api/garments?' +
+          new URLSearchParams({
+            ...rules.reduce(
+              (acc, rule) => {
+                if (rule.field === 'tags') {
+                  acc.tags = rule.value;
+                } else {
+                  acc[rule.field] = rule.value;
+                }
+                return acc;
+              },
+              {} as Record<string, string>,
+            ),
+          }),
+      );
+
       if (response.ok) {
         const garments = await response.json();
         alert(`Rules would match ${garments.length} garments`);
@@ -77,8 +83,8 @@ export default function SmartCollectionManager({
   };
 
   const getRuleDescription = (rule: CollectionRule) => {
-    const field = RULE_FIELDS.find(f => f.value === rule.field)?.label || rule.field;
-    const operator = RULE_OPERATORS.find(o => o.value === rule.operator)?.label || rule.operator;
+    const field = RULE_FIELDS.find((f) => f.value === rule.field)?.label || rule.field;
+    const operator = RULE_OPERATORS.find((o) => o.value === rule.operator)?.label || rule.operator;
     return `${field} ${operator.toLowerCase()} "${rule.value}"`;
   };
 
@@ -95,11 +101,12 @@ export default function SmartCollectionManager({
                 Smart Collection Rules
               </h3>
               <p className="text-sm text-gray-500 dark:text-gray-400">
-                {rules.length} {rules.length === 1 ? 'rule' : 'rules'} • {garmentCount} items matched
+                {rules.length} {rules.length === 1 ? 'rule' : 'rules'} • {garmentCount} items
+                matched
               </p>
             </div>
           </div>
-          
+
           <div className="flex items-center gap-2">
             <button
               onClick={handleTestRules}
@@ -136,7 +143,10 @@ export default function SmartCollectionManager({
             </div>
           ) : (
             rules.map((rule, index) => (
-              <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg">
+              <div
+                key={index}
+                className="flex items-center gap-3 p-3 bg-gray-50 dark:bg-gray-700 rounded-lg"
+              >
                 <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                 <span className="text-sm text-gray-700 dark:text-gray-300">
                   {getRuleDescription(rule)}
@@ -160,10 +170,8 @@ export default function SmartCollectionManager({
       {isExpanded && (
         <div className="border-t border-gray-200 dark:border-gray-700 p-6">
           <div className="space-y-4">
-            <h4 className="font-medium text-gray-900 dark:text-white mb-4">
-              Rule Management
-            </h4>
-            
+            <h4 className="font-medium text-gray-900 dark:text-white mb-4">Rule Management</h4>
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div className="space-y-3">
                 <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300">
@@ -171,14 +179,17 @@ export default function SmartCollectionManager({
                 </h5>
                 <div className="space-y-2">
                   {RULE_FIELDS.map((field) => (
-                    <div key={field.value} className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-700 rounded text-sm">
+                    <div
+                      key={field.value}
+                      className="flex items-center gap-2 p-2 bg-gray-50 dark:bg-gray-700 rounded text-sm"
+                    >
                       <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
                       <span className="text-gray-700 dark:text-gray-300">{field.label}</span>
                     </div>
                   ))}
                 </div>
               </div>
-              
+
               <div className="space-y-3">
                 <h5 className="text-sm font-medium text-gray-700 dark:text-gray-300">
                   Available Operators
@@ -197,7 +208,7 @@ export default function SmartCollectionManager({
                 </div>
               </div>
             </div>
-            
+
             <div className="pt-4 border-t border-gray-200 dark:border-gray-700">
               <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
                 <h5 className="text-sm font-medium text-blue-800 dark:text-blue-200 mb-2">

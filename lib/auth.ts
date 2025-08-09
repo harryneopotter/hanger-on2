@@ -17,7 +17,7 @@ export const authOptions: NextAuthOptions = {
       name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email', placeholder: 'you@example.com' },
-        password: { label: 'Password', type: 'password' }
+        password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         if (!credentials?.email || !credentials?.password) return null;
@@ -28,14 +28,14 @@ export const authOptions: NextAuthOptions = {
         const bcrypt = require('bcryptjs');
         const valid = await bcrypt.compare(credentials.password, user.password);
         if (!valid) return null;
-        return { 
-          id: user.id, 
-          name: user.name, 
+        return {
+          id: user.id,
+          name: user.name,
           email: user.email,
-          image: user.image 
+          image: user.image,
         };
-      }
-    })
+      },
+    }),
   ],
   session: {
     strategy: 'jwt',

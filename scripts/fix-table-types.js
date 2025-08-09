@@ -2,14 +2,14 @@ const { PrismaClient } = require('../lib/generated/prisma');
 
 async function fixTableTypes() {
   const prisma = new PrismaClient();
-  
+
   try {
     console.log('🔗 Testing database connection...');
     await prisma.$connect();
     console.log('✅ Database connection successful!');
-    
+
     console.log('🔍 Checking existing table structures...');
-    
+
     // Check accounts table structure
     const accountsInfo = await prisma.$queryRaw`
       SELECT column_name, data_type, is_nullable
@@ -17,9 +17,9 @@ async function fixTableTypes() {
       WHERE table_name = 'accounts' AND table_schema = 'public'
       ORDER BY ordinal_position;
     `;
-    
+
     console.log('Accounts table structure:', accountsInfo);
-    
+
     // Check sessions table structure
     const sessionsInfo = await prisma.$queryRaw`
       SELECT column_name, data_type, is_nullable
@@ -27,19 +27,19 @@ async function fixTableTypes() {
       WHERE table_name = 'sessions' AND table_schema = 'public'
       ORDER BY ordinal_position;
     `;
-    
+
     console.log('Sessions table structure:', sessionsInfo);
-    
+
     console.log('🗑️ Dropping and recreating all tables with consistent types...');
-    
+
     // Drop all tables in correct order (foreign keys first)
     await prisma.$executeRaw`DROP TABLE IF EXISTS "accounts" CASCADE;`;
     await prisma.$executeRaw`DROP TABLE IF EXISTS "sessions" CASCADE;`;
     await prisma.$executeRaw`DROP TABLE IF EXISTS "profiles" CASCADE;`;
     await prisma.$executeRaw`DROP TABLE IF EXISTS "verification_tokens" CASCADE;`;
-    
+
     console.log('✅ Dropped all tables');
-    
+
     // Create profiles table first (referenced by others)
     await prisma.$executeRaw`
       CREATE TABLE "profiles" (
@@ -54,9 +54,9 @@ async function fixTableTypes() {
         CONSTRAINT "profiles_email_key" UNIQUE ("email")
       );
     `;
-    
+
     console.log('✅ Created profiles table');
-    
+
     // Create accounts table with TEXT user_id to match profiles.id
     await prisma.$executeRaw`
       CREATE TABLE "accounts" (
@@ -77,9 +77,9 @@ async function fixTableTypes() {
         CONSTRAINT "accounts_provider_provider_account_id_key" UNIQUE ("provider", "provider_account_id")
       );
     `;
-    
+
     console.log('✅ Created accounts table');
-    
+
     // Create sessions table with TEXT user_id to match profiles.id
     await prisma.$executeRaw`
       CREATE TABLE "sessions" (
@@ -92,9 +92,9 @@ async function fixTableTypes() {
         CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE
       );
     `;
-    
+
     console.log('✅ Created sessions table');
-    
+
     // Create verification_tokens table
     await prisma.$executeRaw`
       CREATE TABLE "verification_tokens" (
@@ -105,11 +105,10 @@ async function fixTableTypes() {
         CONSTRAINT "verification_tokens_identifier_token_key" UNIQUE ("identifier", "token")
       );
     `;
-    
+
     console.log('✅ Created verification_tokens table');
-    
+
     console.log('🎉 All tables recreated with consistent types!');
-    
   } catch (error) {
     console.error('❌ Error:', error.message);
     console.error('Full error:', error);

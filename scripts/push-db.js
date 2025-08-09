@@ -3,17 +3,17 @@ const { PrismaClient } = require('../lib/generated/prisma');
 
 async function pushSchema() {
   const prisma = new PrismaClient();
-  
+
   try {
     console.log('🔗 Testing database connection...');
     await prisma.$connect();
     console.log('✅ Database connection successful!');
-    
+
     console.log('📋 Pushing database schema...');
-    
+
     // Use the Prisma client to execute raw SQL to create tables
     console.log('Creating tables manually...');
-    
+
     // Create accounts table
     await prisma.$executeRaw`
       CREATE TABLE IF NOT EXISTS "accounts" (
@@ -33,9 +33,9 @@ async function pushSchema() {
         CONSTRAINT "accounts_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE
       );
     `;
-    
+
     console.log('✅ Created accounts table');
-    
+
     // Create sessions table
     await prisma.$executeRaw`
       CREATE TABLE IF NOT EXISTS "sessions" (
@@ -47,9 +47,9 @@ async function pushSchema() {
         CONSTRAINT "sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "profiles"("id") ON DELETE CASCADE ON UPDATE CASCADE
       );
     `;
-    
+
     console.log('✅ Created sessions table');
-    
+
     // Create profiles table
     await prisma.$executeRaw`
       CREATE TABLE IF NOT EXISTS "profiles" (
@@ -63,9 +63,9 @@ async function pushSchema() {
         CONSTRAINT "profiles_pkey" PRIMARY KEY ("id")
       );
     `;
-    
+
     console.log('✅ Created profiles table');
-    
+
     // Create verification_tokens table
     await prisma.$executeRaw`
       CREATE TABLE IF NOT EXISTS "verification_tokens" (
@@ -74,11 +74,10 @@ async function pushSchema() {
         "expires" TIMESTAMP(3) NOT NULL
       );
     `;
-    
+
     console.log('✅ Created verification_tokens table');
-    
+
     console.log('🎉 Basic tables created! You can now enable RLS in Supabase dashboard.');
-    
   } catch (error) {
     console.error('❌ Error:', error.message);
     console.error('Full error:', error);

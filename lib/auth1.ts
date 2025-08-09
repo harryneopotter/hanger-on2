@@ -8,11 +8,11 @@ export const authOptions = {
     GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    })
+    }),
   ],
-  adapter: adapter: PrismaAdapter(prisma),
+  adapter: PrismaAdapter(prisma),
   session: {
-    strategy: "jwt"
+    strategy: 'jwt',
   },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
@@ -27,6 +27,6 @@ export const authOptions = {
         session.user.id = token.sub;
       }
       return session;
-    }
-  }
-}
+    },
+  },
+};

@@ -10,11 +10,7 @@ interface ImageCropperProps {
 }
 
 // Helper function to create a crop with aspect ratio
-function centerAspectCrop(
-  mediaWidth: number,
-  mediaHeight: number,
-  aspect: number,
-) {
+function centerAspectCrop(mediaWidth: number, mediaHeight: number, aspect: number) {
   return centerCrop(
     makeAspectCrop(
       {
@@ -27,14 +23,14 @@ function centerAspectCrop(
     ),
     mediaWidth,
     mediaHeight,
-  )
+  );
 }
 
-const ImageCropper: React.FC<ImageCropperProps> = ({ 
-  imageSrc, 
-  onCropComplete, 
-  onCancel, 
-  isUploading = false 
+const ImageCropper: React.FC<ImageCropperProps> = ({
+  imageSrc,
+  onCropComplete,
+  onCancel,
+  isUploading = false,
 }) => {
   const [crop, setCrop] = useState<Crop>();
   const [completedCrop, setCompletedCrop] = useState<PixelCrop>();
@@ -122,16 +118,16 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
           />
         </ReactCrop>
       </div>
-      
+
       <div className="flex justify-around w-full gap-4">
-        <button 
+        <button
           onClick={handleCrop}
           disabled={isUploading || !completedCrop}
           className="flex-1 px-6 py-3 bg-blue-500/80 text-white text-sm font-semibold rounded-full shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.03)] hover:shadow-[6px_6px_12px_rgba(0,0,0,0.15),-3px_-3px_9px_rgba(255,255,255,0.9)] dark:hover:shadow-[6px_6px_12px_rgba(0,0,0,0.4),-3px_-3px_9px_rgba(255,255,255,0.05)] transition-all duration-200 backdrop-blur-sm min-w-[44px] min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {isUploading ? 'Processing...' : 'Crop & Save'}
         </button>
-        <button 
+        <button
           onClick={onCancel}
           disabled={isUploading}
           className="flex-1 px-6 py-3 bg-gray-300/80 text-gray-800 text-sm font-semibold rounded-full shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:bg-gray-700/80 dark:text-gray-200 dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.03)] hover:shadow-[6px_6px_12px_rgba(0,0,0,0.15),-3px_-3px_9px_rgba(255,255,255,0.9)] dark:hover:shadow-[6px_6px_12px_rgba(0,0,0,0.4),-3px_-3px_9px_rgba(255,255,255,0.05)] transition-all duration-200 backdrop-blur-sm min-w-[44px] min-h-[44px] disabled:opacity-50 disabled:cursor-not-allowed"
@@ -139,12 +135,9 @@ const ImageCropper: React.FC<ImageCropperProps> = ({
           Cancel
         </button>
       </div>
-      
+
       {/* Hidden canvas for image processing */}
-      <canvas
-        ref={canvasRef}
-        className="hidden"
-      />
+      <canvas ref={canvasRef} className="hidden" />
     </div>
   );
 };

@@ -11,7 +11,7 @@ const loginUser = async () => {
   await fetch(`${API_BASE}/api/auth/login`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ email: 'demo@example.com', password: 'password123' })
+    body: JSON.stringify({ email: 'demo@example.com', password: 'password123' }),
   });
 };
 
@@ -30,7 +30,7 @@ describe('Tags API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/tags`);
-      
+
       expect(response.status).toBe(200);
       const data = await response.json();
       expect(Array.isArray(data)).toBe(true);
@@ -40,7 +40,7 @@ describe('Tags API', () => {
         name: expect.any(String),
         color: expect.any(String),
         userId: 'user-1',
-        createdAt: expect.any(String)
+        createdAt: expect.any(String),
       });
     });
 
@@ -48,7 +48,7 @@ describe('Tags API', () => {
       await logoutUser();
 
       const response = await fetch(`${API_BASE}/api/tags`);
-      
+
       expect(response.status).toBe(401);
       const data = await response.json();
       expect(data.error).toBe('Unauthorized');
@@ -61,13 +61,13 @@ describe('Tags API', () => {
 
       const tagData = {
         name: 'Test Tag',
-        color: '#FF5733'
+        color: '#FF5733',
       };
 
       const response = await fetch(`${API_BASE}/api/tags`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(tagData)
+        body: JSON.stringify(tagData),
       });
 
       expect(response.status).toBe(201);
@@ -76,7 +76,7 @@ describe('Tags API', () => {
         id: expect.any(String),
         ...tagData,
         userId: 'user-1',
-        createdAt: expect.any(String)
+        createdAt: expect.any(String),
       });
     });
 
@@ -84,13 +84,13 @@ describe('Tags API', () => {
       await loginUser();
 
       const tagData = {
-        name: 'Tag Without Color'
+        name: 'Tag Without Color',
       };
 
       const response = await fetch(`${API_BASE}/api/tags`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(tagData)
+        body: JSON.stringify(tagData),
       });
 
       expect(response.status).toBe(201);
@@ -99,7 +99,7 @@ describe('Tags API', () => {
         id: expect.any(String),
         name: 'Tag Without Color',
         userId: 'user-1',
-        createdAt: expect.any(String)
+        createdAt: expect.any(String),
       });
     });
 
@@ -107,13 +107,13 @@ describe('Tags API', () => {
       await loginUser();
 
       const tagData = {
-        color: '#FF5733'
+        color: '#FF5733',
       };
 
       const response = await fetch(`${API_BASE}/api/tags`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(tagData)
+        body: JSON.stringify(tagData),
       });
 
       expect(response.status).toBe(400);
@@ -126,13 +126,13 @@ describe('Tags API', () => {
 
       const tagData = {
         name: 'Casual', // This tag already exists in mock data
-        color: '#FF5733'
+        color: '#FF5733',
       };
 
       const response = await fetch(`${API_BASE}/api/tags`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(tagData)
+        body: JSON.stringify(tagData),
       });
 
       expect(response.status).toBe(409);
@@ -145,13 +145,13 @@ describe('Tags API', () => {
 
       const tagData = {
         name: 'Test Tag',
-        color: '#FF5733'
+        color: '#FF5733',
       };
 
       const response = await fetch(`${API_BASE}/api/tags`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(tagData)
+        body: JSON.stringify(tagData),
       });
 
       expect(response.status).toBe(401);
@@ -166,13 +166,13 @@ describe('Tags API', () => {
 
       const updateData = {
         name: 'Updated Tag',
-        color: '#00FF00'
+        color: '#00FF00',
       };
 
       const response = await fetch(`${API_BASE}/api/tags/t-1`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       expect(response.status).toBe(200);
@@ -180,7 +180,7 @@ describe('Tags API', () => {
       expect(data).toMatchObject({
         id: 't-1',
         name: 'Updated Tag',
-        color: '#00FF00'
+        color: '#00FF00',
       });
     });
 
@@ -188,13 +188,13 @@ describe('Tags API', () => {
       await loginUser();
 
       const updateData = {
-        name: 'New Name Only'
+        name: 'New Name Only',
       };
 
       const response = await fetch(`${API_BASE}/api/tags/t-1`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       expect(response.status).toBe(200);
@@ -207,13 +207,13 @@ describe('Tags API', () => {
       await loginUser();
 
       const updateData = {
-        color: '#FF00FF'
+        color: '#FF00FF',
       };
 
       const response = await fetch(`${API_BASE}/api/tags/t-1`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       expect(response.status).toBe(200);
@@ -226,13 +226,13 @@ describe('Tags API', () => {
       await loginUser();
 
       const updateData = {
-        name: 'Updated Name'
+        name: 'Updated Name',
       };
 
       const response = await fetch(`${API_BASE}/api/tags/non-existent`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       expect(response.status).toBe(404);
@@ -244,13 +244,13 @@ describe('Tags API', () => {
       await logoutUser();
 
       const updateData = {
-        name: 'Updated Name'
+        name: 'Updated Name',
       };
 
       const response = await fetch(`${API_BASE}/api/tags/t-1`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(updateData)
+        body: JSON.stringify(updateData),
       });
 
       expect(response.status).toBe(401);
@@ -264,7 +264,7 @@ describe('Tags API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/tags/t-1`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       expect(response.status).toBe(204);
@@ -274,7 +274,7 @@ describe('Tags API', () => {
       await loginUser();
 
       const response = await fetch(`${API_BASE}/api/tags/non-existent`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       expect(response.status).toBe(404);
@@ -286,7 +286,7 @@ describe('Tags API', () => {
       await logoutUser();
 
       const response = await fetch(`${API_BASE}/api/tags/t-1`, {
-        method: 'DELETE'
+        method: 'DELETE',
       });
 
       expect(response.status).toBe(401);

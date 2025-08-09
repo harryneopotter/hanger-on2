@@ -36,7 +36,7 @@ export default function CollectionDetail({
   onUpdate,
   onDelete,
   onAddGarments,
-  onRemoveGarment
+  onRemoveGarment,
 }: CollectionDetailProps) {
   const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
   const [showEditForm, setShowEditForm] = useState(false);
@@ -79,21 +79,13 @@ export default function CollectionDetail({
     <div className="space-y-6">
       {/* Collection Header */}
       <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 overflow-hidden">
-        <div 
-          className="h-32 relative"
-          style={{ backgroundColor: collection.color || '#3B82F6' }}
-        >
+        <div className="h-32 relative" style={{ backgroundColor: collection.color || '#3B82F6' }}>
           <div className="absolute inset-0 bg-gradient-to-r from-black/20 to-transparent" />
           {collection.image && (
-            <Image
-              src={collection.image}
-              alt={collection.name}
-              fill
-              className="object-cover"
-            />
+            <Image src={collection.image} alt={collection.name} fill className="object-cover" />
           )}
         </div>
-        
+
         <div className="p-6">
           <div className="flex items-start justify-between mb-4">
             <div className="flex-1">
@@ -109,9 +101,7 @@ export default function CollectionDetail({
                 )}
               </div>
               {collection.description && (
-                <p className="text-gray-600 dark:text-gray-400 mb-4">
-                  {collection.description}
-                </p>
+                <p className="text-gray-600 dark:text-gray-400 mb-4">{collection.description}</p>
               )}
               <div className="flex items-center gap-4 text-sm text-gray-500 dark:text-gray-400">
                 <span>{collection._count.garments} items</span>
@@ -119,7 +109,7 @@ export default function CollectionDetail({
                 <span>Created {new Date(collection.createdAt).toLocaleDateString()}</span>
               </div>
             </div>
-            
+
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setShowEditForm(true)}
@@ -162,7 +152,7 @@ export default function CollectionDetail({
             <List className="w-5 h-5" />
           </button>
         </div>
-        
+
         {!collection.isSmartCollection && (
           <button className="flex items-center gap-2 px-4 py-2 bg-theme-primary text-white rounded-lg hover:bg-theme-primary/90 transition-colors">
             <Plus className="w-4 h-4" />
@@ -188,11 +178,11 @@ export default function CollectionDetail({
                 },
                 body: JSON.stringify({ collectionId: collection.id }),
               });
-              
+
               if (!response.ok) {
                 throw new Error('Failed to refresh collection');
               }
-              
+
               // Trigger a refresh of the collection data
               window.location.reload();
             } catch (error) {
@@ -215,7 +205,7 @@ export default function CollectionDetail({
               No garments in this collection
             </h3>
             <p className="text-gray-500 dark:text-gray-400 mb-6">
-              {collection.isSmartCollection 
+              {collection.isSmartCollection
                 ? 'No garments match the current rules. Try adjusting the rules or wait for new garments to be added.'
                 : 'Start building your collection by adding some garments.'}
             </p>
@@ -226,20 +216,30 @@ export default function CollectionDetail({
             )}
           </div>
         ) : (
-          <div className={viewMode === 'grid' 
-            ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
-            : 'space-y-4'
-          }>
+          <div
+            className={
+              viewMode === 'grid'
+                ? 'grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6'
+                : 'space-y-4'
+            }
+          >
             {collection.garments.map((garment) => (
-              <div key={garment.id} className={viewMode === 'grid' 
-                ? 'group cursor-pointer'
-                : 'flex items-center gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors'
-              }>
+              <div
+                key={garment.id}
+                className={
+                  viewMode === 'grid'
+                    ? 'group cursor-pointer'
+                    : 'flex items-center gap-4 p-4 border border-gray-200 dark:border-gray-700 rounded-lg hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors'
+                }
+              >
                 <Link href={`/garments/${garment.id}`} className="block">
-                  <div className={viewMode === 'grid' 
-                    ? 'aspect-square bg-gray-100 dark:bg-gray-700 rounded-xl overflow-hidden mb-3 relative'
-                    : 'w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden relative flex-shrink-0'
-                  }>
+                  <div
+                    className={
+                      viewMode === 'grid'
+                        ? 'aspect-square bg-gray-100 dark:bg-gray-700 rounded-xl overflow-hidden mb-3 relative'
+                        : 'w-16 h-16 bg-gray-100 dark:bg-gray-700 rounded-lg overflow-hidden relative flex-shrink-0'
+                    }
+                  >
                     {garment.images[0] ? (
                       <Image
                         src={garment.images[0].url}
@@ -253,7 +253,7 @@ export default function CollectionDetail({
                       </div>
                     )}
                   </div>
-                  
+
                   <div className={viewMode === 'grid' ? '' : 'flex-1 min-w-0'}>
                     <h3 className="font-medium text-gray-900 dark:text-white truncate">
                       {garment.name}
@@ -268,13 +268,14 @@ export default function CollectionDetail({
                     )}
                   </div>
                 </Link>
-                
+
                 {!collection.isSmartCollection && (
                   <button
                     onClick={() => handleRemoveGarment(garment.id)}
-                    className={viewMode === 'grid' 
-                      ? 'absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity'
-                      : 'p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors'
+                    className={
+                      viewMode === 'grid'
+                        ? 'absolute top-2 right-2 p-1 bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity'
+                        : 'p-1 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded transition-colors'
                     }
                   >
                     <Trash2 className="w-4 h-4" />
@@ -297,7 +298,7 @@ export default function CollectionDetail({
           color: collection.color,
           image: collection.image,
           isSmartCollection: collection.isSmartCollection,
-          rules: collection.rules
+          rules: collection.rules,
         }}
         title="Edit Collection"
       />
