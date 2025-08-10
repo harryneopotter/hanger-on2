@@ -24,16 +24,38 @@ export default function Home() {
   const [darkMode, setDarkMode, isHydrated] = useDarkMode();
   const [activeCategory, setActiveCategory] = useState('All');
   const [searchQuery, setSearchQuery] = useState('');
+  
+  // Initialize guest mode based on URL params first, then localStorage
   const [isGuest, setIsGuest] = useState(false);
+  const [hasCheckedGuest, setHasCheckedGuest] = useState(false);
+  
   const [selectedStatuses, setSelectedStatuses] = useState<string[]>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   
   // SWR hooks must be called before any conditional logic
-  const { data: garments = [], mutate } = useSWR(isGuest ? null : '/api/garments', fetcher);
-  const { data: tags = [] } = useSWR(isGuest ? null : '/api/tags', fetcher);
+  // Only make API calls if not in guest mode and session exists
+  const shouldMakeApiCalls = !isGuest && session;
+  const { data: garments = [], mutate } = useSWR(shouldMakeApiCalls ? '/api/garments' : null, fetcher);
+  const { data: tags = [] } = useSWR(shouldMakeApiCalls ? '/api/tags' : null, fetcher);
+
+  // Initialize guest mode on client side
+  useEffect(() => {
+    if (!hasCheckedGuest) {
+      const urlParams = new URLSearchParams(window.location.search);
+      const guestParam = urlParams.get('guest');
+      const isGuestFromUrl = guestParam === 'true';
+      const isGuestFromStorage = isGuestMode();
+      
+      if (isGuestFromUrl || isGuestFromStorage) {
+        setGuestMode(true);
+        setIsGuest(true);
+      }
+      setHasCheckedGuest(true);
+    }
+  }, [hasCheckedGuest]);
 
   useEffect(() => {
-    if (status === 'loading') return; // Still loading
+    if (!hasCheckedGuest || status === 'loading') return;
     
     // If user is authenticated, clear guest mode
     if (session) {
@@ -42,24 +64,15 @@ export default function Home() {
       return;
     }
     
-    // Check if user came from guest mode link
-    const urlParams = new URLSearchParams(window.location.search);
-    const guestParam = urlParams.get('guest');
-    
-    if (guestParam === 'true' || isGuestMode()) {
-      setGuestMode(true);
-      setIsGuest(true);
-      return;
-    }
-    
-    if (!session) {
+    // Only redirect to login if not in guest mode
+    if (!session && !isGuest) {
       router.push('/login');
       return;
     }
-  }, [session, status, router]);
+  }, [session, status, router, isGuest, hasCheckedGuest]);
 
-  // Show loading while checking authentication
-  if (status === 'loading' && !isGuest) {
+  // Show loading while checking authentication and guest mode
+  if (!hasCheckedGuest || (status === 'loading' && !isGuest)) {
     return (
       <Layout>
         <div className="bg-gray-50 dark:bg-gray-900 min-h-screen transition-colors duration-300 flex items-center justify-center">
@@ -70,7 +83,7 @@ export default function Home() {
   }
 
   // Don't render if not authenticated and not in guest mode (will redirect)
-  if (!session && !isGuest) {
+  if (!session && !isGuest && hasCheckedGuest) {
     return null;
   }
 
@@ -186,7 +199,7 @@ export default function Home() {
               </div>
 
               {filteredGarments.length === 0 && (
-                <div className="col-span-full">
+                <div className="col-span-full flex justify-center items-center min-h-[60vh]">
                   <EmptyState
                     title={(() => {
                       if (searchQuery) {
@@ -201,25 +214,27 @@ export default function Home() {
                       if (selectedStatuses.length > 0) {
                         return `No ${selectedStatuses.join(' or ')} items found`;
                       }
-                      return 'Your closet is empty';
+                      return isGuest ? 'Welcome to your demo wardrobe!' : 'Your closet is empty';
                     })()}
                     message={(() => {
                       if (searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0) {
                         return 'Try adjusting your filters or search terms';
                       }
-                      return 'Start adding items to your wardrobe and watch your collection grow!';
+                      return isGuest 
+                        ? 'Explore these demo items to see how Hanger On works!' 
+                        : 'Start adding items to your wardrobe and watch your collection grow!';
                     })()}
                     actionText={(() => {
                       if (searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0) {
                         return 'Clear filters';
                       }
-                      return 'Add your first item';
+                      return isGuest ? 'Sign up to get started' : 'Add your first item';
                     })()}
                     actionHref={(() => {
                       if (searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0) {
                         return '/';
                       }
-                      return '/add';
+                      return isGuest ? '/login' : '/add';
                     })()}
                     type={searchQuery || activeCategory !== 'All' || selectedStatuses.length > 0 ? 'search' : 'garments'}
                   />

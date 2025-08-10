@@ -1,0 +1,85 @@
+<svg viewBox="0 0 240 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="240" height="320" fill="#0f0f23" rx="12"/>
+  
+  <!-- Subtle background pattern -->
+  <defs>
+    <pattern id="silk-texture" patternUnits="userSpaceOnUse" width="12" height="12">
+      <rect width="12" height="12" fill="#1a1a2e"/>
+      <path d="M0,6 L6,0 L12,6 L6,12 Z" fill="#16213e" opacity="0.3"/>
+    </pattern>
+    <linearGradient id="dress-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1f2937;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#111827;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#030712;stop-opacity:1" />
+    </linearGradient>
+    <radialGradient id="shimmer" cx="50%" cy="30%" r="50%">
+      <stop offset="0%" style="stop-color:#374151;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#1f2937;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+  <rect width="240" height="320" fill="url(#silk-texture)"/>
+  
+  <!-- Dress -->
+  <g transform="translate(80, 40)">
+    <!-- Main dress silhouette -->
+    <path d="M20 70 L20 120 Q15 140 15 160 L10 200 Q8 220 15 240 Q20 260 40 260 Q60 260 65 240 Q72 220 70 200 L65 160 Q65 140 60 120 L60 70" 
+          fill="url(#dress-gradient)" stroke="#374151" stroke-width="2"/>
+    
+    <!-- Bodice detail -->
+    <path d="M20 70 Q30 60 40 70 Q50 60 60 70 L55 100 Q40 95 40 95 Q40 95 25 100 Z" 
+          fill="url(#dress-gradient)" stroke="#4b5563" stroke-width="1.5"/>
+    
+    <!-- Neckline -->
+    <path d="M30 70 Q40 55 40 70 Q40 55 50 70" 
+          fill="url(#dress-gradient)" stroke="#4b5563" stroke-width="1.5"/>
+    
+    <!-- Subtle shimmer effect -->
+    <ellipse cx="40" cy="100" rx="20" ry="40" fill="url(#shimmer)"/>
+    
+    <!-- Waistline definition -->
+    <ellipse cx="40" cy="120" rx="22" ry="4" fill="none" stroke="#4b5563" stroke-width="1" opacity="0.6"/>
+    
+    <!-- Flowing skirt lines -->
+    <path d="M25 130 Q20 150 18 170 Q16 190 18 210" 
+          fill="none" stroke="#4b5563" stroke-width="1" opacity="0.5"/>
+    <path d="M55 130 Q60 150 62 170 Q64 190 62 210" 
+          fill="none" stroke="#4b5563" stroke-width="1" opacity="0.5"/>
+    
+    <!-- Elegant draping -->
+    <path d="M20 140 Q35 145 40 140 Q45 145 60 140" 
+          fill="none" stroke="#6b7280" stroke-width="0.5" opacity="0.7"/>
+    <path d="M18 170 Q35 175 40 170 Q45 175 62 170" 
+          fill="none" stroke="#6b7280" stroke-width="0.5" opacity="0.5"/>
+    
+    <!-- Side seam details -->
+    <line x1="20" y1="70" x2="15" y2="200" stroke="#4b5563" stroke-width="0.5" opacity="0.6"/>
+    <line x1="60" y1="70" x2="65" y2="200" stroke="#4b5563" stroke-width="0.5" opacity="0.6"/>
+    
+    <!-- Subtle fabric texture lines -->
+    <g opacity="0.3">
+      <line x1="25" y1="80" x2="55" y2="80" stroke="#6b7280" stroke-width="0.3"/>
+      <line x1="22" y1="110" x2="58" y2="110" stroke="#6b7280" stroke-width="0.3"/>
+      <line x1="20" y1="140" x2="60" y2="140" stroke="#6b7280" stroke-width="0.3"/>
+      <line x1="18" y1="170" x2="62" y2="170" stroke="#6b7280" stroke-width="0.3"/>
+      <line x1="16" y1="200" x2="64" y2="200" stroke="#6b7280" stroke-width="0.3"/>
+    </g>
+    
+    <!-- Shoulder straps (elegant thin straps) -->
+    <rect x="28" y="45" width="2" height="25" fill="#4b5563" rx="1"/>
+    <rect x="50" y="45" width="2" height="25" fill="#4b5563" rx="1"/>
+    
+    <!-- Delicate neckline trim -->
+    <path d="M30 70 Q35 65 40 70 Q45 65 50 70" 
+          fill="none" stroke="#9ca3af" stroke-width="0.5"/>
+    
+    <!-- Hem detail -->
+    <ellipse cx="40" cy="250" rx="25" ry="8" fill="none" stroke="#4b5563" stroke-width="1" opacity="0.4"/>
+  </g>
+  
+  <!-- Elegant shadow -->
+  <ellipse cx="120" cy="300" rx="35" ry="12" fill="#000000" opacity="0.8"/>
+  
+  <!-- Subtle light reflection -->
+  <ellipse cx="110" cy="140" rx="8" ry="20" fill="#9ca3af" opacity="0.1"/>
+</svg>

@@ -29,7 +29,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       wearCount: 8,
       careInstructions: 'Hand wash cold, hang dry, iron on low heat',
       notes: 'Perfect for work meetings and dinner dates. Pairs well with high-waist trousers.',
-      image: 'https://readdy.ai/api/search-image?query=Elegant%20silk%20blouse%20for%20women%2C%20flowing%20fabric%2C%20professional%20feminine%20style%2C%20soft%20pastel%20colors%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20high-quality%20fashion%20photography%2C%20delicate%20texture%20details&width=400&height=400&seq=blouse1&orientation=squarish'
+      image: 'https://images.unsplash.com/photo-1586350977771-b3b0abd50c82?w=400&h=400&fit=crop&crop=center'
     },
     '2': {
       id: '2',
@@ -46,7 +46,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       wearCount: 15,
       careInstructions: 'Machine wash cold, tumble dry low, wash inside out',
       notes: 'Great fit, very comfortable. Goes with everything in my wardrobe.',
-      image: 'https://readdy.ai/api/search-image?query=High-waisted%20denim%20jeans%20for%20women%2C%20modern%20fit%2C%20dark%20blue%20wash%2C%20feminine%20silhouette%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20fashion%20styling%2C%20premium%20denim%20texture&width=400&height=400&seq=jeans2&orientation=squarish'
+      image: 'https://images.unsplash.com/photo-1542272604-787c3835535d?w=400&h=400&fit=crop&crop=center'
     },
     '3': {
       id: '3',
@@ -63,7 +63,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       wearCount: 12,
       careInstructions: 'Wipe with damp cloth, use leather conditioner monthly',
       notes: 'Incredibly comfortable for all-day wear. Classic and versatile.',
-      image: 'https://readdy.ai/api/search-image?query=Classic%20ballet%20flats%20for%20women%2C%20soft%20leather%2C%20elegant%20feminine%20design%2C%20neutral%20beige%20color%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20luxury%20footwear%20styling%2C%20sophisticated%20details&width=400&height=400&seq=flats1&orientation=squarish'
+      image: 'https://images.unsplash.com/photo-1560769629-975ec94e6a86?w=400&h=400&fit=crop&crop=center'
     },
     '4': {
       id: '4',
@@ -80,7 +80,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       wearCount: 22,
       careInstructions: 'Dry clean only, store flat, use cashmere comb',
       notes: 'Needs dry cleaning. Perfect layering piece for office and weekends.',
-      image: 'https://readdy.ai/api/search-image?query=Luxurious%20cashmere%20cardigan%20for%20women%2C%20soft%20knit%20texture%2C%20elegant%20draping%2C%20warm%20neutral%20tones%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20premium%20knitwear%20styling%2C%20cozy%20feminine%20fashion&width=400&height=400&seq=cardigan1&orientation=squarish'
+      image: 'https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=400&h=400&fit=crop&crop=center'
     },
     '5': {
       id: '5',
@@ -97,7 +97,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       wearCount: 6,
       careInstructions: 'Machine wash cold, hang dry, steam if needed',
       notes: 'Beautiful color, perfect for brunch and casual dates. Very flattering silhouette.',
-      image: 'https://readdy.ai/api/search-image?query=Elegant%20midi%20dress%20for%20women%2C%20flowing%20cotton%20fabric%2C%20feminine%20silhouette%2C%20sophisticated%20design%2C%20soft%20colors%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20modern%20fashion%20styling%2C%20versatile%20wardrobe%20piece&width=400&height=400&seq=dress1&orientation=squarish'
+      image: 'https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=400&h=400&fit=crop&crop=center'
     },
     '6': {
       id: '6',
@@ -114,7 +114,7 @@ export default function ItemDetail({ itemId }: ItemDetailProps) {
       wearCount: 18,
       careInstructions: 'Polish regularly, waterproof spray before wearing',
       notes: 'Investment piece. Goes with everything from jeans to dresses.',
-      image: 'https://readdy.ai/api/search-image?query=Stylish%20ankle%20boots%20for%20women%2C%20premium%20leather%20construction%2C%20modern%20heel%20design%2C%20versatile%20black%20color%2C%20product%20photography%20on%20white%20background%2C%20centered%20composition%2C%20luxury%20footwear%20styling%2C%20contemporary%20fashion&width=400&height=400&seq=boots2&orientation=squarish'
+      image: 'https://images.unsplash.com/photo-1544966503-7cc5ac882d5d?w=400&h=400&fit=crop&crop=center'
     }
   };
 

@@ -171,11 +171,10 @@ export default function Stats() {
                   <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Category Breakdown</h3>
                     <div className="aspect-square bg-gray-50 dark:bg-gray-700 rounded-xl flex items-center justify-center mb-4">
-                      <img
-                        src="https://readdy.ai/api/search-image?query=Pie%20chart%20showing%20clothing%20category%20distribution%20with%20segments%20for%20shirts%2C%20pants%2C%20shoes%2C%20accessories%2C%20and%20outerwear%20in%20modern%20colors%2C%20clean%20minimal%20design%2C%20professional%20data%20visualization&width=300&height=300&seq=piechart1&orientation=squarish"
-                        alt="Category pie chart"
-                        className="w-full h-full object-cover rounded-xl"
-                      />
+                      <div className="text-center">
+                        <div className="text-6xl mb-2">📊</div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">Category Chart</div>
+                      </div>
                     </div>
                     <div className="space-y-3">
                       {stats?.categoryBreakdown && stats.categoryBreakdown.length > 0 ? (
@@ -217,11 +216,10 @@ export default function Stats() {
                   <div className="bg-white dark:bg-gray-800 rounded-2xl p-6 shadow-sm">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-4">Weekly Usage</h3>
                     <div className="aspect-[4/3] bg-gray-50 dark:bg-gray-700 rounded-xl flex items-center justify-center">
-                      <img
-                        src="https://readdy.ai/api/search-image?query=Bar%20chart%20showing%20weekly%20clothing%20usage%20statistics%20with%20days%20of%20week%20on%20x-axis%20and%20number%20of%20items%20worn%20on%20y-axis%2C%20modern%20clean%20design%2C%20professional%20data%20visualization&width=400&height=300&seq=barchart1&orientation=landscape"
-                        alt="Weekly usage bar chart"
-                        className="w-full h-full object-cover rounded-xl"
-                      />
+                      <div className="text-center">
+                        <div className="text-6xl mb-2">📈</div>
+                        <div className="text-sm text-gray-500 dark:text-gray-400">Weekly Usage Chart</div>
+                      </div>
                     </div>
                   </div>
 

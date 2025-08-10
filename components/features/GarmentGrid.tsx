@@ -7,7 +7,7 @@ interface Garment {
   category: string;
   material: string;
   status: 'Clean' | 'Dirty' | 'Worn 2x' | 'Needs Washing';
-  image: string;
+  imageUrl: string;
 }
 
 interface GarmentGridProps {
@@ -29,7 +29,7 @@ const GarmentGrid: React.FC<GarmentGridProps> = ({ garments, isGuest = false, on
           category={garment.category}
           material={garment.material}
           status={garment.status}
-          image={garment.image}
+          imageUrl={garment.imageUrl}
           isGuest={isGuest}
           onEdit={() => onEdit?.(garment)}
           onMarkAsWorn={() => onMarkAsWorn?.(garment)}

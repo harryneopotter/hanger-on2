@@ -1,0 +1,21 @@
+<svg width="400" height="300" viewBox="0 0 400 300" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="400" height="300" fill="#3b82f6"/>
+  <g>
+    <!-- Winter coat silhouette -->
+    <path d="M100 80 L100 60 Q100 50 110 50 L150 50 Q160 50 160 60 L160 80 L180 100 L180 220 Q180 240 160 240 L100 240 Q80 240 80 220 L80 100 Z" 
+          fill="#1e40af" stroke="#1d4ed8" stroke-width="2"/>
+    <!-- Scarf -->
+    <path d="M200 90 Q220 80 240 90 Q250 100 240 110 Q220 120 200 110 Q190 100 200 90" 
+          fill="#f59e0b" stroke="#d97706" stroke-width="1"/>
+    <!-- Mittens -->
+    <ellipse cx="280" cy="120" rx="20" ry="15" fill="#dc2626" stroke="#b91c1c" stroke-width="1"/>
+    <ellipse cx="320" cy="140" rx="20" ry="15" fill="#dc2626" stroke="#b91c1c" stroke-width="1"/>
+    <!-- Snowflakes -->
+    <g stroke="white" stroke-width="1" fill="none">
+      <path d="M50 50 L70 70 M60 50 L60 70 M50 60 L70 60"/>
+      <path d="M350 80 L370 100 M360 80 L360 100 M350 90 L370 90"/>
+      <path d="M80 180 L100 200 M90 180 L90 200 M80 190 L100 190"/>
+    </g>
+  </g>
+  <text x="200" y="280" text-anchor="middle" font-family="Arial, sans-serif" font-size="18" fill="white">Winter Essentials</text>
+</svg>

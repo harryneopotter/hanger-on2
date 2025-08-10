@@ -18,14 +18,14 @@ interface GarmentCardProps {
   category: string;
   material: string;
   status: 'CLEAN' | 'DIRTY' | 'WORN_2X' | 'NEEDS_WASHING';
-  image: string;
+  imageUrl: string;
   isGuest?: boolean;
   onEdit?: () => void;
   onMarkAsWorn?: () => void;
   onMoveToLaundry?: () => void;
 }
 
-export default function GarmentCard({ id, name, category, material, status, image, isGuest = false, onEdit, onMarkAsWorn, onMoveToLaundry }: GarmentCardProps) {
+export default function GarmentCard({ id, name, category, material, status, imageUrl, isGuest = false, onEdit, onMarkAsWorn, onMoveToLaundry }: GarmentCardProps) {
   const { data: session } = useSession();
   const [showCollectionModal, setShowCollectionModal] = useState(false);
   const [collections, setCollections] = useState<Collection[]>([]);
@@ -137,7 +137,7 @@ export default function GarmentCard({ id, name, category, material, status, imag
             transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
           ></motion.div>
           <motion.img
-            src={image}
+            src={imageUrl}
             alt={name}
             className="w-full h-full object-cover object-top"
             whileHover={{ scale: 1.1 }}

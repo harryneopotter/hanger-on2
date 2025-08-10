@@ -60,10 +60,16 @@ export default function AccountPage() {
     return date.toLocaleDateString('en-US', { year: 'numeric', month: 'long' });
   };
 
-  // Default avatar if user doesn't have one
-  const userAvatar = user.image || 'https://readdy.ai/api/search-image?query=Professional%20person%20portrait%2C%20clean%20minimal%20style%2C%20friendly%20smile%2C%20business%20casual%20outfit%2C%20soft%20lighting%2C%20neutral%20background%2C%20high%20quality%20headshot%20photography&width=128&height=128&seq=account-avatar&orientation=squarish';
-
-
+  // Default avatar if user doesn't have one - using simple initials fallback
+  const getInitials = (name: string, email: string) => {
+    if (name) {
+      return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+    }
+    return email.slice(0, 2).toUpperCase();
+  };
+  
+  const userInitials = getInitials(user.name || '', user.email || '');
+  const userAvatar = user.image;
 
   const menuItems = [
     {
@@ -118,12 +124,18 @@ export default function AccountPage() {
           {/* Profile Header */}
           <div className="bg-gray-50/80 dark:bg-gray-800/80 rounded-2xl shadow-[8px_8px_16px_rgba(0,0,0,0.1),-4px_-4px_12px_rgba(255,255,255,0.7)] dark:shadow-[8px_8px_16px_rgba(0,0,0,0.3),-4px_-4px_12px_rgba(255,255,255,0.02)] backdrop-blur-sm border border-white/20 dark:border-gray-700/30 p-6 mb-6">
             <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200/50 dark:bg-gray-700/50 shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.02)]">
-                <img 
-                  src={userAvatar}
-                  alt="Profile"
-                  className="w-full h-full object-cover"
-                />
+              <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200/50 dark:bg-gray-700/50 shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.02)] flex items-center justify-center">
+                {userAvatar ? (
+                  <img 
+                    src={userAvatar}
+                    alt="Profile"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center bg-theme-primary-light text-theme-primary-dark font-bold text-lg">
+                    {userInitials}
+                  </div>
+                )}
               </div>
               <div className="flex-1">
                 <h2 className="text-xl font-bold text-gray-900 dark:text-white drop-shadow-sm">
@@ -161,8 +173,6 @@ export default function AccountPage() {
               </div>
             </div>
           </div>
-
-
 
           {/* Menu Items */}
           <div className="space-y-3">

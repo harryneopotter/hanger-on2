@@ -1,0 +1,54 @@
+<svg viewBox="0 0 240 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="240" height="320" fill="#f8fafc" rx="12"/>
+  
+  <!-- Subtle background pattern -->
+  <defs>
+    <pattern id="dots" patternUnits="userSpaceOnUse" width="20" height="20">
+      <circle cx="10" cy="10" r="1" fill="#e2e8f0" opacity="0.3"/>
+    </pattern>
+  </defs>
+  <rect width="240" height="320" fill="url(#dots)"/>
+  
+  <!-- Shirt -->
+  <g transform="translate(60, 50)">
+    <!-- Main body -->
+    <path d="M30 80 L30 200 Q30 220 50 220 L70 220 Q90 220 90 200 L90 80" 
+          fill="white" stroke="#e2e8f0" stroke-width="2"/>
+    
+    <!-- Collar -->
+    <path d="M40 80 L40 60 Q40 50 50 50 L70 50 Q80 50 80 60 L80 80" 
+          fill="white" stroke="#e2e8f0" stroke-width="2"/>
+    
+    <!-- Collar details -->
+    <path d="M45 65 L60 80 L75 65" fill="none" stroke="#cbd5e1" stroke-width="1"/>
+    
+    <!-- Left sleeve -->
+    <path d="M30 80 Q10 90 10 110 L10 140 Q10 150 20 150 L30 145 L30 80" 
+          fill="white" stroke="#e2e8f0" stroke-width="2"/>
+    
+    <!-- Right sleeve -->
+    <path d="M90 80 Q110 90 110 110 L110 140 Q110 150 100 150 L90 145 L90 80" 
+          fill="white" stroke="#e2e8f0" stroke-width="2"/>
+    
+    <!-- Button line -->
+    <line x1="60" y1="80" x2="60" y2="200" stroke="#e2e8f0" stroke-width="1"/>
+    
+    <!-- Buttons -->
+    <circle cx="60" cy="90" r="2" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <circle cx="60" cy="110" r="2" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <circle cx="60" cy="130" r="2" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <circle cx="60" cy="150" r="2" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    <circle cx="60" cy="170" r="2" fill="#f1f5f9" stroke="#cbd5e1" stroke-width="1"/>
+    
+    <!-- Pocket -->
+    <rect x="45" y="120" width="12" height="10" fill="none" stroke="#e2e8f0" stroke-width="1" rx="1"/>
+    
+    <!-- Subtle shading -->
+    <path d="M30 80 L30 200 Q30 220 50 220 L70 220" 
+          fill="none" stroke="#f1f5f9" stroke-width="1" opacity="0.6"/>
+  </g>
+  
+  <!-- Shadow -->
+  <ellipse cx="120" cy="280" rx="40" ry="8" fill="#e2e8f0" opacity="0.4"/>
+</svg>
