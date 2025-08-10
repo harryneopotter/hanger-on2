@@ -64,9 +64,19 @@ export default function Home() {
       return;
     }
     
-    // Only redirect to login if not in guest mode
+    // Auto-enable guest mode in production for demo purposes
     if (!session && !isGuest) {
-      router.push('/login');
+      // Check if we're in production (Vercel deployment)
+      const isProduction = process.env.NODE_ENV === 'production' || window.location.hostname.includes('vercel.app');
+      
+      if (isProduction) {
+        // Automatically enable guest mode for demo
+        setGuestMode(true);
+        setIsGuest(true);
+      } else {
+        // In development, redirect to login
+        router.push('/login');
+      }
       return;
     }
   }, [session, status, router, isGuest, hasCheckedGuest]);
