@@ -8,7 +8,6 @@ node_modules/
 dist/
 build/
 coverage/
-docs/
 
 # Logs
 npm-debug.log*
@@ -38,9 +37,19 @@ yarn-error.log*
 *.eslintrc.local
 *.prettierrc.local
 
-# Documentation files
+# Documentation files (ignore by default)
 *.md
 *.txt
+
+# GitHub metadata (allow workflows)
+!.github/
+!.github/workflows/
+
+# Unignore selected docs (ONLY allow top-level README and optional ROADMAP/FUTURE_ROADMAP)
+!.gitignore
+!README.md
+!ROADMAP.md
+!FUTURE_ROADMAP.md
 
 # Prisma generated client and native engines (do not commit)
 lib/generated/prisma/
@@ -51,7 +60,20 @@ node_modules/@prisma/
 
 # Playwright reports and test artifacts
 playwright-report/
-test-results/
 
+test-results/
+setup-dev.ps1
+hanger-on.code-trae-workspace.code-workspace
+supabase/
+
+# Ignore internal tools and specs by default
+.idx/
+.trae/
+.kiro/
+
+sqlite_mcp_server.db
 # Local databases
 *.db
+# Local helper scripts (keep locally, do not track)
+scripts/convert-webp.js
+visual-verification.png
