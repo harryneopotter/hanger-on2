@@ -2,9 +2,8 @@ import type { NextConfig } from "next";
 import path from "path";
 
 const nextConfig: NextConfig = {
-  images: {
-    unoptimized: true,
-  },
+  // Use Next/Image optimization (default) for better performance on Vercel
+  images: {},
   // Ensure Prisma engines are available at runtime on Vercel
   output: 'standalone',
   // Externalize Prisma packages on the server
