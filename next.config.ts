@@ -23,9 +23,23 @@ const nextConfig: NextConfig = {
     if (Array.isArray(config.externals)) {
       config.externals.push('@prisma/client', 'prisma');
     }
+
+    // Important: reset any stale fallback that could lead to broken client chunks
+    if (!isServer) {
+      config.resolve = {
+        ...config.resolve,
+        fallback: {
+          ...(config.resolve?.fallback || {}),
+          fs: false,
+          net: false,
+          tls: false,
+        },
+      };
+    }
+
     // Restrict file system access to project directory only
     const projectRoot = process.cwd();
-    
+
     // Configure webpack to only scan project files
     config.resolve = {
       ...config.resolve,
@@ -36,7 +50,7 @@ const nextConfig: NextConfig = {
         'node_modules'
       ]
     };
-    
+
     // Enhanced watch options to prevent system directory scanning
     config.watchOptions = {
       ...config.watchOptions,
@@ -45,7 +59,7 @@ const nextConfig: NextConfig = {
       aggregateTimeout: 300,
       poll: false
     };
-    
+
     // Restrict snapshot resolution to project files only
     if (config.snapshot) {
       config.snapshot.managedPaths = [
@@ -53,7 +67,7 @@ const nextConfig: NextConfig = {
       ];
       config.snapshot.immutablePaths = [];
     }
-    
+
     // Configure file system plugin if present
     if (config.plugins) {
       config.plugins.forEach((plugin: any) => {
@@ -70,7 +84,7 @@ const nextConfig: NextConfig = {
         }
       });
     }
-    
+
     return config;
   },
 };
