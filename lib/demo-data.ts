@@ -9,7 +9,7 @@ export const demoGarments = [
     color: 'Blush Pink',
     size: 'M',
     brand: 'Everlane',
-    imageUrl: 'https://images.unsplash.com/photo-1594633313593-bab3825d0caf?w=400&h=600&fit=crop&crop=center',
+    imageUrl: '/images/demo/photo-1594633313593-bab3825d0caf.jpg',
     tags: [{ tag: { name: 'Work' } }, { tag: { name: 'Essential' } }],
     createdAt: new Date('2024-01-15'),
     updatedAt: new Date('2024-01-15')
@@ -23,7 +23,7 @@ export const demoGarments = [
     color: 'Dark Blue',
     size: '32',
     brand: 'Acne Studios',
-    imageUrl: 'https://images.unsplash.com/photo-1541099649105-f69ad21f3246?w=400&h=600&fit=crop&crop=center',
+    imageUrl: '/images/demo/photo-1541099649105-f69ad21f3246.jpg',
     tags: [{ tag: { name: 'Casual' } }, { tag: { name: 'Weekend' } }],
     createdAt: new Date('2024-01-10'),
     updatedAt: new Date('2024-01-20')
@@ -37,7 +37,7 @@ export const demoGarments = [
     color: 'Beige',
     size: 'L',
     brand: 'Massimo Dutti',
-    imageUrl: 'https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=400&h=600&fit=crop&crop=center',
+    imageUrl: '/images/demo/photo-1594633312681-425c7b97ccd1.jpg',
     tags: [{ tag: { name: 'Work' } }, { tag: { name: 'Formal' } }],
     createdAt: new Date('2024-01-05'),
     updatedAt: new Date('2024-01-05')
@@ -51,7 +51,7 @@ export const demoGarments = [
     color: 'Nude',
     size: '38',
     brand: 'Repetto',
-    imageUrl: 'https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=400&h=600&fit=crop&crop=center',
+    imageUrl: '/images/demo/photo-1543163521-1bf539c55dd2.jpg',
     tags: [{ tag: { name: 'Work' } }, { tag: { name: 'Comfortable' } }],
     createdAt: new Date('2024-01-12'),
     updatedAt: new Date('2024-01-22')
@@ -65,7 +65,7 @@ export const demoGarments = [
     color: 'Cream',
     size: 'S',
     brand: 'COS',
-    imageUrl: 'https://images.unsplash.com/photo-1576871337622-98d48d1cf531?w=400&h=600&fit=crop&crop=center',
+    imageUrl: '/images/demo/photo-1576871337622-98d48d1cf531.jpg',
     tags: [{ tag: { name: 'Casual' } }, { tag: { name: 'Cozy' } }],
     createdAt: new Date('2024-01-08'),
     updatedAt: new Date('2024-01-08')
@@ -79,7 +79,7 @@ export const demoGarments = [
     color: 'Floral',
     size: 'M',
     brand: 'Zara',
-    imageUrl: 'https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=400&h=600&fit=crop&crop=center',
+    imageUrl: '/images/demo/photo-1595777457583-95e059d581b8.jpg',
     tags: [{ tag: { name: 'Summer' } }, { tag: { name: 'Casual' } }],
     createdAt: new Date('2024-01-20'),
     updatedAt: new Date('2024-01-20')
@@ -93,7 +93,7 @@ export const demoGarments = [
     color: 'Camel',
     size: 'M',
     brand: 'Max Mara',
-    imageUrl: 'https://images.unsplash.com/photo-1544966503-7cc5ac882d5f?w=400&h=600&fit=crop&crop=center',
+    imageUrl: '/images/demo/photo-1544966503-7cc5ac882d5f.jpg',
     tags: [{ tag: { name: 'Winter' } }, { tag: { name: 'Classic' } }],
     createdAt: new Date('2024-01-03'),
     updatedAt: new Date('2024-01-03')
@@ -107,7 +107,7 @@ export const demoGarments = [
     color: 'White',
     size: '39',
     brand: 'Common Projects',
-    imageUrl: 'https://images.unsplash.com/photo-1549298916-b41d501d3772?w=400&h=600&fit=crop&crop=center',
+    imageUrl: '/images/demo/photo-1549298916-b41d501d3772.jpg',
     tags: [{ tag: { name: 'Casual' } }, { tag: { name: 'Weekend' } }],
     createdAt: new Date('2024-01-25'),
     updatedAt: new Date('2024-01-26')
@@ -129,7 +129,7 @@ export const demoCollections = [
     name: 'Winter Essentials',
     description: 'Cozy layers and warm pieces for cold weather',
     _count: { garments: 24 },
-    image: 'https://images.unsplash.com/photo-1445205170230-053b83016050?w=600&h=400&fit=crop&crop=center',
+    image: '/images/demo/photo-1445205170230-053b83016050.jpg',
     color: '#3B82F6',
     isSmartCollection: false,
     garments: [],
@@ -142,7 +142,7 @@ export const demoCollections = [
     name: 'Summer Breeze',
     description: 'Light, airy pieces for warm sunny days',
     _count: { garments: 18 },
-    image: 'https://images.unsplash.com/photo-1558769132-cb1aea458c5e?w=600&h=400&fit=crop&crop=center',
+    image: '/images/demo/photo-1558769132-cb1aea458c5e.jpg',
     color: '#F59E0B',
     isSmartCollection: false,
     garments: [],
@@ -155,7 +155,7 @@ export const demoCollections = [
     name: 'Work Wardrobe',
     description: 'Professional pieces for the office',
     _count: { garments: 32 },
-    image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=600&h=400&fit=crop&crop=center',
+    image: '/images/demo/photo-1507003211169-0a1dd7228f2d.jpg',
     color: '#1F2937',
     isSmartCollection: true,
     garments: [],

@@ -77,3 +77,7 @@ sqlite_mcp_server.db
 # Local helper scripts (keep locally, do not track)
 scripts/convert-webp.js
 visual-verification.png
+
+# Local backups and downloaded demo images (do not commit)
+backups/
+urls.txt
