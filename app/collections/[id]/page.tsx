@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
 import { useRouter, useParams } from 'next/navigation';
 import { ArrowLeft } from 'lucide-react';
@@ -56,18 +56,7 @@ export default function CollectionPage() {
   const params = useParams();
   const collectionId = params.id as string;
 
-  useEffect(() => {
-    if (status === 'loading') return;
-    
-    if (!session) {
-      router.push('/login');
-      return;
-    }
-
-    fetchCollection();
-  }, [session, status, collectionId]);
-
-  const fetchCollection = async () => {
+  const fetchCollection = useCallback(async () => {
     try {
       setLoading(true);
       const response = await fetch(`/api/collections/${collectionId}`);
@@ -84,13 +73,24 @@ export default function CollectionPage() {
 
       const data = await response.json();
       setCollection(data);
-    } catch (error) {
-      console.error('Error fetching collection:', error);
+    } catch (fetchError) {
+      console.error('Error fetching collection:', fetchError);
       setError('Failed to load collection');
     } finally {
       setLoading(false);
     }
-  };
+  }, [collectionId]);
+
+  useEffect(() => {
+    if (status === 'loading') return;
+    
+    if (!session) {
+      router.push('/login');
+      return;
+    }
+
+    fetchCollection();
+  }, [session, status, fetchCollection, router]);
 
   const handleUpdate = async (data: UpdateCollection) => {
     try {
@@ -209,7 +209,7 @@ export default function CollectionPage() {
             {error}
           </h2>
           <p className="text-gray-600 dark:text-gray-400 mb-6">
-            The collection you're looking for might have been deleted or you don't have permission to view it.
+            The collection you&apos;re looking for might have been deleted or you don&apos;t have permission to view it.
           </p>
           <Link 
             href="/collections"

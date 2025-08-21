@@ -1,13 +1,13 @@
+import React from 'react';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { NextAuthProvider } from '@/components/NextAuthProvider';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { toast } from 'sonner';
+import NextAuthProvider from '@/components/providers/NextAuthProvider';
+import { toast } from 'react-hot-toast';
 
 // Mock dependencies
 vi.mock('next-auth/react');
 vi.mock('next/navigation');
-vi.mock('sonner');
+vi.mock('react-hot-toast');
 
 // Mock fetch globally
 const mockFetch = vi.fn();
@@ -15,23 +15,10 @@ global.fetch = mockFetch;
 
 // Test wrapper component
 const TestWrapper = ({ children }: { children: React.ReactNode }) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-      mutations: {
-        retry: false,
-      },
-    },
-  });
-
   return (
-    <QueryClientProvider client={queryClient}>
-      <NextAuthProvider>
-        {children}
-      </NextAuthProvider>
-    </QueryClientProvider>
+    <NextAuthProvider>
+      {children}
+    </NextAuthProvider>
   );
 };
 

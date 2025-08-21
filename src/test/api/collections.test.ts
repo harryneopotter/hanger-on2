@@ -359,3 +359,5 @@ describe('Collections API', () => {
       const data = await response.json();
       expect(data.error).toBe('Unauthorized');
     });
+  });
+});

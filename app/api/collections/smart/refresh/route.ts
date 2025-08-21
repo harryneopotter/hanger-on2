@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { collectionService } from '@/lib/services/CollectionService';
 import { getUserId } from '@/lib/auth';
+import { isAuthError, getErrorMessage } from '@/lib/errors';
 
 export async function POST(req: NextRequest) {
   try {
@@ -27,12 +28,12 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json(updatedCollection);
-  } catch (error: any) {
-    console.error('Error refreshing smart collection:', error);
-    if (error?.message?.includes('not found')) {
+  } catch (error: unknown) {
+    console.error('Error refreshing smart collection:', getErrorMessage(error));
+    if (error instanceof Error && error.message.includes('not found')) {
       return NextResponse.json({ error: 'Collection not found' }, { status: 404 });
     }
-    if (error?.message?.includes('Unauthorized')) {
+    if (isAuthError(error)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -65,9 +66,9 @@ export async function PUT(req: NextRequest) {
       message: `Refreshed ${smartCollections.length} smart collections`,
       collections: updatedCollections.filter(c => c.isSmartCollection)
     });
-  } catch (error: any) {
-    console.error('Error refreshing all smart collections:', error);
-    if (error?.message?.includes('Unauthorized')) {
+  } catch (error: unknown) {
+    console.error('Error refreshing all smart collections:', getErrorMessage(error));
+    if (isAuthError(error)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });

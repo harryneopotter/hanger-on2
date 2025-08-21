@@ -29,8 +29,8 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await signIn('google', { callbackUrl: '/' });
-    } catch (error) {
-      console.error('Sign in error:', error);
+    } catch (signInError) {
+      console.error('Sign in error:', signInError);
     } finally {
       setLoading(false);
     }
@@ -140,7 +140,7 @@ export default function LoginPage() {
               </>
             ) : (
               <>
-                Don\'t have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <button className="text-theme-primary-dark hover:text-theme-primary" onClick={() => { setShowSignup(true); setError(''); }}>Sign Up</button>
               </>
             )}

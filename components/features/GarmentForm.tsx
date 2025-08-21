@@ -2,14 +2,16 @@
 
 import React, { useState } from 'react';
 
+interface GarmentFormData {
+  name: string;
+  category: string;
+  material: string;
+  status: 'Clean' | 'Dirty' | 'Worn 2x' | 'Needs Washing';
+}
+
 interface GarmentFormProps {
-  initialData?: {
-    name: string;
-    category: string;
-    material: string;
-    status: 'Clean' | 'Dirty' | 'Worn 2x' | 'Needs Washing';
-  };
-  onSubmit: (data: any) => void; // Replace 'any' with a more specific type later
+  initialData?: GarmentFormData;
+  onSubmit: (data: GarmentFormData) => void;
 }
 
 const GarmentForm: React.FC<GarmentFormProps> = ({ initialData, onSubmit }) => {

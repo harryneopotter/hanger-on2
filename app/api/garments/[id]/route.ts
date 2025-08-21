@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { garmentService } from '@/lib/services/GarmentService';
 import { UpdateGarmentSchema } from '@/lib/validation/schemas';
 import { getUserId } from '@/lib/auth';
+import { isValidationError, isAuthError, getErrorMessage } from '@/lib/errors';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -34,11 +35,15 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
     // Fetch the complete garment with tags
     const completeGarment = await garmentService.getGarmentById(params.id, userId);
     return NextResponse.json(completeGarment || updated);
-  } catch (error: any) {
-    if (error?.issues) {
+  } catch (error: unknown) {
+    console.error('Error updating garment:', getErrorMessage(error));
+    if (isValidationError(error)) {
       return NextResponse.json({ error: error.issues }, { status: 400 });
     }
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (isAuthError(error)) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+    return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
   }
 }
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useDarkMode } from '@/hooks/useDarkMode';
 import Layout from '../../components/ui/Layout';
 import { signOut, useSession } from 'next-auth/react';
@@ -126,10 +127,12 @@ export default function AccountPage() {
             <div className="flex items-center space-x-4">
               <div className="w-16 h-16 rounded-full overflow-hidden bg-gray-200/50 dark:bg-gray-700/50 shadow-[4px_4px_8px_rgba(0,0,0,0.1),-2px_-2px_6px_rgba(255,255,255,0.8)] dark:shadow-[4px_4px_8px_rgba(0,0,0,0.3),-2px_-2px_6px_rgba(255,255,255,0.02)] flex items-center justify-center">
                 {userAvatar ? (
-                  <img 
+                  <Image 
                     src={userAvatar}
                     alt="Profile"
-                    className="w-full h-full object-cover"
+                    width={64}
+                    height={64}
+                    className="object-cover"
                   />
                 ) : (
                   <div className="w-full h-full flex items-center justify-center bg-theme-primary-light text-theme-primary-dark font-bold text-lg">

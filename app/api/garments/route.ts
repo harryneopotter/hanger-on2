@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { garmentService } from '@/lib/services/GarmentService';
 import { CreateGarmentSchema } from '@/lib/validation/schemas';
 import { getUserId } from '@/lib/auth';
+import { isValidationError, isAuthError, getErrorMessage, getErrorStatus } from '@/lib/errors';
 
 export async function GET(req: NextRequest) {
   try {
@@ -38,9 +39,9 @@ export async function GET(req: NextRequest) {
     });
     
     return NextResponse.json(garments);
-  } catch (error: any) {
-    console.error('Error fetching garments:', error);
-    if (error?.message?.includes('Unauthorized')) {
+  } catch (error: unknown) {
+    console.error('Error fetching garments:', getErrorMessage(error));
+    if (isAuthError(error)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
@@ -95,12 +96,12 @@ export async function POST(req: NextRequest) {
     // Fetch the complete garment with images and tags
     const completeGarment = await garmentService.getGarmentById(created.id, userId);
     return NextResponse.json(completeGarment || created, { status: 201 });
-  } catch (error: any) {
-    console.error('Error creating garment:', error);
-    if (error?.issues) {
+  } catch (error: unknown) {
+    console.error('Error creating garment:', getErrorMessage(error));
+    if (isValidationError(error)) {
       return NextResponse.json({ error: error.issues }, { status: 400 });
     }
-    if (error?.message?.includes('Unauthorized')) {
+    if (isAuthError(error)) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 });
