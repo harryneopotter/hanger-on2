@@ -140,7 +140,7 @@ export default function LoginPage() {
               </>
             ) : (
               <>
-                Don\'t have an account?{' '}
+                Don&apos;t have an account?{' '}
                 <button className="text-theme-primary-dark hover:text-theme-primary" onClick={() => { setShowSignup(true); setError(''); }}>Sign Up</button>
               </>
             )}
