@@ -29,8 +29,8 @@ export default function LoginPage() {
     setLoading(true);
     try {
       await signIn('google', { callbackUrl: '/' });
-    } catch (error) {
-      console.error('Sign in error:', error);
+    } catch (signInError) {
+      console.error('Sign in error:', signInError);
     } finally {
       setLoading(false);
     }

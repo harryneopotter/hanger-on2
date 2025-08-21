@@ -98,9 +98,9 @@ export default function Home() {
   }
 
   // Helpers to toggle selection
-  const handleStatusSelect = (status: string) => {
+  const handleStatusSelect = (statusValue: string) => {
     setSelectedStatuses((prev) =>
-      prev.includes(status) ? prev.filter((s) => s !== status) : [...prev, status]
+      prev.includes(statusValue) ? prev.filter((s) => s !== statusValue) : [...prev, statusValue]
     );
   };
 
