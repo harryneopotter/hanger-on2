@@ -1,6 +1,5 @@
 import React, { useState, useCallback } from 'react';
 import ImageCropper from './ImageCropper';
-import { getSupabase } from '../../lib/supabase';
 
 interface ImageUploadProps {
   onImageUploaded?: (imageUrl: string) => void;
@@ -62,40 +61,34 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUploaded }) => {
   const handleCropComplete = useCallback(async (croppedImageBlob: Blob) => {
     setIsUploading(true);
     try {
-      // Generate unique filename
+      // Prepare form data for server-side upload
+      const formData = new FormData();
       const timestamp = Date.now();
       const randomId = Math.random().toString(36).substring(2, 15);
-      const fileName = `garment_${timestamp}_${randomId}.jpg`;
-      
-      // Upload to Supabase Storage
-      const supabase = getSupabase();
-      const { data, error } = await supabase.storage
-        .from('garment-images')
-        .upload(fileName, croppedImageBlob, {
-          contentType: 'image/jpeg',
-          upsert: false
-        });
-      
-      if (error) {
-        console.error('Upload error:', error);
-        alert('Failed to upload image. Please try again.');
-        return;
+      const clientFileName = `garment_${timestamp}_${randomId}.jpg`;
+      formData.append('file', croppedImageBlob, clientFileName);
+
+      const res = await fetch('/api/images', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.message || 'Failed to upload image.');
       }
-      
-      // Get public URL
-      const { data: { publicUrl } } = getSupabase().storage
-        .from('garment-images')
-        .getPublicUrl(fileName);
-      
+
+      const { url } = await res.json();
+
       // Call the parent callback
-      onImageUploaded?.(publicUrl);
-      
+      onImageUploaded?.(url);
+
       // Reset state
       setSelectedImage(null);
       setShowCropper(false);
     } catch (error) {
       console.error('Upload failed:', error);
-      alert('Upload failed. Please try again.');
+      alert(error instanceof Error ? error.message : 'Upload failed. Please try again.');
     } finally {
       setIsUploading(false);
     }
