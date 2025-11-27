@@ -51,6 +51,15 @@ npm run dev
 
 Open http://localhost:3000 to view the app.
 
+## Deployment
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for comprehensive production deployment instructions including:
+- Vercel deployment setup
+- Supabase database configuration
+- Environment variables guide
+- CI/CD pipeline details
+- Troubleshooting and maintenance
+
 ## Notes
 - Advanced/legacy docs that previously lived under docs/; are now removed/ignored to keep the repo lean.
 - If you need deeper platform notes, check internal documentation or ask the maintainer.
