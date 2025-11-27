@@ -85,6 +85,7 @@ model Garment {
   careInstructions String? @map("care_instructions")
   status         GarmentStatus @default(CLEAN)
   notes          String?
+  usageCount     Int      @default(0) @map("usage_count") // Track how many times worn
   images         GarmentImage[]
   tags           GarmentTag[]
   collections    CollectionGarment[]
