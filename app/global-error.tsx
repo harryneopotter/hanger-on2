@@ -2,6 +2,13 @@
 
 import { useEffect } from 'react';
 
+/**
+ * Render a full-screen global error UI that displays error information and actions to recover.
+ *
+ * @param error - The error to display; may include an optional `digest` string which is shown when NODE_ENV is "development".
+ * @param reset - Callback invoked when the user requests a retry to recover from the error.
+ * @returns The React element representing the global error user interface.
+ */
 export default function GlobalError({
   error,
   reset,

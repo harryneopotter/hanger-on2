@@ -2,6 +2,14 @@ import { NextResponse } from 'next/server';
 import { TagService } from '@/lib/services/TagService';
 import { getUserId } from '@/lib/auth';
 
+/**
+ * Retrieve a tag by ID for the authenticated user.
+ *
+ * @param request - The incoming HTTP request
+ * @param params - Route parameters object
+ * @param params.id - The ID of the tag to fetch
+ * @returns An HTTP JSON response containing the tag on success (status 200); error JSON with status 400 if the tag ID is missing, 401 for unauthorized access, 404 if the tag is not found, or 500 for other errors
+ */
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
@@ -31,6 +39,13 @@ export async function GET(
   }
 }
 
+/**
+ * Update an existing tag (name and color) identified by the route `id` for the authenticated user.
+ *
+ * @param params - Route parameters object
+ * @param params.id - The tag ID to update
+ * @returns The updated tag object on success. On failure, a JSON error object with an `error` message and an HTTP status (one of 400, 401, 404, 409, or 500)
+ */
 export async function PUT(
   request: Request,
   { params }: { params: { id: string } }
@@ -71,6 +86,20 @@ export async function PUT(
   }
 }
 
+/**
+ * Deletes a tag identified by the route `id` for the authenticated user.
+ *
+ * Validates the `id` route parameter, ensures the request is authenticated, and attempts to remove the tag.
+ *
+ * @param request - The incoming HTTP request object.
+ * @param params.id - The ID of the tag to delete.
+ * @returns A JSON NextResponse:
+ * - Success: `{ message: 'Tag deleted successfully' }` with status 200.
+ * - Missing `id`: `{ error: 'Tag ID is required' }` with status 400.
+ * - Unauthorized: `{ error: 'Unauthorized' }` with status 401.
+ * - Not found: `{ error: 'Tag not found' }` with status 404.
+ * - Other errors: `{ error: 'Error deleting tag' }` with status 500.
+ */
 export async function DELETE(
   request: Request,
   { params }: { params: { id: string } }

@@ -1,4 +1,3 @@
-
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -18,6 +17,13 @@ import { demoGarments, demoTags, isGuestMode, setGuestMode, clearGuestMode } fro
 
 const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
+/**
+ * Render the main wardrobe management page that provides authentication-aware data, guest-mode demo data, filtering, and item actions.
+ *
+ * The component initializes guest mode from the URL or local storage, redirects unauthenticated users in development, and auto-enables a demo guest mode in production when no session exists. When authenticated, it fetches garments and tags from the API; in guest mode it displays demo data. UI features include category and text search, status and tag filtering, theme toggling, and actions to edit items, mark them as worn (with optional usage-count increment), or move them to laundry. The component also shows appropriate empty-state messaging and guards editing actions for guest users.
+ *
+ * @returns The React element for the Home (wardrobe) page.
+ */
 export default function Home() {
   const { data: session, status } = useSession();
   const router = useRouter();

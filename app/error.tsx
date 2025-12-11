@@ -3,6 +3,17 @@
 import { useEffect } from 'react';
 import { useDarkMode } from '@/hooks/useDarkMode';
 
+/**
+ * Render a full-screen, dark-mode aware error UI with recovery actions.
+ *
+ * Displays a generic apology message and an icon, conditionally shows the error message
+ * and optional digest when running in development, logs the error to the console on mount/update,
+ * and provides "Try Again" (calls `reset`) and "Go Home" (navigates to `/`) actions.
+ *
+ * @param error - The error to display; may include an optional `digest` string. When `NODE_ENV` is "development", `error.message` and `error.digest` are shown.
+ * @param reset - Callback invoked when the user clicks "Try Again".
+ * @returns The React element for the error screen.
+ */
 export default function Error({
   error,
   reset,

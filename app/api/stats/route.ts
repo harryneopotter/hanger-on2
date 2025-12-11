@@ -3,6 +3,17 @@ import { getServerSession } from 'next-auth';
 import { authOptions } from '@/lib/auth';
 import { prisma } from '@/lib/prisma';
 
+/**
+ * Retrieve garment statistics for the authenticated user.
+ *
+ * Returns an object with overall counts and aggregates scoped to the current user.
+ *
+ * @returns An object containing:
+ * - `totalItems`: the total number of garments for the user
+ * - `totalValue`: numeric sum of all garment `cost` values (0 if none)
+ * - `categoryBreakdown`: an array of `{ category, count }` objects with per-category item counts
+ * - `mostWornItems`: an array (max 3) of `{ id, name, category, usageCount }` for the user's most used garments
+ */
 export async function GET(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
