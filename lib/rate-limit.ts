@@ -36,11 +36,11 @@ export interface RateLimitConfig {
 }
 
 /**
- * Simple rate limiting middleware
+ * Enforces a rate limit for the specified client identifier.
  *
- * @param identifier - Unique identifier for the client (e.g., IP, user ID, API key)
- * @param config - Rate limit configuration
- * @returns NextResponse if rate limit exceeded, null otherwise
+ * @param identifier - Unique client identifier (for example `user:<id>` or `ip:<address>`)
+ * @param config - Rate limit configuration (max requests, window duration, optional message)
+ * @returns A 429 `NextResponse` when the client exceeded the limit, `null` when the request is allowed
  */
 export function rateLimit(
   identifier: string,
@@ -89,8 +89,10 @@ export function rateLimit(
 }
 
 /**
- * Get client identifier from request
- * Tries to get user ID from session, falls back to IP address
+ * Derives a stable client identifier for rate limiting.
+ *
+ * @param userId - Optional authenticated user ID; when provided the identifier will be `user:<userId>`
+ * @returns A string identifier: `user:<userId>` if `userId` is supplied, otherwise `ip:<ip-or-unknown>`
  */
 export function getClientIdentifier(
   request: Request,

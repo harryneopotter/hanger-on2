@@ -100,6 +100,12 @@ export async function GET() {
   }
 }
 
+/**
+ * Update the authenticated user's name and/or image and return the updated profile.
+ *
+ * @param request - Request whose JSON body may include `name` and/or `image` to update on the authenticated user's account.
+ * @returns The updated user object (`id`, `name`, `email`, `image`, `createdAt`) as a JSON response; returns a 401 response if the requester is unauthenticated, or a 500 response on server error.
+ */
 export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
@@ -138,6 +144,13 @@ export async function PUT(request: NextRequest) {
   }
 }
 
+/**
+ * Delete the authenticated user's account and all associated data.
+ *
+ * Removes the user record for the current session; related records (accounts, sessions, garments and their images, tags, collections) are removed by database cascade.
+ *
+ * @returns A JSON response with `{ message: 'Account deleted successfully', deleted: true }` on success (HTTP 200), `{ error: 'Unauthorized' }` when the request is not authenticated (HTTP 401), or `{ error: 'Failed to delete account' }` on server error (HTTP 500).
+ */
 export async function DELETE() {
   try {
     const session = await getServerSession(authOptions);
