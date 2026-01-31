@@ -36,22 +36,20 @@ export async function GET(request: NextRequest) {
       }
     });
 
-    // Get most worn items (assuming we track usage in the future)
+    // Get most worn items based on usage count
     const mostWornItems = await prisma.garment.findMany({
       where: { userId },
       orderBy: {
-        createdAt: 'desc' // For now, order by newest since we don't have usage tracking
+        usageCount: 'desc' // Order by actual usage count
       },
       take: 3,
       select: {
         id: true,
         name: true,
         category: true,
-        createdAt: true
+        usageCount: true
       }
     });
-
-
 
     const stats = {
       totalItems,
@@ -64,8 +62,7 @@ export async function GET(request: NextRequest) {
         id: item.id,
         name: item.name,
         category: item.category,
-        // Mock usage count for now
-        usageCount: Math.floor(Math.random() * 15) + 1
+        usageCount: item.usageCount
       })),
 
     };

@@ -114,18 +114,29 @@ export default function Home() {
   const displayGarments = isGuest ? demoGarments : garments;
   const displayTags = isGuest ? demoTags : tags;
 
-  const updateGarmentStatus = async (garmentId: string, newStatus: string) => {
+  const updateGarmentStatus = async (garmentId: string, newStatus: string, incrementUsage = false) => {
     if (isGuest) {
       // Show toast notification for guest users
       alert('Please sign in to edit garments');
       return;
     }
-    
+
     try {
+      const updateData: any = { status: newStatus };
+
+      // If marking as worn, increment usage count
+      if (incrementUsage) {
+        // Get current garment to increment its usage count
+        const currentGarment = garments.find((g: any) => g.id === garmentId);
+        if (currentGarment) {
+          updateData.usageCount = (currentGarment.usageCount || 0) + 1;
+        }
+      }
+
       await fetch(`/api/garments/${garmentId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status: newStatus })
+        body: JSON.stringify(updateData)
       });
       mutate(); // Refresh data
     } catch (error) {
@@ -199,7 +210,8 @@ export default function Home() {
                       let nextStatus = garment.status;
                       if (garment.status === "CLEAN") nextStatus = "WORN_2X";
                       else if (garment.status === "WORN_2X") nextStatus = "NEEDS_WASHING";
-                      updateGarmentStatus(garment.id, nextStatus);
+                      // Increment usage count when marking as worn
+                      updateGarmentStatus(garment.id, nextStatus, true);
                     }}
                     onMoveToLaundry={() => {
                       updateGarmentStatus(garment.id, 'DIRTY');

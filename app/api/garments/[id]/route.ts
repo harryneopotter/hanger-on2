@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { garmentService } from '@/lib/services/GarmentService';
 import { UpdateGarmentSchema } from '@/lib/validation/schemas';
 import { getUserId } from '@/lib/auth';
+import { rateLimit, getClientIdentifier, RateLimitPresets } from '@/lib/rate-limit';
 
 export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
   try {
@@ -16,11 +17,19 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 export async function PUT(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const userId = await getUserId();
+
+    // Rate limiting for write operations
+    const rateLimitResult = rateLimit(
+      getClientIdentifier(req, userId),
+      RateLimitPresets.WRITE
+    );
+    if (rateLimitResult) return rateLimitResult;
+
     const body = await req.json();
     const { tagIds, ...garmentData } = body;
     const data = UpdateGarmentSchema.parse({ ...garmentData, id: params.id });
     const updated = await garmentService.updateGarment(params.id, data, userId);
-    
+
     // Handle tag associations if provided
     if (tagIds && Array.isArray(tagIds)) {
       try {
@@ -30,7 +39,7 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
         // Don't fail the entire request if tag assignment fails
       }
     }
-    
+
     // Fetch the complete garment with tags
     const completeGarment = await garmentService.getGarmentById(params.id, userId);
     return NextResponse.json(completeGarment || updated);
@@ -44,6 +53,14 @@ export async function PUT(req: NextRequest, { params }: { params: { id: string }
 export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
   try {
     const userId = await getUserId();
+
+    // Rate limiting for delete operations
+    const rateLimitResult = rateLimit(
+      getClientIdentifier(req, userId),
+      RateLimitPresets.WRITE
+    );
+    if (rateLimitResult) return rateLimitResult;
+
     await garmentService.deleteGarment(params.id, userId);
     return new NextResponse(null, { status: 204 });
   } catch {

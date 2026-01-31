@@ -103,7 +103,7 @@ export async function GET() {
 export async function PUT(request: NextRequest) {
   try {
     const session = await getServerSession(authOptions);
-    
+
     if (!session || !session.user?.id) {
       return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
@@ -133,6 +133,42 @@ export async function PUT(request: NextRequest) {
     console.error('Error updating user profile:', error);
     return NextResponse.json(
       { error: 'Internal server error' },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE() {
+  try {
+    const session = await getServerSession(authOptions);
+
+    if (!session || !session.user?.id) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
+    const userId = session.user.id;
+
+    // Delete user - Prisma will cascade delete all related data:
+    // - accounts, sessions (NextAuth data)
+    // - garments (and their images, tags, collections via cascade)
+    // - tags
+    // - collections
+    await prisma.user.delete({
+      where: {
+        id: userId,
+      },
+    });
+
+    console.log(`✅ User ${userId} and all associated data deleted successfully`);
+
+    return NextResponse.json({
+      message: 'Account deleted successfully',
+      deleted: true
+    }, { status: 200 });
+  } catch (error) {
+    console.error('Error deleting user account:', error);
+    return NextResponse.json(
+      { error: 'Failed to delete account' },
       { status: 500 }
     );
   }

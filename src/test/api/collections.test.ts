@@ -358,4 +358,5 @@ describe('Collections API', () => {
       expect(response.status).toBe(401);
       const data = await response.json();
       expect(data.error).toBe('Unauthorized');
-    });
+    });  });
+});
