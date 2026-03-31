@@ -44,6 +44,14 @@ If you ever need to restore the previous main:
 - For larger work: create a feature branch from main, then squash merge or fast-forward back to main.
 - Keep main always green: run lint/tests/build before pushing.
 
+## Pull Request Completion Checklist
+- PR is no longer in draft and clearly states what changed, why, and how it was validated.
+- PR targets the correct base branch and does not depend on unmerged work unless that dependency is called out explicitly.
+- Branch is mergeable without conflicts (`mergeable_state` is clean) before requesting final review.
+- Required validation is green before merge: at minimum lint, tests, and build locally or in CI.
+- Automated review comments and failing deployment checks are resolved, or the PR description explains why they are safe to defer.
+- Large, stale, or multi-purpose PRs should be split, rebased, or closed instead of merged as-is.
+
 Suggested commands
 - Update and verify
   git fetch origin
