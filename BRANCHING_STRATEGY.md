@@ -49,8 +49,9 @@ Use this checklist when reviewing the current open PR list or deciding whether a
 
 - PR is no longer in draft and clearly states what changed, why, and how it was validated.
 - PR targets the correct base branch and does not depend on unmerged work unless that dependency is called out explicitly.
-- Branch is mergeable without conflicts (`mergeable_state` is clean) before requesting final review.
-- Required validation is green before merge: at minimum lint, tests, and build locally or in CI.
+- Branch is mergeable without conflicts (PR shows “Able to merge” / no merge conflicts) before requesting final review.
+- All required CI checks for lint, tests, and build are green on the PR before merge.
+- For any required validation that does not yet run in CI, run the equivalent lint/tests/build locally and note the result in the PR description.
 - Automated review comments and failing deployment checks are resolved, or the PR description explains why they are safe to defer.
 - Large, stale, or multi-purpose PRs should be split, rebased, or closed instead of merged as-is.
 
