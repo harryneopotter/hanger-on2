@@ -45,6 +45,8 @@ If you ever need to restore the previous main:
 - Keep main always green: run lint/tests/build before pushing.
 
 ## Pull Request Completion Checklist
+Use this checklist when reviewing the current open PR list or deciding whether a branch is ready to merge.
+
 - PR is no longer in draft and clearly states what changed, why, and how it was validated.
 - PR targets the correct base branch and does not depend on unmerged work unless that dependency is called out explicitly.
 - Branch is mergeable without conflicts (`mergeable_state` is clean) before requesting final review.
